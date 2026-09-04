@@ -4,6 +4,7 @@
   min-height: 48rem;
   background: #f5f1e9;
   overflow: hidden;
+  scroll-margin-top: 6.5rem;
 }
 
 .copyPanel {
@@ -88,6 +89,26 @@
   border-left: 1px solid rgba(24, 42, 58, 0.12);
 }
 
+.stepToggle {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  appearance: none;
+}
+
+.stepToggle:focus-visible {
+  outline: 2px solid #a08348;
+  outline-offset: 3px;
+}
+
 .stepHead h3 {
   margin: 0.25rem 0 0.18rem;
   color: #1d2d3a;
@@ -113,69 +134,20 @@
   text-transform: uppercase;
 }
 
-.materialMark {
-  position: relative;
+.phaseIconWrap {
   width: 4.8rem;
   height: 4.2rem;
   margin: 1.15rem 0 1.05rem;
+  display: flex;
+  align-items: center;
+  color: #a08348;
 }
 
-.materialMark span {
-  position: absolute;
+.phaseIconWrap svg {
+  width: 40px;
+  height: 40px;
   display: block;
-  background: linear-gradient(150deg, #15191e 0%, #2f3235 55%, #705b36 100%);
-  box-shadow: 0 8px 18px rgba(13, 19, 25, 0.12);
-}
-
-.materialMark span:nth-child(1) {
-  left: 0.2rem;
-  bottom: 0;
-  width: 2.9rem;
-  height: 2.8rem;
-  clip-path: polygon(8% 15%, 86% 0, 100% 72%, 70% 100%, 0 87%);
-}
-
-.materialMark span:nth-child(2) {
-  left: 2rem;
-  top: 0.15rem;
-  width: 2.3rem;
-  height: 3.4rem;
-  opacity: 0.88;
-  clip-path: polygon(30% 0, 100% 26%, 85% 100%, 5% 83%, 0 22%);
-}
-
-.materialMark span:nth-child(3) {
-  left: 1.65rem;
-  top: 0.75rem;
-  width: 0.17rem;
-  height: 3rem;
-  transform: rotate(27deg);
-  background: linear-gradient(180deg, #d5b775, #7e6532);
-  box-shadow: 0 0 12px rgba(194, 160, 114, 0.28);
-}
-
-.step:nth-child(4) .materialMark span:nth-child(1) {
-  left: 1.1rem;
-  width: 3.4rem;
-  height: 0.55rem;
-  clip-path: none;
-  border-radius: 50%;
-  background: linear-gradient(90deg, #121820, #b6904d, #111820);
-}
-
-.step:nth-child(4) .materialMark span:nth-child(2) {
-  left: 1.65rem;
-  top: 0.2rem;
-  width: 2.6rem;
-  height: 2.6rem;
-  border-radius: 50%;
-  clip-path: none;
-  background: radial-gradient(circle at 36% 30%, #ffeac1 0%, #cf9f4c 24%, #2c2a29 62%, #090d13 100%);
-  box-shadow: 0 0 24px rgba(210, 160, 77, 0.42);
-}
-
-.step:nth-child(4) .materialMark span:nth-child(3) {
-  display: none;
+  flex: none;
 }
 
 .step > p {
@@ -192,6 +164,44 @@
   height: 1px;
   margin-top: 1.1rem;
   background: rgba(160, 131, 72, 0.72);
+}
+
+.detail {
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: height 250ms ease-out, opacity 250ms ease-out;
+}
+
+.detailOpen {
+  height: 14rem;
+  opacity: 1;
+}
+
+.detailInner {
+  padding-top: 1rem;
+}
+
+.detailInner > p {
+  display: block;
+  margin: 0 0 0.62rem;
+  color: #5c6b76;
+  font-size: clamp(0.66rem, 0.8vw, 0.75rem);
+  line-height: 1.48;
+}
+
+.detailInner strong {
+  display: block;
+  margin-bottom: 0.12rem;
+  color: #405566;
+  font-size: 0.61rem;
+  font-weight: 650;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.detailInner span {
+  display: block;
 }
 
 .timeBar {
@@ -311,14 +321,30 @@
   bottom: 17%;
   width: 78%;
   height: 2px;
+  overflow: hidden;
   transform-origin: left center;
   transform: rotate(-29deg);
-  background: linear-gradient(90deg, rgba(186, 136, 62, 0.18), #d8b671 20%, #ffe6ad 63%, #d5a75a 100%);
-  box-shadow: 0 0 12px rgba(224, 174, 85, 0.28);
+  background: rgba(186, 136, 62, 0.18);
+}
+
+.pathFill {
+  display: block;
+  width: calc(var(--line-progress) * 100%);
+  height: 100%;
+  background: linear-gradient(90deg, #d8b671 20%, #ffe6ad 63%, #d5a75a 100%);
+  transition: width 400ms ease-in-out;
 }
 
 .orbStop {
   position: absolute;
+  width: clamp(4rem, 6vw, 5.8rem);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  appearance: none;
 }
 
 .stop1 { left: 14%; bottom: 15%; }
@@ -327,8 +353,11 @@
 .stop4 { left: 80%; bottom: 66%; }
 
 .orb {
-  width: clamp(4rem, 6vw, 5.8rem);
+  position: relative;
+  display: block;
+  width: 100%;
   aspect-ratio: 1;
+  overflow: hidden;
   border-radius: 50%;
   background:
     radial-gradient(circle at 35% 27%, rgba(245,218,162,0.35), transparent 18%),
@@ -342,13 +371,27 @@
     0 0 16px rgba(198,145,65,0.12);
 }
 
-.orbLaunch {
-  background:
-    radial-gradient(circle at 34% 28%, #fff3cf 0 6%, #e6b967 14%, #a36c2c 34%, #3a2d20 58%, #17191d 82%);
-  box-shadow:
-    inset -14px -14px 21px rgba(0,0,0,0.42),
-    0 0 22px rgba(230, 174, 87, 0.58),
-    0 0 62px rgba(230, 174, 87, 0.22);
+.orb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(circle at 34% 28%, #fff3cf 0 6%, #e6b967 14%, #a36c2c 34%, #3a2d20 58%, #17191d 82%);
+  transition: opacity 400ms ease-in-out;
+}
+
+.milestoneActive .orb::after {
+  opacity: 1;
+}
+
+.orbStop:focus-visible {
+  outline: none;
+}
+
+.orbStop:focus-visible .orb {
+  outline: 2px solid #a08348;
+  outline-offset: 4px;
 }
 
 .visualLabel {
@@ -361,6 +404,12 @@
   transform: translateX(-50%);
   white-space: nowrap;
   text-transform: uppercase;
+  opacity: 0.56;
+  transition: opacity 400ms ease-in-out;
+}
+
+.milestoneActive .visualLabel {
+  opacity: 1;
 }
 
 .visualLabel::after {
@@ -450,7 +499,7 @@
   }
 }
 
-@media (max-width: 48rem) {
+@media (max-width: 56.25rem) {
   .copyInner {
     padding: 3rem 1.25rem 2.5rem;
   }
@@ -460,17 +509,26 @@
   }
 
   .steps {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
-  .step:nth-child(3) {
+  .step,
+  .step + .step {
+    padding: 1.35rem 0 0;
     border-left: 0;
-    border-top: 1px solid rgba(24, 42, 58, 0.12);
-    padding-left: 0;
   }
 
-  .step:nth-child(4) {
+  .step + .step {
+    margin-top: 1.15rem;
     border-top: 1px solid rgba(24, 42, 58, 0.12);
+  }
+
+  .step > p {
+    min-height: 0;
+  }
+
+  .detailOpen {
+    height: 10.75rem;
   }
 
   .timeBar {
@@ -485,24 +543,15 @@
   }
 
   .visualPanel {
-    min-height: 34rem;
-  }
-
-  .stop1 { left: 8%; bottom: 14%; }
-  .stop2 { left: 31%; bottom: 28%; }
-  .stop3 { left: 54%; bottom: 43%; }
-  .stop4 { left: 76%; bottom: 59%; }
-
-  .orb {
-    width: 3.6rem;
-  }
-
-  .visualBrand {
-    right: 5%;
-    bottom: 4%;
-  }
-
-  .edgeMark {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .detail,
+  .pathFill,
+  .orb::after,
+  .visualLabel {
+    transition: none;
   }
 }
