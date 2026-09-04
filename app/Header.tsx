@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import styles from "./Header.module.css";
 
 const NAV = [
   { label: "Home", href: "#top" },
@@ -9,8 +10,6 @@ const NAV = [
   { label: "Contact", href: "#contact" },
 ];
 
-/** Reveal threshold in px — small enough to feel immediate, large enough that
- *  trackpad jitter and iOS rubber-banding don't flicker the bar. */
 const DELTA = 6;
 
 function Arrow() {
@@ -26,7 +25,6 @@ export default function Header() {
   const [active, setActive] = useState<string>(NAV[0].href);
   const lastY = useRef(0);
 
-  // Hide on scroll down, reveal on scroll up.
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     lastY.current = window.scrollY;
@@ -37,8 +35,6 @@ export default function Header() {
       const y = window.scrollY;
       const delta = y - lastY.current;
 
-      // Never hide at the top of the page, and never hide for anyone who has
-      // asked for reduced motion.
       if (y < 96 || reduced.matches) setHidden(false);
       else if (delta > DELTA) setHidden(true);
       else if (delta < -DELTA) setHidden(false);
@@ -57,11 +53,8 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // A hidden bar is translated off-screen, not removed, so its links stay
-  // focusable — bring it back when focus lands inside it.
   const onFocusCapture = () => setHidden(false);
 
-  // Mark the section currently under the middle of the viewport.
   useEffect(() => {
     const targets = NAV.map((item) => document.querySelector(item.href)).filter(
       (el): el is Element => el !== null,
@@ -83,41 +76,58 @@ export default function Header() {
     return () => observer.disconnect();
   }, []);
 
+  const onNavPointerMove = (event: React.PointerEvent<HTMLAnchorElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+    event.currentTarget.style.setProperty("--mouse-x", `${x}%`);
+  };
+
   return (
     <header
-      className={hidden ? "masthead is-hidden" : "masthead"}
+      className={`${styles.masthead}${hidden ? ` ${styles.hidden}` : ""}`}
       onFocusCapture={onFocusCapture}
     >
-      <div className="masthead__bar">
-        <a className="masthead__brand" href="#top">
-          <span className="masthead__monogram" aria-hidden="true">
-            KS
+      <div className={styles.bar}>
+        <a className={styles.brand} href="#top" aria-label="Kyle Stringham, home">
+          <span className={styles.monogramShell} aria-hidden="true">
+            <span className={styles.monogram}>KS</span>
           </span>
-          <span className="masthead__divider" aria-hidden="true" />
-          <span className="masthead__name">Kyle Stringham</span>
+          <span className={styles.brandRule} aria-hidden="true" />
+          <span className={styles.brandCopy}>
+            <span className={styles.name}>Kyle Stringham</span>
+            <span className={styles.role}>Web design + build</span>
+          </span>
         </a>
 
-        <nav className="masthead__nav" aria-label="Sections">
+        <nav className={styles.nav} aria-label="Sections">
           {NAV.map((item) => {
             const isActive = active === item.href;
             return (
               <a
                 key={item.label}
                 href={item.href}
-                className={isActive ? "is-active" : undefined}
-                aria-current={isActive ? "true" : undefined}
+                className={`${styles.navLink}${isActive ? ` ${styles.active}` : ""}`}
+                aria-current={isActive ? "page" : undefined}
+                onPointerMove={onNavPointerMove}
               >
-                {item.label}
-                <span className="masthead__dot" aria-hidden="true" />
+                <span className={styles.navTextWrap}>
+                  <span className={styles.navText}>{item.label}</span>
+                  <span className={styles.navTextGhost} aria-hidden="true">
+                    {item.label}
+                  </span>
+                </span>
               </a>
             );
           })}
         </nav>
 
-        <div className="masthead__end">
-          <span className="masthead__divider" aria-hidden="true" />
-          <a className="btn btn--gold" href="#contact">
-            Get Started <Arrow />
+        <div className={styles.end}>
+          <span className={styles.endRule} aria-hidden="true" />
+          <a className={styles.getStarted} href="#contact">
+            <span>Get Started</span>
+            <span className={styles.arrowShell} aria-hidden="true">
+              <Arrow />
+            </span>
           </a>
         </div>
       </div>
