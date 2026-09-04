@@ -10,9 +10,13 @@ npm run dev      # http://localhost:3000
 npm run build    # production build
 ```
 
-Next.js App Router. Server components throughout — the page is fully static and
-works with JavaScript disabled. The form (not yet built) will be the only client
-component.
+Next.js App Router. The page is otherwise server-rendered and static — prices
+and process read fine with JavaScript disabled.
+
+`app/Header.tsx` is a client component: the sticky bar hides on scroll down and
+reveals on scroll up, and highlights the section currently in view, both of which
+need JavaScript. Without JS the bar renders and its links work; it simply does
+not hide. The form, when built, will be the second client component.
 
 ## Before this goes live
 
@@ -64,7 +68,17 @@ worst backdrop pixel behind each hero element is checked at 1440px and at 375px
 and 414px; the hero edge marks needed their own scrim before white cleared 4.5:1
 against the dark gold at the right edge.
 
+- `--gold-light` measures only 3.5:1 against the dark masthead, so text on that
+  bar uses `--gold-on-dark` (#E2C58A) instead — 6.3:1 for the monogram and
+  6.6:1 for the active nav item. The palette's golds were specified against
+  white; this one is for dark grounds.
+
 Hairlines derive from `--slate` at 22%/34% rather than invented hex values.
+
+Measuring text over photography or translucency needs care: sample with the text
+set to `transparent` (not `visibility: hidden`, which also removes the element's
+own background) and inset the sample box a few pixels, or border antialiasing and
+sibling decoration get read as backdrop and report false failures.
 
 ## Build order
 

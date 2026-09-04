@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import Header from "./Header";
+
 import heroPhoto from "./hero.png";
 
 // TODO: replace with the real address before this goes to a custom domain.
@@ -11,13 +13,6 @@ const PHOTOS: Record<"timeline" | "aside", string | null> = {
   timeline: null, // e.g. "/timeline.jpg"
   aside: null, // e.g. "/aside.jpg"
 };
-
-const nav = [
-  { label: "Home", href: "#top" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Process", href: "#timeline" },
-  { label: "Contact", href: "#contact" },
-];
 
 const tiers = [
   {
@@ -115,6 +110,8 @@ function Figure({
 export default function Home() {
   return (
     <>
+      <Header />
+
       <section className="hero" id="top">
         <div className="hero__bg" aria-hidden="true">
           <Image
@@ -129,19 +126,6 @@ export default function Home() {
         </div>
         <div className="hero__scrim" aria-hidden="true" />
 
-        <header className="masthead shell">
-          <span className="masthead__name">Kyle Stringham</span>
-          <nav className="masthead__nav" aria-label="Sections">
-            {nav.map((item) => (
-              <a key={item.label} href={item.href}>
-                {item.label}
-              </a>
-            ))}
-          </nav>
-          <a className="btn" href="#contact">
-            Get Started
-          </a>
-        </header>
 
         <div className="hero__inner shell">
           <div className="hero__copy">
