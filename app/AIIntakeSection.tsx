@@ -2,34 +2,19 @@ import styles from "./AIIntakeSection.module.css";
 
 const intakeItems = [
   {
-    title: "Your words",
-    text: "Copy and messaging",
-    icon: "copy",
-  },
-  {
-    title: "Your logo",
-    text: "Best-quality file",
-    icon: "image",
-  },
-  {
-    title: "Photos",
-    text: "Anything you own or can use",
-    icon: "photo",
-  },
-  {
-    title: "Your goals",
-    text: "What the site needs to do",
+    title: "Goals & friction",
+    text: "What success looks like and what you want the site to make easier.",
     icon: "target",
   },
   {
-    title: "Timeline",
-    text: "When you want to launch",
-    icon: "calendar",
+    title: "Brand & inspiration",
+    text: "Color direction, logo, and photos you own the rights to.",
+    icon: "palette",
   },
   {
-    title: "Logins",
-    text: "Domain and hosting access",
-    icon: "lock",
+    title: "Domain and hosting",
+    text: "Where your site lives now.",
+    icon: "domain",
   },
 ] as const;
 
@@ -46,25 +31,6 @@ function IntakeIcon({ type }: { type: (typeof intakeItems)[number]["icon"] }) {
     "aria-hidden": true,
   };
 
-  if (type === "copy") {
-    return (
-      <svg {...common}>
-        <rect x="5" y="3.5" width="14" height="17" rx="2" />
-        <path d="M8 8h8M8 12h8M8 16h5" />
-      </svg>
-    );
-  }
-
-  if (type === "image" || type === "photo") {
-    return (
-      <svg {...common}>
-        <rect x="4" y="5" width="16" height="14" rx="2" />
-        <circle cx="9" cy="10" r="1.5" />
-        <path d="M6.5 16l4-4 3 3 2-2 2 3" />
-      </svg>
-    );
-  }
-
   if (type === "target") {
     return (
       <svg {...common}>
@@ -75,19 +41,21 @@ function IntakeIcon({ type }: { type: (typeof intakeItems)[number]["icon"] }) {
     );
   }
 
-  if (type === "calendar") {
+  if (type === "palette") {
     return (
       <svg {...common}>
-        <rect x="4" y="6" width="16" height="14" rx="2" />
-        <path d="M8 3.5v5M16 3.5v5M4 10h16" />
+        <path d="M12 4.5a7.5 7.5 0 1 0 0 15h1.2c1.2 0 1.8-.8 1.3-1.8-.4-.8.1-1.7 1-1.7h1.3A3.7 3.7 0 0 0 20.5 12 7.8 7.8 0 0 0 12 4.5Z" />
+        <circle cx="8.4" cy="10" r=".8" />
+        <circle cx="11.4" cy="7.9" r=".8" />
+        <circle cx="15" cy="9.1" r=".8" />
       </svg>
     );
   }
 
   return (
     <svg {...common}>
-      <rect x="6" y="11" width="12" height="9" rx="2" />
-      <path d="M8.5 11V8.5a3.5 3.5 0 0 1 7 0V11" />
+      <circle cx="12" cy="12" r="8" />
+      <path d="M4 12h16M12 4c2.1 2.2 3.2 4.9 3.2 8S14.1 17.8 12 20c-2.1-2.2-3.2-4.9-3.2-8S9.9 6.2 12 4Z" />
     </svg>
   );
 }
@@ -99,15 +67,15 @@ export default function AIIntakeSection() {
         <div className={styles.copyCol}>
           <div className={styles.kickerRow}>
             <span className={styles.kickerRule} aria-hidden="true" />
-            <span>AI Project Intake</span>
+            <span>Project intake</span>
           </div>
 
-          <h2>Tell me what you need</h2>
+          <h2>Start with a conversation</h2>
 
           <p className={styles.lead}>
-            My AI consultant asks a few focused questions, collects the details
-            I need for your website, and organizes everything into a clear
-            project brief so I can get to work.
+            You do not need to figure out every detail before you start. The AI
+            consultant asks one question at a time, follows your answers, and
+            organizes what I need into a clear project brief.
           </p>
 
           <div className={styles.progressWrap} aria-label="Project intake progress">
@@ -127,7 +95,7 @@ export default function AIIntakeSection() {
             </div>
           </div>
 
-          <p className={styles.collectLabel}>We’ll collect information about:</p>
+          <p className={styles.collectLabel}>A few things we will cover</p>
 
           <div className={styles.infoGrid}>
             {intakeItems.map((item) => (
@@ -143,19 +111,22 @@ export default function AIIntakeSection() {
             ))}
           </div>
 
+          <p className={styles.securityNote}>
+            Never send passwords or verification codes here. If we work
+            together, account access is shared securely after kickoff.
+          </p>
+
           <a className={styles.cta} href="#ai-intake-chat">
             <span>Start the Conversation</span>
             <span className={styles.ctaArrow} aria-hidden="true">→</span>
           </a>
-          <p className={styles.ctaNote}>It only takes a few minutes</p>
+          <p className={styles.ctaNote}>Plan on about 10 minutes</p>
+          <p className={styles.emailFallback}>
+            Prefer email? <a href="mailto:stringham00@gmail.com">stringham00@gmail.com</a>
+          </p>
         </div>
 
         <div className={styles.visualCol}>
-          <div className={styles.sideAccent} aria-hidden="true">
-            <div className={styles.accentGrid} />
-            <p>Simple inputs mean a smoother build</p>
-          </div>
-
           <div className={styles.chatCard} id="ai-intake-chat">
             <div className={styles.chatHeader}>
               <div className={styles.chatIdentity}>
@@ -175,9 +146,8 @@ export default function AIIntakeSection() {
                 <span className={styles.messageAvatar}>AI</span>
                 <div className={styles.messageGroup}>
                   <div className={styles.messageAi}>
-                    Hi there. I’ll ask a few focused questions so I can collect
-                    what Kyle needs for your project. First, what does your
-                    business do?
+                    Hi there. I’ll ask a few focused questions so Kyle can
+                    understand your project. First, what does your business do?
                   </div>
                   <span className={styles.time}>10:01 AM</span>
                 </div>
@@ -198,7 +168,8 @@ export default function AIIntakeSection() {
                 <span className={styles.messageAvatar}>AI</span>
                 <div className={styles.messageGroup}>
                   <div className={styles.messageAi}>
-                    Great. What pages do you need on the site?
+                    What would a successful website make easier for your
+                    practice or your clients?
                   </div>
                   <span className={styles.time}>10:02 AM</span>
                 </div>
@@ -207,7 +178,8 @@ export default function AIIntakeSection() {
               <div className={`${styles.messageRow} ${styles.messageRowUser}`}>
                 <div className={styles.messageGroup}>
                   <div className={styles.messageUser}>
-                    Home, About, Services, FAQ, and Contact.
+                    I want people to understand our services quickly and make it
+                    easier to request a consultation.
                   </div>
                   <span className={`${styles.time} ${styles.timeUser}`}>10:03 AM</span>
                 </div>
@@ -218,8 +190,9 @@ export default function AIIntakeSection() {
                 <span className={styles.messageAvatar}>AI</span>
                 <div className={styles.messageGroup}>
                   <div className={styles.messageAi}>
-                    Perfect. Do you already have a logo, photos, and website
-                    copy, or do you need help with any of that?
+                    Great. Do you already have a domain or hosting provider? Just
+                    tell me the name or provider. Please do not send passwords,
+                    login codes, or other credentials here.
                   </div>
                   <span className={styles.time}>10:03 AM</span>
                 </div>
@@ -240,6 +213,14 @@ export default function AIIntakeSection() {
               <span className={styles.inputFake}>Type your message...</span>
               <span className={styles.sendButton} aria-hidden="true">↑</span>
             </div>
+            <p className={styles.chatSecurity}>
+              Passwords and verification codes are never requested in this chat.
+            </p>
+          </div>
+
+          <div className={styles.sideAccent} aria-hidden="true">
+            <div className={styles.accentGrid} />
+            <p>Simple inputs mean a smoother build</p>
           </div>
 
           <p className={styles.handNote} aria-hidden="true">
