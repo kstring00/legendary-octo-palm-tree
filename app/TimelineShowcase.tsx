@@ -1,27 +1,7 @@
-import styles from "./TimelineShowcase.module.css";
+import Image from "next/image";
 
-const stages = [
-  {
-    title: "Discovery",
-    days: "1–2 days",
-    note: "Align on goals, audience, and scope.",
-  },
-  {
-    title: "Design",
-    days: "2–4 days",
-    note: "Turn strategy into a clear visual direction.",
-  },
-  {
-    title: "Build",
-    days: "3–7 days",
-    note: "Bring the approved direction to life.",
-  },
-  {
-    title: "Launch",
-    days: "1 day",
-    note: "Final checks, domain setup, and go live.",
-  },
-] as const;
+import styles from "./TimelineShowcase.module.css";
+import timelineArtwork from "../ChatGPT Image Sep 4, 2026, 05_24_26 PM.png";
 
 export default function TimelineShowcase() {
   return (
@@ -52,38 +32,15 @@ export default function TimelineShowcase() {
         </div>
       </div>
 
-      <div className={styles.visualPanel} aria-label="Four phase website timeline">
-        <div className={styles.visualGlow} aria-hidden="true" />
-        <div className={styles.arcOne} aria-hidden="true" />
-        <div className={styles.arcTwo} aria-hidden="true" />
-        <div className={styles.pathLine} aria-hidden="true" />
-
-        {stages.map((stage, index) => {
-          const stopClass = [styles.stop1, styles.stop2, styles.stop3, styles.stop4][index];
-
-          return (
-            <div key={stage.title} className={`${styles.orbStop} ${stopClass}`}>
-              <span
-                className={`${styles.orb} ${index === 3 ? styles.orbLaunch : ""}`}
-                aria-hidden="true"
-              />
-              <div className={styles.visualLabel}>
-                <span>{stage.title}</span>
-                <small>{stage.days}</small>
-                <i>{stage.note}</i>
-              </div>
-            </div>
-          );
-        })}
-
-        <p className={styles.edgeMark} aria-hidden="true">
-          <span>Good</span>
-          <span>ideas</span>
-          <span>deserve</span>
-          <span>a</span>
-          <span>great</span>
-          <span>home</span>
-        </p>
+      <div className={styles.visualPanel}>
+        <Image
+          className={styles.timelineArtwork}
+          src={timelineArtwork}
+          alt="Website project timeline showing Discovery, Design, Build, and Launch"
+          fill
+          sizes="(max-width: 72rem) 100vw, 50vw"
+          quality={95}
+        />
       </div>
     </section>
   );
