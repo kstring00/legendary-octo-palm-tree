@@ -135,8 +135,8 @@ export default function Home() {
                 <h2>What it costs</h2>
               </div>
               <p className={pricingStyles.intro}>
-                Floors, not fixed prices. Revision rounds are defined in your
-                project scope before work begins. After that, changes are priced
+                Floors, not fixed prices. Every project includes up to three
+                revision rounds before launch. After that, changes are priced
                 per request — if your business changes, I&rsquo;ll change the site.
               </p>
             </div>
