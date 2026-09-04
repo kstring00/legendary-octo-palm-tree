@@ -178,12 +178,7 @@ export default function TimelineShowcase() {
               const detailId = `timeline-detail-${index + 1}`;
 
               return (
-                <article
-                  className={`${styles.step} timeline-step ${
-                    isActive ? styles.stepActive : ""
-                  }`}
-                  key={step.number}
-                >
+                <article className={`${styles.step} timeline-step`} key={step.number}>
                   <button
                     ref={(node) => {
                       cardRefs.current[index] = node;
