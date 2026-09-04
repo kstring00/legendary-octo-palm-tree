@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   FormEvent,
   KeyboardEvent,
@@ -9,22 +10,23 @@ import {
   useState,
 } from "react";
 
-import styles from "./AIIntakeSection.module.css";
+import intakeBackdrop from "../sumup-YDe0nOZyLHI-unsplash.jpg";
+import styles from "./AIIntakePremium.module.css";
 
 const intakeItems = [
   {
-    title: "Goals & friction",
-    text: "What success looks like and what you want the site to make easier.",
+    title: "Your vision",
+    text: "What success looks like and who you want the site to reach.",
     icon: "target",
   },
   {
-    title: "Brand & inspiration",
-    text: "Color direction, logo, and photos you own the rights to.",
+    title: "Design direction",
+    text: "Style, brand, colors, logo, and inspiration that feel right for you.",
     icon: "palette",
   },
   {
-    title: "Domain and hosting",
-    text: "Where your site lives now.",
+    title: "The essentials",
+    text: "Domain, hosting, content, integrations, and features your site needs.",
     icon: "domain",
   },
 ] as const;
@@ -109,7 +111,6 @@ function IntakeIcon({ type }: { type: (typeof intakeItems)[number]["icon"] }) {
 
 function formatTime(value: string) {
   if (!value) return "";
-
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
 
@@ -159,7 +160,9 @@ export default function AIIntakeSection() {
         if (payload.progress) setProgress(payload.progress);
       } catch {
         if (!cancelled) {
-          setChatError("I could not restore an earlier conversation. You can still start a new one below.");
+          setChatError(
+            "I could not restore an earlier conversation. You can still start a new one below.",
+          );
         }
       } finally {
         if (!cancelled) setIsLoadingHistory(false);
@@ -186,7 +189,9 @@ export default function AIIntakeSection() {
     });
 
     if (!response.ok) {
-      const payload = (await response.json().catch(() => ({}))) as { error?: string };
+      const payload = (await response.json().catch(() => ({}))) as {
+        error?: string;
+      };
       throw new Error(payload.error || "The intake could not be started right now.");
     }
   }
@@ -220,12 +225,8 @@ export default function AIIntakeSection() {
       const payload = (await response.json().catch(() => ({}))) as MessagePayload;
 
       setMessages((current) => {
-        const withoutOptimistic = current.filter((item) => item.id !== optimisticId);
-        const next = [...withoutOptimistic];
-
-        if (payload.userMessage) next.push(payload.userMessage);
-        else next.push(optimisticMessage);
-
+        const next = current.filter((item) => item.id !== optimisticId);
+        next.push(payload.userMessage || optimisticMessage);
         if (payload.assistantMessage) next.push(payload.assistantMessage);
         return next;
       });
@@ -233,7 +234,10 @@ export default function AIIntakeSection() {
       if (payload.progress) setProgress(payload.progress);
 
       if (!response.ok || payload.error) {
-        setChatError(payload.error || "That answer was saved, but the conversation could not continue. Please try again.");
+        setChatError(
+          payload.error ||
+            "That answer was saved, but the conversation could not continue. Please try again.",
+        );
       }
     } catch (error) {
       setChatError(
@@ -268,6 +272,18 @@ export default function AIIntakeSection() {
 
   return (
     <section className={styles.section} id="contact">
+      <div className={styles.backdrop} aria-hidden="true">
+        <Image
+          className={styles.backdropImage}
+          src={intakeBackdrop}
+          alt=""
+          fill
+          sizes="100vw"
+          quality={90}
+        />
+      </div>
+      <div className={styles.backdropVeil} aria-hidden="true" />
+
       <div className={styles.inner}>
         <div className={styles.copyCol}>
           <div className={styles.kickerRow}>
@@ -275,15 +291,18 @@ export default function AIIntakeSection() {
             <span>Project intake</span>
           </div>
 
-          <h2>Start with a conversation</h2>
+          <h2>Turn your ideas into a website with AI guidance.</h2>
 
           <p className={styles.lead}>
-            You do not need to figure out every detail before you start. The AI
-            consultant asks one question at a time, follows your answers, and
-            organizes what I need into a clear project brief.
+            A focused conversation to understand your business, clarify your
+            goals, and organize what I need to build a website that feels right
+            for you.
           </p>
 
-          <div className={styles.progressWrap} aria-label={`Project intake ${progress.completionPercent}% complete`}>
+          <div
+            className={styles.progressWrap}
+            aria-label={`Project intake ${progress.completionPercent}% complete`}
+          >
             <div className={styles.progressLine} aria-hidden="true" />
             <div
               className={styles.progressFill}
@@ -307,7 +326,9 @@ export default function AIIntakeSection() {
                 );
               })}
             </div>
-            <span className={styles.progressPercent}>{progress.completionPercent}% complete</span>
+            <span className={styles.progressPercent}>
+              {progress.completionPercent}% complete
+            </span>
           </div>
 
           <p className={styles.collectLabel}>A few things we will cover</p>
@@ -327,17 +348,25 @@ export default function AIIntakeSection() {
           </div>
 
           <p className={styles.securityNote}>
-            Never send passwords or verification codes here. If we work
-            together, account access is shared securely after kickoff.
+            Your information stays private. I will never ask for passwords or
+            verification codes here. Account access is handled securely after
+            kickoff.
           </p>
 
           <a className={styles.cta} href="#ai-intake-chat" onClick={focusChat}>
-            <span>{messages.length > 0 ? "Continue the Conversation" : "Start the Conversation"}</span>
-            <span className={styles.ctaArrow} aria-hidden="true">→</span>
+            <span>
+              {messages.length > 0
+                ? "Continue the Conversation"
+                : "Start the Conversation"}
+            </span>
+            <span className={styles.ctaArrow} aria-hidden="true">
+              →
+            </span>
           </a>
           <p className={styles.ctaNote}>Plan on about 10 minutes</p>
           <p className={styles.emailFallback}>
-            Prefer email? <a href="mailto:stringham00@gmail.com">stringham00@gmail.com</a>
+            Prefer email?{" "}
+            <a href="mailto:stringham00@gmail.com">stringham00@gmail.com</a>
           </p>
         </div>
 
@@ -351,7 +380,9 @@ export default function AIIntakeSection() {
                   <p>Ask · Collect · Organize</p>
                 </div>
               </div>
-              <span className={`${styles.online} ${isComplete ? styles.onlineComplete : ""}`}>
+              <span
+                className={`${styles.online} ${isComplete ? styles.onlineComplete : ""}`}
+              >
                 <span aria-hidden="true" /> {statusLabel}
               </span>
             </div>
@@ -364,31 +395,48 @@ export default function AIIntakeSection() {
               aria-busy={isSending || isLoadingHistory}
             >
               {isLoadingHistory ? (
-                <div className={styles.loadingHistory}>Loading your conversation…</div>
+                <div className={styles.loadingHistory}>
+                  Loading your conversation…
+                </div>
               ) : (
                 visibleMessages.map((message) => (
                   <div
                     className={`${styles.messageRow} ${message.role === "user" ? styles.messageRowUser : ""}`}
                     key={message.id}
                   >
-                    {message.role === "assistant" && <span className={styles.messageAvatar}>AI</span>}
+                    {message.role === "assistant" && (
+                      <span className={styles.messageAvatar}>AI</span>
+                    )}
                     <div className={styles.messageGroup}>
-                      <div className={message.role === "assistant" ? styles.messageAi : styles.messageUser}>
+                      <div
+                        className={
+                          message.role === "assistant"
+                            ? styles.messageAi
+                            : styles.messageUser
+                        }
+                      >
                         {message.content}
                       </div>
                       {message.created_at && (
-                        <span className={`${styles.time} ${message.role === "user" ? styles.timeUser : ""}`}>
+                        <span
+                          className={`${styles.time} ${message.role === "user" ? styles.timeUser : ""}`}
+                        >
                           {formatTime(message.created_at)}
                         </span>
                       )}
                     </div>
-                    {message.role === "user" && <span className={styles.youBadge}>You</span>}
+                    {message.role === "user" && (
+                      <span className={styles.youBadge}>You</span>
+                    )}
                   </div>
                 ))
               )}
 
               {isSending && (
-                <div className={styles.typingRow} aria-label="AI consultant is thinking">
+                <div
+                  className={styles.typingRow}
+                  aria-label="AI consultant is thinking"
+                >
                   <span className={styles.messageAvatar}>AI</span>
                   <span className={styles.typingBubble}>
                     <i />
@@ -424,7 +472,11 @@ export default function AIIntakeSection() {
                 disabled={isSending || isComplete || !draft.trim()}
                 aria-label="Send message"
               >
-                {isSending ? <span className={styles.sendSpinner} aria-hidden="true" /> : "↑"}
+                {isSending ? (
+                  <span className={styles.sendSpinner} aria-hidden="true" />
+                ) : (
+                  "↑"
+                )}
               </button>
             </form>
             <p className={styles.chatSecurity}>
@@ -434,11 +486,15 @@ export default function AIIntakeSection() {
 
           <div className={styles.sideAccent} aria-hidden="true">
             <div className={styles.accentGrid} />
-            <p>Simple inputs mean a smoother build</p>
+            <p>Clear questions mean brighter results</p>
           </div>
 
           <p className={styles.handNote} aria-hidden="true">
-            From conversation<br />to a beautiful<br />website.
+            From conversation
+            <br />
+            to a website you
+            <br />
+            can be proud of.
           </p>
         </div>
       </div>
