@@ -1,10 +1,13 @@
+import Image from "next/image";
+
+import heroPhoto from "./hero.png";
+
 // TODO: replace with the real address before this goes to a custom domain.
 const CONTACT_EMAIL = "you@example.com";
 
 // Drop your own photographs into /public and name them here. Until then each
 // slot renders a tinted panel — nothing is committed that you don't own.
-const PHOTOS: Record<"hero" | "timeline" | "aside", string | null> = {
-  hero: null, // e.g. "/hero.jpg"
+const PHOTOS: Record<"timeline" | "aside", string | null> = {
   timeline: null, // e.g. "/timeline.jpg"
   aside: null, // e.g. "/aside.jpg"
 };
@@ -113,7 +116,17 @@ export default function Home() {
   return (
     <>
       <section className="hero" id="top">
-        <Figure src={PHOTOS.hero} alt="" className="hero__bg" />
+        <div className="hero__bg" aria-hidden="true">
+          <Image
+            className="hero__photo"
+            src={heroPhoto}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            placeholder="blur"
+          />
+        </div>
         <div className="hero__scrim" aria-hidden="true" />
 
         <header className="masthead shell">

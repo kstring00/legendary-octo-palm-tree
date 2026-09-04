@@ -16,27 +16,35 @@ component.
 
 ## Before this goes live
 
-Two placeholders need real values.
+`CONTACT_EMAIL` at the top of `app/page.tsx` is still `you@example.com`. It feeds
+both the contact button and the mailto link.
 
-**1. Email address.** `CONTACT_EMAIL` at the top of `app/page.tsx` is
-`you@example.com`. It feeds both the button and the mailto link.
+## Images
 
-**2. Photographs.** No images are committed — nothing here is licensed to us.
-Each image slot renders a tinted panel until you supply your own. To turn them
-on, drop files into `/public` and name them in `PHOTOS` at the top of
-`app/page.tsx`:
+The hero photograph lives at `app/hero.png` and is rendered through
+`next/image` with a static import, so Next serves resized WebP: the 2.4 MB
+source is delivered as roughly 50 KB at phone widths and 170 KB at desktop
+widths. Keep the full-resolution file as the master — do not hand-compress it
+and commit the result over the top.
+
+The hero behaves differently by viewport, on purpose. On desktop the photo is
+full-bleed with the copy over its left side, held legible by a scrim. On a phone
+the viewport is far taller than it is wide, so `cover` maps the whole image
+height onto the whole hero and the moon ends up behind the copy no matter how
+`object-position` is shifted — so below 64rem the photo gets its own band at
+close to native aspect and the copy sits on plain cream.
+
+The two remaining slots, `timeline` and `aside`, still render tinted panels.
+Name files in `PHOTOS` at the top of `app/page.tsx` to fill them:
 
 ```ts
 const PHOTOS = {
-  hero:     "/hero.jpg",      // wide, light/misty — text sits over its left half
-  timeline: "/timeline.jpg",  // roughly square-to-portrait
-  aside:    "/aside.jpg",     // small, 4:3
+  timeline: "/timeline.jpg", // roughly square-to-portrait
+  aside:    "/aside.jpg",    // small, 4:3
 };
 ```
 
-The hero has a fixed light scrim over its left side and the overlay labels have
-a bottom scrim, so the text stays readable whatever photo you use. Photos must
-be ones you own or have the rights to use.
+Those go in `/public`. Photos must be ones you own or have the rights to use.
 
 ## Accessibility notes
 
@@ -50,6 +58,11 @@ not used as the palette originally described them:
   `--gold` (3.60:1), which is the minimum for a non-text affordance.
 - `--gold` on `--cream` is 3.09:1, which only clears AA as *large* text. The
   `01/02/03` tier numerals are therefore pinned at 24px minimum.
+
+Text over photography is measured against the rendered pixels, not assumed. The
+worst backdrop pixel behind each hero element is checked at 1440px and at 375px
+and 414px; the hero edge marks needed their own scrim before white cleared 4.5:1
+against the dark gold at the right edge.
 
 Hairlines derive from `--slate` at 22%/34% rather than invented hex values.
 

@@ -300,13 +300,18 @@ img {
   position: absolute;
   inset: 0;
   z-index: -2;
-  background:
-    linear-gradient(165deg, #e8eef3 0%, #c7d4de 38%, #8ea3b4 70%, #5c7488 100%),
-    var(--slate);
+  overflow: hidden;
+  background: #9dbed6;
 }
 
-.hero__bg::before {
-  background: linear-gradient(to top, rgba(5, 23, 47, 0.22) 0%, transparent 45%);
+.hero__photo {
+  display: block;
+}
+
+.hero__photo {
+  object-fit: cover;
+  /* the composition's focus sits centre-right; keep it clear of the copy */
+  object-position: 62% 50%;
 }
 
 /* keeps navy legible over whatever photograph lands here */
@@ -316,22 +321,43 @@ img {
   z-index: -1;
   background: linear-gradient(
     100deg,
-    rgba(248, 245, 239, 0.97) 0%,
-    rgba(248, 245, 239, 0.93) 32%,
-    rgba(248, 245, 239, 0.55) 52%,
-    rgba(248, 245, 239, 0.12) 78%,
-    rgba(248, 245, 239, 0.04) 100%
+    rgba(248, 245, 239, 0.98) 0%,
+    rgba(248, 245, 239, 0.96) 30%,
+    rgba(248, 245, 239, 0.74) 44%,
+    rgba(248, 245, 239, 0.22) 66%,
+    rgba(248, 245, 239, 0) 88%
   );
 }
 
+/* On a phone the copy fills the hero, so a flat scrim erased the photograph.
+   Hold it opaque behind the text, then release it so the image is actually
+   visible in a band beneath. */
+/* On a phone the viewport is far taller than it is wide, so `cover` maps the
+   whole image height onto the whole hero — the moon and arch end up behind the
+   copy however object-position is shifted. So on mobile the photograph gets its
+   own band at close to its native aspect and the copy sits on plain cream,
+   which also removes the overlay contrast risk entirely. */
 @media (max-width: 63.99rem) {
+  .hero {
+    background: var(--cream-light);
+    padding-bottom: 15rem;
+  }
+
+  .hero__bg {
+    top: auto;
+    height: 15rem;
+  }
+
   .hero__scrim {
-    background: linear-gradient(
-      180deg,
-      rgba(248, 245, 239, 0.96) 0%,
-      rgba(248, 245, 239, 0.92) 62%,
-      rgba(248, 245, 239, 0.7) 100%
-    );
+    display: none;
+  }
+
+  .hero__inner {
+    padding-bottom: clamp(1.5rem, 5vw, 2.5rem);
+  }
+
+  .hero__photo {
+    object-position: 50% 40%;
   }
 }
 
@@ -352,6 +378,10 @@ img {
 
 .hero__copy > * + * {
   margin-top: 1.35rem;
+}
+
+.hero__copy .tag {
+  display: inline-block;
 }
 
 .hero__copy h1 {
@@ -393,14 +423,34 @@ img {
   .hero__frame {
     display: block;
     justify-self: center;
-    width: min(19rem, 100%);
+    width: min(17rem, 100%);
     aspect-ratio: 5 / 7;
     border: 2px solid var(--navy);
+    transform: translate(-16%, -7%);
   }
 }
 
 .hero__marks {
   display: none;
+}
+
+/* the right edge of the photograph is dark gold; the marks need their own
+   scrim to stay legible, measured rather than assumed */
+.hero__marks::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: calc(-1 * clamp(1.25rem, 3vw, 2.5rem));
+  width: 21rem;
+  background: linear-gradient(
+    to right,
+    rgba(5, 23, 47, 0) 0%,
+    rgba(5, 23, 47, 0.34) 38%,
+    rgba(5, 23, 47, 0.7) 68%,
+    rgba(5, 23, 47, 0.9) 100%
+  );
+  pointer-events: none;
 }
 
 @media (min-width: 82rem) {
@@ -418,9 +468,19 @@ img {
   }
 }
 
+.hero__marks > div {
+  position: relative;
+  z-index: 1;
+}
+
+.hero__marks .mark {
+  color: var(--paper);
+}
+
 .hero__marks .rule {
   margin: 0.9rem 0 0;
   width: 2.5rem;
+  background: var(--gold-light);
 }
 
 .mark span {
