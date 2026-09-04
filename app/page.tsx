@@ -3,6 +3,7 @@ import Image from "next/image";
 import Header from "./Header";
 import PricingTicker from "./PricingTicker";
 import SiteMotion from "./SiteMotion";
+import pricingStyles from "./PricingShowcase.module.css";
 
 import heroPhoto from "./hero.png";
 
@@ -174,20 +175,23 @@ export default function Home() {
       <PricingTicker />
 
       <main>
-        <section className="section section--cream" id="pricing">
-          <div className="shell">
-            <div className="head-split">
-              <h2>What it costs</h2>
-              <p className="head-split__intro">
+        <section className={`section ${pricingStyles.pricing}`} id="pricing">
+          <div className={`shell ${pricingStyles.inner}`}>
+            <div className={pricingStyles.header}>
+              <div className={pricingStyles.titleBlock}>
+                <span className={pricingStyles.eyebrow}>Pricing</span>
+                <h2>What it costs</h2>
+              </div>
+              <p className={pricingStyles.intro}>
                 Floors, not fixed prices. Every site includes up to five rounds
                 of revisions before launch. After that, changes are priced per
                 request — if your business changes, I&rsquo;ll change the site.
               </p>
             </div>
 
-            <ul className="tiers">
+            <ul className={`tiers ${pricingStyles.cards}`}>
               {tiers.map((tier, i) => (
-                <li className="tier" key={tier.name}>
+                <li className={`tier ${pricingStyles.card}`} key={tier.name}>
                   <h3 className="tier__name">{tier.name}</h3>
                   <p className="tier__price">
                     From <strong>${tier.price}</strong>
@@ -197,13 +201,23 @@ export default function Home() {
                       <li key={item}>{item}</li>
                     ))}
                   </ul>
-                  <span className="tier__rule" aria-hidden="true" />
                   <span className="tier__num" aria-hidden="true">
                     0{i + 1}
                   </span>
+                  <a className={pricingStyles.cardCta} href="#contact">
+                    <span>Start your project</span>
+                    <span className={pricingStyles.cardCtaIcon}>
+                      <Arrow />
+                    </span>
+                  </a>
                 </li>
               ))}
             </ul>
+
+            <div className={pricingStyles.brandLine} aria-hidden="true">
+              <span>Built around you</span>
+              <span>KS / Digital</span>
+            </div>
           </div>
         </section>
 
