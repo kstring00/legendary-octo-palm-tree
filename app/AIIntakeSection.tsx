@@ -341,7 +341,10 @@ export default function AIIntakeSection() {
           </p>
         </div>
 
-        <div className={styles.visualCol}>
+        <div
+          className={styles.visualCol}
+          style={{ gridTemplateColumns: "minmax(0, 28rem)", justifyContent: "end" }}
+        >
           <div className={styles.chatCard} id="ai-intake-chat">
             <div className={styles.chatHeader}>
               <div className={styles.chatIdentity}>
@@ -430,11 +433,6 @@ export default function AIIntakeSection() {
             <p className={styles.chatSecurity}>
               Passwords and verification codes are never requested in this chat.
             </p>
-          </div>
-
-          <div className={styles.sideAccent} aria-hidden="true">
-            <div className={styles.accentGrid} />
-            <p>Simple inputs mean a smoother build</p>
           </div>
 
           <p className={styles.handNote} aria-hidden="true">
