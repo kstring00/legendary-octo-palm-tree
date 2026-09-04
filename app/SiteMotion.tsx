@@ -146,9 +146,8 @@ export default function SiteMotion() {
         });
       }
 
-      // 3) PROCESS — the left side resolves in sequence while the visual panel
-      // moves at a slower rate. That keeps the section feeling like progress,
-      // not like four cards appearing at once.
+      // 3) PROCESS — reveal only by position and opacity. Interactive timeline
+      // state changes never use scale, bounce, or spring motion.
       const timeline = document.querySelector<HTMLElement>("#timeline");
       if (timeline) {
         const heading = timeline.querySelector(".timeline-heading");
@@ -203,11 +202,10 @@ export default function SiteMotion() {
           processTl.from(
             orbs,
             {
-              scale: 0.45,
+              y: 18,
               autoAlpha: 0,
               duration: 0.68,
               stagger: 0.12,
-              transformOrigin: "50% 50%",
             },
             "-=0.72",
           );
@@ -216,10 +214,9 @@ export default function SiteMotion() {
         if (visual) {
           gsap.fromTo(
             visual,
-            { xPercent: 3.5, scale: 1.018 },
+            { xPercent: 3.5 },
             {
               xPercent: 0,
-              scale: 1,
               ease: "none",
               scrollTrigger: {
                 trigger: timeline,
