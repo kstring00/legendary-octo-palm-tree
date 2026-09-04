@@ -264,7 +264,9 @@ export default function SiteMotion() {
         mask-composite: exclude;
       }
 
-      .tier > * {
+      .tier > h3,
+      .tier > p,
+      .tier > ul {
         position: relative;
         z-index: 1;
       }
