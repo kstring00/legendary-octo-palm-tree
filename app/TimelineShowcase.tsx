@@ -1,13 +1,3 @@
-"use client";
-
-import {
-  useRef,
-  useState,
-  type CSSProperties,
-  type KeyboardEvent,
-  type MutableRefObject,
-} from "react";
-
 import styles from "./TimelineShowcase.module.css";
 
 const steps = [
@@ -56,8 +46,6 @@ const steps = [
     revisions: "No revision round. Launch follows final approval.",
   },
 ] as const;
-
-const LINE_PROGRESS = ["8%", "38%", "64%", "91%"] as const;
 
 function PhaseIcon({ index }: { index: number }) {
   const common = {
@@ -113,41 +101,8 @@ function PhaseIcon({ index }: { index: number }) {
 }
 
 export default function TimelineShowcase() {
-  const [activeIndex, setActiveIndex] = useState<number | null>(0);
-  const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const milestoneRefs = useRef<Array<HTMLButtonElement | null>>([]);
-
-  const togglePhase = (index: number) => {
-    setActiveIndex((current) => (current === index ? null : index));
-  };
-
-  const handleArrowNavigation = (
-    event: KeyboardEvent<HTMLButtonElement>,
-    index: number,
-    refs: MutableRefObject<Array<HTMLButtonElement | null>>,
-  ) => {
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-
-    event.preventDefault();
-    const direction = event.key === "ArrowRight" ? 1 : -1;
-    const next = (index + direction + steps.length) % steps.length;
-    setActiveIndex(next);
-    refs.current[next]?.focus();
-  };
-
-  const lineProgress =
-    activeIndex === null ? "0%" : LINE_PROGRESS[activeIndex] ?? "0%";
-
   return (
-    <section
-      className={styles.timeline}
-      id="timeline"
-      style={
-        { "--line-progress": lineProgress } as CSSProperties & {
-          "--line-progress": string;
-        }
-      }
-    >
+    <section className={styles.timeline} id="timeline">
       <div className={styles.copyPanel}>
         <div className={styles.copyInner}>
           <div className={styles.kickerRow}>
@@ -156,7 +111,7 @@ export default function TimelineShowcase() {
             <span>The process</span>
           </div>
 
-          <h2 className="timeline-heading">
+          <h2>
             A clear timeline.
             <br />
             A defined <em>finish.</em>
@@ -164,7 +119,7 @@ export default function TimelineShowcase() {
 
           <p className={styles.subhead}>Four phases. Bounded scope. Real progress.</p>
 
-          <p className={`${styles.bodyCopy} timeline-copy`}>
+          <p className={styles.bodyCopy}>
             Your website moves through four focused phases with a set number of
             revision rounds, so you always know what comes next and what closes
             the project. My working time stays consistent. Your feedback,
@@ -173,69 +128,41 @@ export default function TimelineShowcase() {
           </p>
 
           <div className={styles.steps}>
-            {steps.map((step, index) => {
-              const isActive = activeIndex === index;
-              const detailId = `timeline-detail-${index + 1}`;
+            {steps.map((step, index) => (
+              <article className={styles.step} key={step.number}>
+                <div className={styles.stepHead}>
+                  <span className={styles.stepNumber}>{step.number}</span>
+                  <h3>{step.title}</h3>
+                  <p className={styles.days}>{step.days}</p>
+                </div>
 
-              return (
-                <article className={`${styles.step} timeline-step`} key={step.number}>
-                  <button
-                    ref={(node) => {
-                      cardRefs.current[index] = node;
-                    }}
-                    type="button"
-                    className={styles.stepToggle}
-                    aria-label={`${isActive ? "Collapse" : "Expand"} ${step.title} details`}
-                    aria-expanded={isActive}
-                    aria-controls={detailId}
-                    onClick={() => togglePhase(index)}
-                    onKeyDown={(event) =>
-                      handleArrowNavigation(event, index, cardRefs)
-                    }
-                  />
+                <div className={styles.phaseIconWrap} aria-hidden="true">
+                  <PhaseIcon index={index} />
+                </div>
 
-                  <div className={styles.stepHead}>
-                    <span className={styles.stepNumber}>{step.number}</span>
-                    <h3>{step.title}</h3>
-                    <p className={styles.days}>{step.days}</p>
-                  </div>
+                <p className={styles.phaseSummary}>{step.copy}</p>
+                <span className={styles.stepRule} aria-hidden="true" />
 
-                  <div className={styles.phaseIconWrap} aria-hidden="true">
-                    <PhaseIcon index={index} />
-                  </div>
-
-                  <p>{step.copy}</p>
-                  <span className={styles.stepRule} aria-hidden="true" />
-
-                  <div
-                    id={detailId}
-                    className={`${styles.detail} ${
-                      isActive ? styles.detailOpen : ""
-                    }`}
-                    aria-hidden={!isActive}
-                  >
-                    <div className={styles.detailInner}>
-                      <p>
-                        <strong>What I do</strong>
-                        <span>{step.doText}</span>
-                      </p>
-                      <p>
-                        <strong>What you do</strong>
-                        <span>{step.youText}</span>
-                      </p>
-                      <p>
-                        <strong>Revisions</strong>
-                        <span>{step.revisions}</span>
-                      </p>
-                      <p>
-                        <strong>Working days</strong>
-                        <span>{step.days}</span>
-                      </p>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
+                <div className={styles.detail}>
+                  <p>
+                    <strong>What I do</strong>
+                    <span>{step.doText}</span>
+                  </p>
+                  <p>
+                    <strong>What you do</strong>
+                    <span>{step.youText}</span>
+                  </p>
+                  <p>
+                    <strong>Revisions</strong>
+                    <span>{step.revisions}</span>
+                  </p>
+                  <p>
+                    <strong>Working days</strong>
+                    <span>{step.days}</span>
+                  </p>
+                </div>
+              </article>
+            ))}
           </div>
 
           <div className={styles.timeBar}>
@@ -249,45 +176,26 @@ export default function TimelineShowcase() {
         </div>
       </div>
 
-      <div
-        className={`${styles.visualPanel} timeline-visual`}
-        aria-label="Four phase website timeline"
-      >
+      <div className={styles.visualPanel} aria-label="Four phase website timeline">
         <div className={styles.visualGlow} aria-hidden="true" />
         <div className={styles.arcOne} aria-hidden="true" />
         <div className={styles.arcTwo} aria-hidden="true" />
-        <div className={styles.pathLine} aria-hidden="true">
-          <span className={styles.pathFill} />
-        </div>
+        <div className={styles.pathLine} aria-hidden="true" />
 
         {steps.map((step, index) => {
-          const isActive = activeIndex === index;
           const stopClass = [styles.stop1, styles.stop2, styles.stop3, styles.stop4][index];
 
           return (
-            <button
-              key={step.number}
-              ref={(node) => {
-                milestoneRefs.current[index] = node;
-              }}
-              type="button"
-              className={`${styles.orbStop} ${stopClass} ${
-                isActive ? styles.milestoneActive : ""
-              }`}
-              aria-label={`${isActive ? "Collapse" : "Open"} ${step.title} phase`}
-              aria-expanded={isActive}
-              aria-controls={`timeline-detail-${index + 1}`}
-              onClick={() => togglePhase(index)}
-              onKeyDown={(event) =>
-                handleArrowNavigation(event, index, milestoneRefs)
-              }
-            >
-              <span className={`${styles.orb} timeline-orb`} aria-hidden="true" />
+            <div key={step.number} className={`${styles.orbStop} ${stopClass}`}>
+              <span
+                className={`${styles.orb} ${index === 3 ? styles.orbLaunch : ""}`}
+                aria-hidden="true"
+              />
               <span className={styles.visualLabel}>
                 <span>{step.title}</span>
                 <small>{step.days}</small>
               </span>
-            </button>
+            </div>
           );
         })}
 
