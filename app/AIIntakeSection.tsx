@@ -1,3 +1,14 @@
+"use client";
+
+import {
+  FormEvent,
+  KeyboardEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+
 import styles from "./AIIntakeSection.module.css";
 
 const intakeItems = [
@@ -18,7 +29,43 @@ const intakeItems = [
   },
 ] as const;
 
-const steps = ["Business", "Goals", "Pages", "Assets", "Launch"] as const;
+const steps = [
+  { key: "business", label: "Business" },
+  { key: "goals", label: "Goals" },
+  { key: "pages", label: "Pages" },
+  { key: "assets", label: "Assets" },
+  { key: "launch", label: "Launch" },
+] as const;
+
+type ChatMessage = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  created_at: string;
+  was_redacted?: boolean;
+};
+
+type ProgressState = {
+  completionPercent: number;
+  currentStep: string | null;
+  status: "started" | "in_progress" | "completed" | "contacted" | "archived";
+};
+
+type MessagePayload = {
+  userMessage?: ChatMessage;
+  assistantMessage?: ChatMessage | null;
+  progress?: ProgressState | null;
+  error?: string;
+  code?: string;
+};
+
+const welcomeMessage: ChatMessage = {
+  id: "welcome",
+  role: "assistant",
+  content:
+    "Hi. I’ll keep this simple and ask one thing at a time. Tell me a little about your business and what you want the website to help you accomplish.",
+  created_at: "",
+};
 
 function IntakeIcon({ type }: { type: (typeof intakeItems)[number]["icon"] }) {
   const common = {
@@ -60,7 +107,165 @@ function IntakeIcon({ type }: { type: (typeof intakeItems)[number]["icon"] }) {
   );
 }
 
+function formatTime(value: string) {
+  if (!value) return "";
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
 export default function AIIntakeSection() {
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [progress, setProgress] = useState<ProgressState>({
+    completionPercent: 0,
+    currentStep: "business",
+    status: "started",
+  });
+  const [draft, setDraft] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+  const [chatError, setChatError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  const isComplete = progress.status === "completed";
+  const activeStepIndex = useMemo(() => {
+    if (progress.currentStep === "complete" || isComplete) return steps.length;
+    const index = steps.findIndex((step) => step.key === progress.currentStep);
+    return index >= 0 ? index : 0;
+  }, [isComplete, progress.currentStep]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadConversation() {
+      try {
+        const response = await fetch("/api/intake/message", {
+          method: "GET",
+          cache: "no-store",
+        });
+        const payload = (await response.json()) as {
+          messages?: ChatMessage[];
+          progress?: ProgressState | null;
+        };
+
+        if (cancelled) return;
+        if (Array.isArray(payload.messages)) setMessages(payload.messages);
+        if (payload.progress) setProgress(payload.progress);
+      } catch {
+        if (!cancelled) {
+          setChatError("I could not restore an earlier conversation. You can still start a new one below.");
+        }
+      } finally {
+        if (!cancelled) setIsLoadingHistory(false);
+      }
+    }
+
+    void loadConversation();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const body = bodyRef.current;
+    if (!body) return;
+    body.scrollTo({ top: body.scrollHeight, behavior: "smooth" });
+  }, [messages, isSending]);
+
+  async function ensureSession() {
+    const response = await fetch("/api/intake/session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    });
+
+    if (!response.ok) {
+      const payload = (await response.json().catch(() => ({}))) as { error?: string };
+      throw new Error(payload.error || "The intake could not be started right now.");
+    }
+  }
+
+  async function sendMessage() {
+    const message = draft.trim();
+    if (!message || isSending || isComplete) return;
+
+    setChatError(null);
+    setIsSending(true);
+    setDraft("");
+
+    const optimisticId = `pending-${Date.now()}`;
+    const optimisticMessage: ChatMessage = {
+      id: optimisticId,
+      role: "user",
+      content: message,
+      created_at: new Date().toISOString(),
+    };
+    setMessages((current) => [...current, optimisticMessage]);
+
+    try {
+      await ensureSession();
+
+      const response = await fetch("/api/intake/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+
+      const payload = (await response.json().catch(() => ({}))) as MessagePayload;
+
+      setMessages((current) => {
+        const withoutOptimistic = current.filter((item) => item.id !== optimisticId);
+        const next = [...withoutOptimistic];
+
+        if (payload.userMessage) next.push(payload.userMessage);
+        else next.push(optimisticMessage);
+
+        if (payload.assistantMessage) next.push(payload.assistantMessage);
+        return next;
+      });
+
+      if (payload.progress) setProgress(payload.progress);
+
+      if (!response.ok || payload.error) {
+        setChatError(payload.error || "That answer was saved, but the conversation could not continue. Please try again.");
+      }
+    } catch (error) {
+      setChatError(
+        error instanceof Error
+          ? error.message
+          : "The conversation could not continue right now. Please try again.",
+      );
+    } finally {
+      setIsSending(false);
+      window.setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void sendMessage();
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      void sendMessage();
+    }
+  }
+
+  function focusChat() {
+    window.setTimeout(() => inputRef.current?.focus(), 250);
+  }
+
+  const visibleMessages = [welcomeMessage, ...messages];
+  const statusLabel = isComplete ? "Complete" : isSending ? "Thinking" : "Ready";
+
   return (
     <section className={styles.section} id="contact">
       <div className={styles.inner}>
@@ -78,21 +283,31 @@ export default function AIIntakeSection() {
             organizes what I need into a clear project brief.
           </p>
 
-          <div className={styles.progressWrap} aria-label="Project intake progress">
+          <div className={styles.progressWrap} aria-label={`Project intake ${progress.completionPercent}% complete`}>
             <div className={styles.progressLine} aria-hidden="true" />
-            <div className={styles.progressFill} aria-hidden="true" />
+            <div
+              className={styles.progressFill}
+              aria-hidden="true"
+              style={{ transform: `scaleX(${progress.completionPercent / 100})` }}
+            />
             <div className={styles.steps}>
-              {steps.map((step, index) => (
-                <div className={styles.step} key={step}>
-                  <span
-                    className={`${styles.dot} ${index === 0 ? styles.dotActive : ""}`}
-                    aria-hidden="true"
-                  />
-                  <span className={styles.stepNumber}>{index + 1}</span>
-                  <span className={styles.stepLabel}>{step}</span>
-                </div>
-              ))}
+              {steps.map((step, index) => {
+                const completed = isComplete || index < activeStepIndex;
+                const active = !isComplete && index === activeStepIndex;
+
+                return (
+                  <div className={styles.step} key={step.key}>
+                    <span
+                      className={`${styles.dot} ${active ? styles.dotActive : ""} ${completed ? styles.dotComplete : ""}`}
+                      aria-hidden="true"
+                    />
+                    <span className={styles.stepNumber}>{index + 1}</span>
+                    <span className={styles.stepLabel}>{step.label}</span>
+                  </div>
+                );
+              })}
             </div>
+            <span className={styles.progressPercent}>{progress.completionPercent}% complete</span>
           </div>
 
           <p className={styles.collectLabel}>A few things we will cover</p>
@@ -116,8 +331,8 @@ export default function AIIntakeSection() {
             together, account access is shared securely after kickoff.
           </p>
 
-          <a className={styles.cta} href="#ai-intake-chat">
-            <span>Start the Conversation</span>
+          <a className={styles.cta} href="#ai-intake-chat" onClick={focusChat}>
+            <span>{messages.length > 0 ? "Continue the Conversation" : "Start the Conversation"}</span>
             <span className={styles.ctaArrow} aria-hidden="true">→</span>
           </a>
           <p className={styles.ctaNote}>Plan on about 10 minutes</p>
@@ -136,83 +351,82 @@ export default function AIIntakeSection() {
                   <p>Ask · Collect · Organize</p>
                 </div>
               </div>
-              <span className={styles.online}>
-                <span aria-hidden="true" /> Online
+              <span className={`${styles.online} ${isComplete ? styles.onlineComplete : ""}`}>
+                <span aria-hidden="true" /> {statusLabel}
               </span>
             </div>
 
-            <div className={styles.chatBody}>
-              <div className={styles.messageRow}>
-                <span className={styles.messageAvatar}>AI</span>
-                <div className={styles.messageGroup}>
-                  <div className={styles.messageAi}>
-                    Hi there. I’ll ask a few focused questions so Kyle can
-                    understand your project. First, what does your business do?
+            <div
+              className={styles.chatBody}
+              ref={bodyRef}
+              role="log"
+              aria-live="polite"
+              aria-busy={isSending || isLoadingHistory}
+            >
+              {isLoadingHistory ? (
+                <div className={styles.loadingHistory}>Loading your conversation…</div>
+              ) : (
+                visibleMessages.map((message) => (
+                  <div
+                    className={`${styles.messageRow} ${message.role === "user" ? styles.messageRowUser : ""}`}
+                    key={message.id}
+                  >
+                    {message.role === "assistant" && <span className={styles.messageAvatar}>AI</span>}
+                    <div className={styles.messageGroup}>
+                      <div className={message.role === "assistant" ? styles.messageAi : styles.messageUser}>
+                        {message.content}
+                      </div>
+                      {message.created_at && (
+                        <span className={`${styles.time} ${message.role === "user" ? styles.timeUser : ""}`}>
+                          {formatTime(message.created_at)}
+                        </span>
+                      )}
+                    </div>
+                    {message.role === "user" && <span className={styles.youBadge}>You</span>}
                   </div>
-                  <span className={styles.time}>10:01 AM</span>
-                </div>
-              </div>
+                ))
+              )}
 
-              <div className={`${styles.messageRow} ${styles.messageRowUser}`}>
-                <div className={styles.messageGroup}>
-                  <div className={styles.messageUser}>
-                    We’re a therapy practice helping adults through anxiety,
-                    grief, and life transitions.
-                  </div>
-                  <span className={`${styles.time} ${styles.timeUser}`}>10:02 AM</span>
+              {isSending && (
+                <div className={styles.typingRow} aria-label="AI consultant is thinking">
+                  <span className={styles.messageAvatar}>AI</span>
+                  <span className={styles.typingBubble}>
+                    <i />
+                    <i />
+                    <i />
+                  </span>
                 </div>
-                <span className={styles.ksBadge}>KS</span>
-              </div>
+              )}
 
-              <div className={styles.messageRow}>
-                <span className={styles.messageAvatar}>AI</span>
-                <div className={styles.messageGroup}>
-                  <div className={styles.messageAi}>
-                    What would a successful website make easier for your
-                    practice or your clients?
-                  </div>
-                  <span className={styles.time}>10:02 AM</span>
+              {chatError && (
+                <div className={styles.chatError} role="status">
+                  {chatError}
                 </div>
-              </div>
-
-              <div className={`${styles.messageRow} ${styles.messageRowUser}`}>
-                <div className={styles.messageGroup}>
-                  <div className={styles.messageUser}>
-                    I want people to understand our services quickly and make it
-                    easier to request a consultation.
-                  </div>
-                  <span className={`${styles.time} ${styles.timeUser}`}>10:03 AM</span>
-                </div>
-                <span className={styles.ksBadge}>KS</span>
-              </div>
-
-              <div className={styles.messageRow}>
-                <span className={styles.messageAvatar}>AI</span>
-                <div className={styles.messageGroup}>
-                  <div className={styles.messageAi}>
-                    Great. Do you already have a domain or hosting provider? Just
-                    tell me the name or provider. Please do not send passwords,
-                    login codes, or other credentials here.
-                  </div>
-                  <span className={styles.time}>10:03 AM</span>
-                </div>
-              </div>
-
-              <div className={styles.typingRow} aria-label="AI consultant is typing">
-                <span className={styles.messageAvatar}>AI</span>
-                <span className={styles.typingBubble}>
-                  <i />
-                  <i />
-                  <i />
-                </span>
-              </div>
+              )}
             </div>
 
-            <div className={styles.chatInputBar}>
-              <span className={styles.attachment} aria-hidden="true">⌁</span>
-              <span className={styles.inputFake}>Type your message...</span>
-              <span className={styles.sendButton} aria-hidden="true">↑</span>
-            </div>
+            <form className={styles.chatInputBar} onSubmit={handleSubmit}>
+              <textarea
+                ref={inputRef}
+                className={styles.chatInput}
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={isComplete ? "Intake complete" : "Type your message…"}
+                rows={1}
+                maxLength={4000}
+                disabled={isSending || isComplete}
+                aria-label="Message the AI project intake consultant"
+              />
+              <button
+                className={styles.sendButton}
+                type="submit"
+                disabled={isSending || isComplete || !draft.trim()}
+                aria-label="Send message"
+              >
+                {isSending ? <span className={styles.sendSpinner} aria-hidden="true" /> : "↑"}
+              </button>
+            </form>
             <p className={styles.chatSecurity}>
               Passwords and verification codes are never requested in this chat.
             </p>
