@@ -6,7 +6,7 @@ const tickerItems = [
   "Larger site from $1,200",
   "Custom builds",
   "Mobile ready",
-  "Up to five revision rounds",
+  "Up to three revision rounds",
 ];
 
 function TickerGroup({ hidden = false }: { hidden?: boolean }) {
