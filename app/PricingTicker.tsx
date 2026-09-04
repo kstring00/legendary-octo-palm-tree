@@ -1,3 +1,5 @@
+import styles from "./PricingTicker.module.css";
+
 const tickerItems = [
   "One page from $500",
   "Small site from $800",
@@ -9,10 +11,10 @@ const tickerItems = [
 
 function TickerGroup({ hidden = false }: { hidden?: boolean }) {
   return (
-    <div className="pricingTicker__group" aria-hidden={hidden || undefined}>
+    <div className={styles.group} aria-hidden={hidden || undefined}>
       {tickerItems.map((item) => (
-        <span className="pricingTicker__item" key={item}>
-          <span className="pricingTicker__spark" aria-hidden="true" />
+        <span className={styles.item} key={item}>
+          <span className={styles.spark} aria-hidden="true" />
           {item}
         </span>
       ))}
@@ -22,15 +24,15 @@ function TickerGroup({ hidden = false }: { hidden?: boolean }) {
 
 export default function PricingTicker() {
   return (
-    <section className="pricingTicker" aria-label="Website pricing highlights">
-      <div className="pricingTicker__edge pricingTicker__edge--left" aria-hidden="true" />
-      <div className="pricingTicker__viewport">
-        <div className="pricingTicker__track">
+    <section className={styles.ticker} aria-label="Website pricing highlights">
+      <div className={`${styles.edge} ${styles.edgeLeft}`} aria-hidden="true" />
+      <div className={styles.viewport}>
+        <div className={styles.track}>
           <TickerGroup />
           <TickerGroup hidden />
         </div>
       </div>
-      <div className="pricingTicker__edge pricingTicker__edge--right" aria-hidden="true" />
+      <div className={`${styles.edge} ${styles.edgeRight}`} aria-hidden="true" />
     </section>
   );
 }
