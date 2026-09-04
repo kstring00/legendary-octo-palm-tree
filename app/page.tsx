@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import Header from "./Header";
+import PricingTicker from "./PricingTicker";
 
 import heroPhoto from "./hero.png";
 
@@ -126,7 +127,6 @@ export default function Home() {
         </div>
         <div className="hero__scrim" aria-hidden="true" />
 
-
         <div className="hero__inner shell">
           <div className="hero__copy">
             <h1>
@@ -169,6 +169,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <PricingTicker />
 
       <main>
         <section className="section section--cream" id="pricing">
