@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import AIIntakeSection from "./AIIntakeSection";
+import BottomCapture from "./BottomCapture";
 import Header from "./Header";
 import PricingTicker from "./PricingTicker";
 import SiteMotion from "./SiteMotion";
@@ -134,9 +135,9 @@ export default function Home() {
                 <h2>What it costs</h2>
               </div>
               <p className={pricingStyles.intro}>
-                Floors, not fixed prices. Every site includes up to five rounds
-                of revisions before launch. After that, changes are priced per
-                request — if your business changes, I&rsquo;ll change the site.
+                Floors, not fixed prices. Revision rounds are defined in your
+                project scope before work begins. After that, changes are priced
+                per request — if your business changes, I&rsquo;ll change the site.
               </p>
             </div>
 
@@ -174,6 +175,7 @@ export default function Home() {
 
         <TimelineShowcase />
         <AIIntakeSection />
+        <BottomCapture />
       </main>
 
       <SiteMotion />
