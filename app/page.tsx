@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import AIIntakeSection from "./AIIntakeSection";
 import Header from "./Header";
 import PricingTicker from "./PricingTicker";
 import SiteMotion from "./SiteMotion";
@@ -7,15 +8,6 @@ import TimelineShowcase from "./TimelineShowcase";
 import pricingStyles from "./PricingShowcase.module.css";
 
 import heroPhoto from "./hero.png";
-
-// TODO: replace with the real address before this goes to a custom domain.
-const CONTACT_EMAIL = "you@example.com";
-
-// Drop your own photographs into /public and name them here. Until then each
-// slot renders a tinted panel — nothing is committed that you don't own.
-const PHOTOS: Record<"aside", string | null> = {
-  aside: null, // e.g. "/aside.jpg"
-};
 
 const tiers = [
   {
@@ -50,27 +42,10 @@ const tiers = [
   },
 ];
 
-const needs = [
-  ["Your words", "what each page should say"],
-  ["Your logo", "the best-quality file you have"],
-  ["Photos", "ones you own or have the rights to use"],
-  ["Your domain login", null],
-  ["Your hosting login", "if it's separate"],
-];
-
 function Arrow() {
   return (
     <svg width="18" height="10" viewBox="0 0 18 10" fill="none" aria-hidden="true">
       <path d="M0 5h16M12 1l4 4-4 4" stroke="currentColor" strokeWidth="1.2" />
-    </svg>
-  );
-}
-
-function MailIcon() {
-  return (
-    <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
-      <rect x="0.6" y="0.6" width="16.8" height="12.8" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M1 1.5l8 6 8-6" stroke="currentColor" strokeWidth="1.2" />
     </svg>
   );
 }
@@ -83,30 +58,6 @@ function Mark({ text, light }: { text: string; light?: boolean }) {
         <span key={word}>{word}</span>
       ))}
     </p>
-  );
-}
-
-function Figure({
-  src,
-  alt,
-  className,
-  mark,
-}: {
-  src: string | null;
-  alt: string;
-  className?: string;
-  mark?: string;
-}) {
-  return (
-    <div className={className ? `figure ${className}` : "figure"}>
-      {src ? <img src={src} alt={alt} /> : null}
-      {mark ? (
-        <div className="figure__marks">
-          <Mark text={mark} light />
-          <hr className="rule" />
-        </div>
-      ) : null}
-    </div>
   );
 }
 
@@ -222,76 +173,7 @@ export default function Home() {
         </section>
 
         <TimelineShowcase />
-
-        <section className="section section--cream" id="needs">
-          <div className="shell">
-            <div className="head-split">
-              <h2>What I need from you</h2>
-            </div>
-
-            <div className="needs-grid">
-              <ul className="needs">
-                {needs.map(([label, detail], i) => (
-                  <li key={label}>
-                    <span className="needs__num" aria-hidden="true">
-                      0{i + 1}
-                    </span>
-                    <span>
-                      <span className="needs__label">{label}</span>
-                      {detail ? (
-                        <span className="muted"> — {detail}</span>
-                      ) : null}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="aside">
-                <p>
-                  Don&rsquo;t worry if you don&rsquo;t have all of this yet. Tell
-                  me where you&rsquo;re at and we&rsquo;ll work it out.
-                </p>
-                <div className="aside__media">
-                  <Figure src={PHOTOS.aside} alt="" className="aside__figure" />
-                  <div className="aside__mark">
-                    <Mark text="Simple inputs mean a smoother build" />
-                    <hr className="rule" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section section--light" id="contact">
-          <div className="shell">
-            <div className="contact-grid">
-              <div>
-                <h2>Tell me what you need</h2>
-                <p className="contact__body">
-                  Tell me roughly what you need and I&rsquo;ll get back to you
-                  within two working days. We can talk through the details after
-                  — I&rsquo;d rather have a conversation than make you fill out a
-                  questionnaire.
-                </p>
-                <p className="contact__like">I like doing this.</p>
-              </div>
-
-              <div className="contact__actions">
-                <a className="btn" href={`mailto:${CONTACT_EMAIL}`}>
-                  Start the Conversation <Arrow />
-                </a>
-                <a
-                  className="contact__mail link"
-                  href={`mailto:${CONTACT_EMAIL}`}
-                >
-                  <MailIcon />
-                  {CONTACT_EMAIL}
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
+        <AIIntakeSection />
       </main>
 
       <SiteMotion />
