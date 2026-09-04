@@ -57,7 +57,7 @@ const steps = [
   },
 ] as const;
 
-const LINE_PROGRESS = [0.08, 0.38, 0.64, 0.91] as const;
+const LINE_PROGRESS = ["8%", "38%", "64%", "91%"] as const;
 
 function PhaseIcon({ index }: { index: number }) {
   const common = {
@@ -136,7 +136,7 @@ export default function TimelineShowcase() {
   };
 
   const lineProgress =
-    activeIndex === null ? 0 : LINE_PROGRESS[activeIndex] ?? 0;
+    activeIndex === null ? "0%" : LINE_PROGRESS[activeIndex] ?? "0%";
 
   return (
     <section
@@ -144,7 +144,7 @@ export default function TimelineShowcase() {
       id="timeline"
       style={
         { "--line-progress": lineProgress } as CSSProperties & {
-          "--line-progress": number;
+          "--line-progress": string;
         }
       }
     >
