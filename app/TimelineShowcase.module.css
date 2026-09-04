@@ -329,7 +329,7 @@
 
 .pathFill {
   display: block;
-  width: calc(var(--line-progress) * 100%);
+  width: var(--line-progress);
   height: 100%;
   background: linear-gradient(90deg, #d8b671 20%, #ffe6ad 63%, #d5a75a 100%);
   transition: width 400ms ease-in-out;
