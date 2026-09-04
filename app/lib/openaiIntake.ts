@@ -1,54 +1,13 @@
-type IntakeSnapshot = {
-  name: string | null;
-  business_name: string | null;
-  email: string | null;
-  phone: string | null;
-  business_description: string | null;
-  current_website: string | null;
-  website_goals: string | null;
-  success_definition: string | null;
-  friction_points: string[];
-  pages_needed: string[];
-  integrations: string[];
-  color_preferences: string[];
-  inspiration_notes: string | null;
-  desired_domain: string | null;
-  current_domain: string | null;
-  hosting_provider: string | null;
-  budget_range: string | null;
-  desired_timeline: string | null;
-  additional_notes: string | null;
-};
+import type { IntakeField, IntakeData, IntakePatch } from "./intakeProgress";
 
 type SafeTranscriptMessage = {
   role: "user" | "assistant";
   content: string;
 };
 
-type IntakePatch = {
-  name: string | null;
-  business_name: string | null;
-  email: string | null;
-  phone: string | null;
-  business_description: string | null;
-  current_website: string | null;
-  website_goals: string | null;
-  success_definition: string | null;
-  friction_points: string[] | null;
-  pages_needed: string[] | null;
-  integrations: string[] | null;
-  color_preferences: string[] | null;
-  inspiration_notes: string | null;
-  desired_domain: string | null;
-  current_domain: string | null;
-  hosting_provider: string | null;
-  budget_range: string | null;
-  desired_timeline: string | null;
-  additional_notes: string | null;
-};
-
 export type IntakeModelTurn = {
   reply: string;
+  answered_fields: IntakeField[];
   intake: IntakePatch;
 };
 
@@ -63,10 +22,36 @@ const nullableStringArray = {
   ],
 } as const;
 
+const fieldEnum: IntakeField[] = [
+  "name",
+  "business_name",
+  "email",
+  "phone",
+  "business_description",
+  "current_website",
+  "website_goals",
+  "success_definition",
+  "friction_points",
+  "pages_needed",
+  "integrations",
+  "color_preferences",
+  "inspiration_notes",
+  "desired_domain",
+  "current_domain",
+  "hosting_provider",
+  "budget_range",
+  "desired_timeline",
+  "additional_notes",
+];
+
 const intakeSchema = {
   type: "object",
   properties: {
     reply: { type: "string" },
+    answered_fields: {
+      type: "array",
+      items: { type: "string", enum: fieldEnum },
+    },
     intake: {
       type: "object",
       properties: {
@@ -90,31 +75,11 @@ const intakeSchema = {
         desired_timeline: nullableString,
         additional_notes: nullableString,
       },
-      required: [
-        "name",
-        "business_name",
-        "email",
-        "phone",
-        "business_description",
-        "current_website",
-        "website_goals",
-        "success_definition",
-        "friction_points",
-        "pages_needed",
-        "integrations",
-        "color_preferences",
-        "inspiration_notes",
-        "desired_domain",
-        "current_domain",
-        "hosting_provider",
-        "budget_range",
-        "desired_timeline",
-        "additional_notes",
-      ],
+      required: fieldEnum,
       additionalProperties: false,
     },
   },
-  required: ["reply", "intake"],
+  required: ["reply", "answered_fields", "intake"],
   additionalProperties: false,
 } as const;
 
@@ -128,7 +93,7 @@ VOICE
 - Ask one focused question at a time. You may bundle two tightly related details when that is more natural.
 - Briefly acknowledge useful context before asking the next question.
 - Do not repeat questions that have already been answered.
-- If the visitor does not know an answer, accept that and move on.
+- If the visitor does not know an answer, accept that answer and move on.
 - Never invent answers or infer specific facts that the visitor did not provide.
 
 CONTACT EARLY
@@ -165,8 +130,12 @@ SCOPE
 - Do not ask them to upload credentials.
 - You may explain that Kyle will personally follow up after the intake.
 
-OUTPUT
-Return the visitor-facing reply plus only the structured fields that were newly learned or corrected in this turn. Use null for fields that did not change. For a list that was explicitly answered as none, return an empty array. Keep the visitor-facing reply generally under 80 words.`;
+STRUCTURED EXTRACTION
+- intake contains only values newly learned or corrected in the visitor's latest answer. Use null for fields that did not change.
+- If the visitor explicitly says they have none, do not want any, do not know, or prefer not to provide something, include that field in answered_fields even if the structured value is an empty array or no useful scalar can be extracted.
+- answered_fields must include every field the visitor actually answered or explicitly declined in the latest turn. Do not include fields merely discussed by you.
+- For a list explicitly answered as none, return an empty array.
+- Keep the visitor-facing reply generally under 80 words.`;
 
 type RawOpenAIResponse = {
   output_text?: string;
@@ -202,7 +171,8 @@ function extractOutputText(response: RawOpenAIResponse) {
 
 export async function runIntakeInterview(args: {
   intakeId: string;
-  intake: IntakeSnapshot;
+  intake: IntakeData;
+  answeredFields: string[];
   transcript: SafeTranscriptMessage[];
 }): Promise<IntakeModelTurn> {
   const apiKey = getApiKey();
@@ -221,9 +191,10 @@ export async function runIntakeInterview(args: {
       instructions: INSTRUCTIONS,
       input: JSON.stringify({
         current_intake: args.intake,
+        already_answered_fields: args.answeredFields,
         safe_transcript: args.transcript.slice(-18),
         instruction:
-          "Continue the discovery conversation from the safe transcript. Extract only information actually supplied by the visitor, then ask the single best next question.",
+          "Continue the discovery conversation from the safe transcript. Extract only information actually supplied by the visitor, then ask the single best next question. Prioritize missing required discovery targets and do not re-ask answered fields.",
       }),
       reasoning: { effort: "low" },
       max_output_tokens: 1200,
