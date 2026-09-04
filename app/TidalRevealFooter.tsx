@@ -31,21 +31,16 @@ export default function TidalRevealFooter() {
 
       const documentHeight = document.documentElement.scrollHeight;
       const availableScroll = documentHeight - window.innerHeight;
-
-      // The non-sticky reveal zone gives us a stable document position even
-      // while the footer itself is sticking to the bottom of the viewport.
       const footerTop = zone.getBoundingClientRect().top + window.scrollY;
       const footerHeight = zone.offsetHeight;
 
-      // On an unusually short page there is not enough travel to make the
-      // reveal feel intentional. In that case, render the footer settled.
       if (availableScroll < MIN_SCROLL_DISTANCE) {
         footer.style.setProperty("--p", "1");
         return;
       }
 
       // 0 when the reveal zone first touches the viewport bottom,
-      // 1 when one full footer-height of scroll has passed through it.
+      // 1 after one footer-height of travel. Everything visual reads --p.
       const progress = clamp(
         (window.scrollY + window.innerHeight - footerTop) / footerHeight,
       );
@@ -77,9 +72,77 @@ export default function TidalRevealFooter() {
         style={{ "--strength": EFFECT_STRENGTH } as React.CSSProperties}
       >
         <div className="tideRevealFooter__glow" aria-hidden="true" />
+
+        <div className="tideRevealFooter__waves" aria-hidden="true">
+          <div className="tideRevealFooter__waveLift tideRevealFooter__waveLift--back">
+            <div className="tideRevealFooter__waveDrift tideRevealFooter__waveDrift--back">
+              <svg viewBox="0 0 1800 260" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="ks-wave-back" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#425B6F" stopOpacity="0.58" />
+                    <stop offset="100%" stopColor="#0A2237" stopOpacity="0.9" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M-160 116 C80 60 250 154 470 100 C690 46 855 145 1080 92 C1308 38 1488 126 1960 67 L1960 280 L-160 280 Z"
+                  fill="url(#ks-wave-back)"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="tideRevealFooter__waveLift tideRevealFooter__waveLift--front">
+            <div className="tideRevealFooter__waveDrift tideRevealFooter__waveDrift--front">
+              <svg viewBox="0 0 1800 280" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="ks-wave-front" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#29485F" stopOpacity="0.96" />
+                    <stop offset="54%" stopColor="#102D43" stopOpacity="0.96" />
+                    <stop offset="100%" stopColor="#061827" stopOpacity="1" />
+                  </linearGradient>
+                  <linearGradient id="ks-wave-foam" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#A08348" stopOpacity="0" />
+                    <stop offset="16%" stopColor="#C2A072" stopOpacity="0.55" />
+                    <stop offset="46%" stopColor="#F4DDA9" stopOpacity="1" />
+                    <stop offset="72%" stopColor="#D6BB80" stopOpacity="0.82" />
+                    <stop offset="100%" stopColor="#A08348" stopOpacity="0" />
+                  </linearGradient>
+                  <filter id="ks-wave-glow" x="-10%" y="-400%" width="120%" height="900%">
+                    <feGaussianBlur stdDeviation="5" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+                <path
+                  d="M-160 126 C72 84 268 150 480 109 C700 66 886 153 1102 105 C1328 55 1522 140 1960 86 L1960 300 L-160 300 Z"
+                  fill="url(#ks-wave-front)"
+                />
+                <path
+                  d="M-160 126 C72 84 268 150 480 109 C700 66 886 153 1102 105 C1328 55 1522 140 1960 86"
+                  fill="none"
+                  stroke="url(#ks-wave-foam)"
+                  strokeWidth="7"
+                  strokeLinecap="round"
+                  filter="url(#ks-wave-glow)"
+                  className="tideRevealFooter__foamGlow"
+                />
+                <path
+                  d="M-160 126 C72 84 268 150 480 109 C700 66 886 153 1102 105 C1328 55 1522 140 1960 86"
+                  fill="none"
+                  stroke="#F5E3BB"
+                  strokeOpacity="0.76"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
         <div className="tideRevealFooter__orbit tideRevealFooter__orbit--one" aria-hidden="true" />
         <div className="tideRevealFooter__orbit tideRevealFooter__orbit--two" aria-hidden="true" />
-        <div className="tideRevealFooter__waterline" aria-hidden="true" />
         <div className="tideRevealFooter__ghost" aria-hidden="true">KS</div>
 
         <div className="tideRevealFooter__inner">
@@ -152,7 +215,7 @@ export default function TidalRevealFooter() {
 
           .tideRevealFooter__inner {
             position: relative;
-            z-index: 4;
+            z-index: 5;
             width: min(100%, 76rem);
             height: 100%;
             margin: 0 auto;
@@ -165,35 +228,88 @@ export default function TidalRevealFooter() {
             position: absolute;
             z-index: 0;
             left: 50%;
-            bottom: -46%;
+            bottom: -48%;
             width: min(118rem, 140vw);
             height: 96%;
             border-radius: 50% 50% 0 0;
             transform-origin: 50% 100%;
-            transform: translateX(-50%) scaleX(calc(0.9 + (var(--p) * 0.1))) scaleY(calc(0.32 + (var(--p) * 0.68)));
-            opacity: calc(0.12 + (var(--p) * 0.3));
+            transform: translateX(-50%) scaleX(calc(0.9 + (var(--p) * 0.1))) scaleY(calc(0.26 + (var(--p) * 0.74)));
+            opacity: calc(0.1 + (var(--p) * 0.26));
             background:
               radial-gradient(ellipse at 50% 100%,
-                rgba(214, 187, 128, 0.5) 0%,
-                rgba(194, 160, 114, 0.34) 28%,
-                rgba(160, 131, 72, 0.17) 51%,
+                rgba(214, 187, 128, 0.45) 0%,
+                rgba(194, 160, 114, 0.28) 28%,
+                rgba(160, 131, 72, 0.12) 51%,
                 rgba(160, 131, 72, 0) 74%);
             will-change: transform;
           }
 
-          .tideRevealFooter__waterline {
+          .tideRevealFooter__waves {
             position: absolute;
-            z-index: 2;
-            left: 7%;
-            right: 7%;
-            bottom: 24%;
-            height: 1px;
-            transform: translateY(calc(52px - (var(--p) * 52px))) scaleX(calc(0.5 + (var(--p) * 0.5)));
-            transform-origin: center;
-            opacity: calc(0.16 + (var(--p) * 0.68));
-            background: linear-gradient(90deg, transparent, #d6bb80 18%, #fff1c9 50%, #d6bb80 82%, transparent);
-            box-shadow: 0 0 14px rgba(214, 187, 128, 0.35), 0 0 38px rgba(160, 131, 72, 0.18);
+            z-index: 3;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.15) 38%, #000 57%);
+            mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.15) 38%, #000 57%);
+          }
+
+          .tideRevealFooter__waveLift {
+            position: absolute;
+            left: -9%;
+            width: 118%;
+            height: 43%;
+            bottom: -8%;
+            transform-origin: center bottom;
             will-change: transform;
+          }
+
+          .tideRevealFooter__waveLift--back {
+            opacity: calc(0.12 + (var(--p) * 0.56));
+            transform: translate3d(0, calc(155px - (var(--p) * 132px)), 0) scaleY(calc(0.88 + (var(--p) * 0.12)));
+          }
+
+          .tideRevealFooter__waveLift--front {
+            opacity: calc(0.18 + (var(--p) * 0.82));
+            transform: translate3d(0, calc(178px - (var(--p) * 162px)), 0) scaleY(calc(0.82 + (var(--p) * 0.18)));
+          }
+
+          .tideRevealFooter__waveDrift {
+            width: 112%;
+            height: 100%;
+            margin-left: -6%;
+            will-change: transform;
+          }
+
+          .tideRevealFooter__waveDrift svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+          }
+
+          .tideRevealFooter__waveDrift--front {
+            animation: ksTideFront 7.8s ease-in-out infinite alternate;
+          }
+
+          .tideRevealFooter__waveDrift--back {
+            animation: ksTideBack 11.5s ease-in-out infinite alternate;
+          }
+
+          .tideRevealFooter__foamGlow {
+            opacity: calc(0.5 + (var(--p) * 0.5));
+          }
+
+          @keyframes ksTideFront {
+            0% { transform: translate3d(-2.6%, 0, 0) scaleX(1.025); }
+            42% { transform: translate3d(0.7%, -5px, 0) scaleX(1.01); }
+            100% { transform: translate3d(2.2%, 2px, 0) scaleX(1.035); }
+          }
+
+          @keyframes ksTideBack {
+            0% { transform: translate3d(2%, 4px, 0) scaleX(1.02); }
+            50% { transform: translate3d(-0.7%, -4px, 0) scaleX(1.045); }
+            100% { transform: translate3d(-2.3%, 2px, 0) scaleX(1.025); }
           }
 
           .tideRevealFooter__orbit {
@@ -401,6 +517,12 @@ export default function TidalRevealFooter() {
               right: -58vw;
               bottom: -62vw;
             }
+
+            .tideRevealFooter__waveLift {
+              left: -18%;
+              width: 136%;
+              height: 35%;
+            }
           }
 
           @media (prefers-reduced-motion: reduce) {
@@ -408,8 +530,14 @@ export default function TidalRevealFooter() {
               --p: 1 !important;
             }
 
+            .tideRevealFooter__waveDrift--front,
+            .tideRevealFooter__waveDrift--back {
+              animation: none;
+            }
+
             .tideRevealFooter__glow,
-            .tideRevealFooter__waterline,
+            .tideRevealFooter__waveLift,
+            .tideRevealFooter__waveDrift,
             .tideRevealFooter__orbit,
             .tideRevealFooter__ghost,
             .tideRevealFooter__eyebrow,
