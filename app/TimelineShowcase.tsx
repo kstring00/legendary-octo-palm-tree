@@ -5,6 +5,7 @@ import {
   useState,
   type CSSProperties,
   type KeyboardEvent,
+  type MutableRefObject,
 } from "react";
 
 import styles from "./TimelineShowcase.module.css";
@@ -123,7 +124,7 @@ export default function TimelineShowcase() {
   const handleArrowNavigation = (
     event: KeyboardEvent<HTMLButtonElement>,
     index: number,
-    refs: React.MutableRefObject<Array<HTMLButtonElement | null>>,
+    refs: MutableRefObject<Array<HTMLButtonElement | null>>,
   ) => {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
 
@@ -141,7 +142,11 @@ export default function TimelineShowcase() {
     <section
       className={styles.timeline}
       id="timeline"
-      style={{ "--line-progress": lineProgress } as CSSProperties}
+      style={
+        { "--line-progress": lineProgress } as CSSProperties & {
+          "--line-progress": number;
+        }
+      }
     >
       <div className={styles.copyPanel}>
         <div className={styles.copyInner}>
