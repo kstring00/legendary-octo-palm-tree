@@ -3,6 +3,7 @@ import Image from "next/image";
 import Header from "./Header";
 import PricingTicker from "./PricingTicker";
 import SiteMotion from "./SiteMotion";
+import TimelineShowcase from "./TimelineShowcase";
 import pricingStyles from "./PricingShowcase.module.css";
 
 import heroPhoto from "./hero.png";
@@ -12,8 +13,7 @@ const CONTACT_EMAIL = "you@example.com";
 
 // Drop your own photographs into /public and name them here. Until then each
 // slot renders a tinted panel — nothing is committed that you don't own.
-const PHOTOS: Record<"timeline" | "aside", string | null> = {
-  timeline: null, // e.g. "/timeline.jpg"
+const PHOTOS: Record<"aside", string | null> = {
   aside: null, // e.g. "/aside.jpg"
 };
 
@@ -221,25 +221,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="split section--light" id="timeline">
-          <div className="split__copy">
-            <h2>How long it takes</h2>
-            <hr className="rule" />
-            <p className="split__lede">How fast this goes is mostly up to you.</p>
-            <p className="split__body">
-              If you have your text, logo, photos, and logins ready, I can have a
-              site running in about a week. If you don&rsquo;t, that&rsquo;s
-              completely fine — but that&rsquo;s where the time goes. The
-              building isn&rsquo;t the slow part.
-            </p>
-          </div>
-          <Figure
-            src={PHOTOS.timeline}
-            alt=""
-            className="split__figure"
-            mark="Good ideas deserve a great home"
-          />
-        </section>
+        <TimelineShowcase />
 
         <section className="section section--cream" id="needs">
           <div className="shell">
