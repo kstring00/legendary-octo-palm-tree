@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import Header from "./Header";
 import PricingTicker from "./PricingTicker";
+import SiteMotion from "./SiteMotion";
 
 import heroPhoto from "./hero.png";
 
@@ -296,6 +297,8 @@ export default function Home() {
           </div>
         </section>
       </main>
+
+      <SiteMotion />
     </>
   );
 }
