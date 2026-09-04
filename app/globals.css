@@ -1,0 +1,289 @@
+:root {
+  --navy: #182a3a;
+  --navy-deep: #05172f;
+  --slate: #425b6f;
+  --gold: #a08348;
+  --gold-light: #c2a072;
+  --sand: #d6bb80;
+  --smoke: #787c83;
+  --paper: #ffffff;
+  --paper-warm: #faf8f4;
+  /* hairlines, derived from --slate so the palette stays closed */
+  --line: rgba(66, 91, 111, 0.22);
+
+  --measure: 36rem;
+  --gutter: clamp(1.5rem, 6vw, 3rem);
+  --section-y: clamp(4.5rem, 11vw, 9rem);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--navy);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 17px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-cormorant), ui-serif, Georgia, "Times New Roman", serif;
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--navy);
+}
+
+h1 {
+  font-size: clamp(2.75rem, 9vw, 5.25rem);
+}
+
+h2 {
+  font-size: clamp(2.125rem, 6vw, 3.25rem);
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3.5vw, 1.875rem);
+}
+
+p {
+  margin: 0 0 1.35em;
+  max-width: var(--measure);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--navy);
+  text-decoration: none;
+  /* the underline is the only affordance, so it needs 3:1 — gold, not gold-light */
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 1px;
+}
+
+a:hover {
+  border-bottom-color: var(--navy);
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ---------- layout ---------- */
+
+.section {
+  padding: var(--section-y) var(--gutter);
+}
+
+.section--warm {
+  background: var(--paper-warm);
+}
+
+.inner {
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.section__head {
+  margin-bottom: clamp(2rem, 5vw, 3rem);
+}
+
+.rule {
+  width: 3.5rem;
+  height: 1px;
+  border: 0;
+  margin: 0 0 1.75rem;
+  background: var(--gold);
+}
+
+.lede {
+  font-size: clamp(1.125rem, 2.4vw, 1.3125rem);
+  line-height: 1.6;
+  color: var(--navy);
+}
+
+.muted {
+  color: var(--slate);
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  padding-top: clamp(5rem, 16vw, 11rem);
+}
+
+.hero__name {
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  color: var(--slate);
+  margin: 0 0 clamp(2rem, 5vw, 3rem);
+}
+
+.hero h1 {
+  max-width: 16ch;
+  margin-bottom: clamp(2rem, 5vw, 2.75rem);
+}
+
+/* ---------- pricing ---------- */
+
+.tiers {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0 0 clamp(2.5rem, 5vw, 3.5rem);
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 44rem) {
+  .tiers {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+.tier {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--gold-light);
+  padding: clamp(1.5rem, 3.5vw, 2rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.section--warm .tier {
+  background: var(--paper);
+}
+
+.tier__name {
+  margin: 0 0 0.75rem;
+}
+
+.tier__price {
+  font-size: 1.0625rem;
+  margin: 0 0 1.25rem;
+  color: var(--navy);
+}
+
+.tier__price strong {
+  font-weight: 600;
+}
+
+.tier__from {
+  color: var(--slate);
+  font-weight: 400;
+}
+
+.tier__includes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--slate);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.tier__includes li {
+  position: relative;
+  padding-left: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.tier__includes li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 5px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.note {
+  border-left: 2px solid var(--gold);
+  padding: 0.25rem 0 0.25rem clamp(1.25rem, 3vw, 1.75rem);
+  max-width: 42rem;
+}
+
+.note p {
+  max-width: 46ch;
+  color: var(--slate);
+}
+
+/* ---------- checklist ---------- */
+
+.needs {
+  margin: 0 0 clamp(2rem, 4vw, 2.75rem);
+  padding: 0;
+  list-style: none;
+  max-width: 40rem;
+}
+
+.needs li {
+  padding: 0.9rem 0 0.9rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+.needs li:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.needs li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.55em;
+  width: 8px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.needs strong {
+  font-weight: 600;
+}
+
+/* ---------- contact ---------- */
+
+.contact__lede {
+  font-size: clamp(1.125rem, 2.4vw, 1.3125rem);
+  line-height: 1.6;
+  max-width: 36rem;
+}
+
+.contact__mail {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
+  border-bottom-width: 1px;
+  padding-bottom: 3px;
+}
+
+/* ---------- footer ---------- */
+
+.footer {
+  padding: 2.5rem var(--gutter) 3.5rem;
+  border-top: 1px solid var(--line);
+  color: var(--slate);
+  font-size: 0.9375rem;
+}
+
+.footer p {
+  margin: 0;
+}
