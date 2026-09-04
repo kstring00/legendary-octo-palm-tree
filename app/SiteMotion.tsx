@@ -146,9 +146,95 @@ export default function SiteMotion() {
         });
       }
 
-      // 3) SECTION TRANSITIONS — copy and imagery arrive at slightly different
-      // rates so the page has depth without every element feeling animated.
-      const revealSections = ["#timeline", "#needs", "#contact"];
+      // 3) PROCESS — the left side resolves in sequence while the visual panel
+      // moves at a slower rate. That keeps the section feeling like progress,
+      // not like four cards appearing at once.
+      const timeline = document.querySelector<HTMLElement>("#timeline");
+      if (timeline) {
+        const heading = timeline.querySelector(".timeline-heading");
+        const copy = timeline.querySelector(".timeline-copy");
+        const steps = timeline.querySelectorAll<HTMLElement>(".timeline-step");
+        const visual = timeline.querySelector<HTMLElement>(".timeline-visual");
+        const orbs = timeline.querySelectorAll<HTMLElement>(".timeline-orb");
+
+        const processTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: timeline,
+            start: "top 76%",
+            once: true,
+          },
+          defaults: { ease: "power3.out" },
+        });
+
+        if (heading) {
+          processTl.from(heading, {
+            y: 46,
+            autoAlpha: 0,
+            duration: 0.95,
+          });
+        }
+
+        if (copy) {
+          processTl.from(
+            copy,
+            {
+              y: 24,
+              autoAlpha: 0,
+              duration: 0.72,
+            },
+            "-=0.52",
+          );
+        }
+
+        if (steps.length) {
+          processTl.from(
+            steps,
+            {
+              y: 30,
+              autoAlpha: 0,
+              duration: 0.72,
+              stagger: 0.09,
+            },
+            "-=0.34",
+          );
+        }
+
+        if (orbs.length) {
+          processTl.from(
+            orbs,
+            {
+              scale: 0.45,
+              autoAlpha: 0,
+              duration: 0.68,
+              stagger: 0.12,
+              transformOrigin: "50% 50%",
+            },
+            "-=0.72",
+          );
+        }
+
+        if (visual) {
+          gsap.fromTo(
+            visual,
+            { xPercent: 3.5, scale: 1.018 },
+            {
+              xPercent: 0,
+              scale: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: timeline,
+                start: "top 92%",
+                end: "bottom 28%",
+                scrub: 0.9,
+              },
+            },
+          );
+        }
+      }
+
+      // 4) REMAINING SECTIONS — stagger the copy and actions without turning
+      // the whole page into an animation demo.
+      const revealSections = ["#needs", "#contact"];
 
       revealSections.forEach((selector) => {
         const section = document.querySelector<HTMLElement>(selector);
@@ -156,7 +242,7 @@ export default function SiteMotion() {
 
         const heading = section.querySelector("h2");
         const supporting = section.querySelectorAll<HTMLElement>(
-          ".split__lede, .split__body, .needs li, .aside, .contact__body, .contact__like, .contact__actions",
+          ".needs li, .aside, .contact__body, .contact__like, .contact__actions",
         );
 
         if (heading) {
@@ -188,26 +274,6 @@ export default function SiteMotion() {
           });
         }
       });
-
-      const timelineFigure = document.querySelector<HTMLElement>(".split__figure");
-      if (timelineFigure) {
-        gsap.fromTo(
-          timelineFigure,
-          { xPercent: 4.5, scale: 1.025, autoAlpha: 0.72 },
-          {
-            xPercent: 0,
-            scale: 1,
-            autoAlpha: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#timeline",
-              start: "top 88%",
-              end: "center 45%",
-              scrub: 0.9,
-            },
-          },
-        );
-      }
     });
 
     ScrollTrigger.refresh();
