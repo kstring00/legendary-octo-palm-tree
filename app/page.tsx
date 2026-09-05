@@ -1,19 +1,16 @@
-import Image from "next/image";
-
 import AIIntakeSection from "./AIIntakeSection";
 import BottomCapture from "./BottomCapture";
 import Header from "./Header";
+import HeroShowcase from "./HeroShowcase";
 import PricingTicker from "./PricingTicker";
 import SiteMotion from "./SiteMotion";
 import TimelineShowcase from "./TimelineShowcase";
 import pricingStyles from "./PricingShowcase.module.css";
 
-import heroPhoto from "./hero.png";
-
 const tiers = [
   {
     name: "Focused Site",
-    price: "1,125",
+    price: "1,250",
     description:
       "For a business that needs a strong, polished web presence without a large build.",
     includes: [
@@ -25,7 +22,7 @@ const tiers = [
   },
   {
     name: "Custom Business Site",
-    price: "2,050",
+    price: "2,000",
     description:
       "Multi-page design built around the business, audience, and conversion goals.",
     includes: [
@@ -37,7 +34,7 @@ const tiers = [
   },
   {
     name: "Advanced Build",
-    price: "3,750",
+    price: "3,500",
     description:
       "Custom functionality, integrations, AI, portals, databases, payments, or more complex workflows.",
     includes: [
@@ -57,79 +54,11 @@ function Arrow() {
   );
 }
 
-/** Stacks each word on its own line, as in the mockup's edge marks. */
-function Mark({ text, light }: { text: string; light?: boolean }) {
-  return (
-    <p className={light ? "tag tag--light mark" : "tag mark"}>
-      {text.split(" ").map((word) => (
-        <span key={word}>{word}</span>
-      ))}
-    </p>
-  );
-}
-
 export default function Home() {
   return (
     <>
       <Header />
-
-      <section className="hero" id="top">
-        <div className="hero__bg" aria-hidden="true">
-          <Image
-            className="hero__photo"
-            src={heroPhoto}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            placeholder="blur"
-          />
-        </div>
-        <div className="hero__scrim" aria-hidden="true" />
-
-        <div className="hero__inner shell">
-          <div className="hero__copy">
-            <h1>
-              Websites built around <em>you.</em>
-            </h1>
-            <hr className="rule rule--tight" />
-            <p className="tag">Strategic. Clean. Built to last.</p>
-            <p className="hero__lede">
-              I design and build websites for people who need one — storage
-              facilities, counseling practices, ABA centers, coaches, course
-              creators, and more. Every site is built around what your business
-              actually needs, not a template with the name swapped out.
-            </p>
-            <p className="hero__seo">
-              I don&rsquo;t do SEO. If ranking on Google is your main goal,
-              I&rsquo;ll tell you straight and point you toward someone who does.
-            </p>
-            <div className="hero__cta">
-              <a className="btn" href="#contact">
-                Let&rsquo;s Build Yours <Arrow />
-              </a>
-            </div>
-            <div className="hero__foot">
-              <hr className="rule" />
-              <p className="tag">Ideas to real impact</p>
-            </div>
-          </div>
-
-          <div className="hero__frame" aria-hidden="true" />
-        </div>
-
-        <div className="hero__marks" aria-hidden="true">
-          <div>
-            <Mark text="A clearer online presence" />
-            <hr className="rule" />
-          </div>
-          <div>
-            <Mark text="Built for what's next" />
-            <hr className="rule" />
-          </div>
-        </div>
-      </section>
-
+      <HeroShowcase />
       <PricingTicker />
 
       <main>
