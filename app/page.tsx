@@ -12,33 +12,39 @@ import heroPhoto from "./hero.png";
 
 const tiers = [
   {
-    name: "One page",
-    price: "500",
+    name: "Focused Site",
+    price: "1,125",
+    description:
+      "For a business that needs a strong, polished web presence without a large build.",
     includes: [
-      "A single scrolling page",
-      "Works properly on phones",
-      "Contact form",
-      "Live on your domain",
+      "Focused page structure and content direction",
+      "Custom responsive design for desktop, tablet, and phone",
+      "Primary contact form or conversion call-to-action",
+      "Domain launch and up to three revision rounds",
     ],
   },
   {
-    name: "Small site",
-    price: "800",
+    name: "Custom Business Site",
+    price: "2,050",
+    description:
+      "Multi-page design built around the business, audience, and conversion goals.",
     includes: [
-      "Four to six pages",
-      "Works properly on phones",
-      "Contact form",
-      "Live on your domain",
+      "Multi-page information architecture and custom visual direction",
+      "Responsive layouts built around your audience and goals",
+      "Forms and practical integrations scoped to the project",
+      "Domain launch and up to three revision rounds",
     ],
   },
   {
-    name: "Larger site",
-    price: "1,200",
+    name: "Advanced Build",
+    price: "3,750",
+    description:
+      "Custom functionality, integrations, AI, portals, databases, payments, or more complex workflows.",
     includes: [
-      "More pages",
-      "Custom features",
-      "Built around what you need",
-      "Live on your domain",
+      "Custom feature planning and technical architecture",
+      "AI, databases, portals, payments, or advanced integrations as needed",
+      "Responsive front-end design plus back-end implementation",
+      "Testing, launch support, and up to three revision rounds",
     ],
   },
 ];
@@ -148,6 +154,7 @@ export default function Home() {
                   <p className="tier__price">
                     From <strong>${tier.price}</strong>
                   </p>
+                  <p className="tier__description">{tier.description}</p>
                   <ul className="tier__includes">
                     {tier.includes.map((item) => (
                       <li key={item}>{item}</li>
