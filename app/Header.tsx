@@ -95,7 +95,7 @@ export default function Header() {
           <span className={styles.brandRule} aria-hidden="true" />
           <span className={styles.brandCopy}>
             <span className={styles.name}>Kyle Stringham</span>
-            <span className={styles.role}>Web design + build</span>
+            <span className={styles.role}>Web design &amp; development</span>
           </span>
         </a>
 
@@ -124,7 +124,7 @@ export default function Header() {
         <div className={styles.end}>
           <span className={styles.endRule} aria-hidden="true" />
           <a className={styles.getStarted} href="#contact">
-            <span>Get Started</span>
+            <span>Start a Project</span>
             <span className={styles.arrowShell} aria-hidden="true">
               <Arrow />
             </span>
