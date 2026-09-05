@@ -96,7 +96,7 @@
 
 .card {
   position: relative;
-  min-height: 26rem;
+  min-height: 30rem;
   padding: clamp(1.55rem, 2.7vw, 2.2rem);
   display: flex;
   flex-direction: column;
@@ -130,14 +130,13 @@
 
 .pricing :global(.tier__name) {
   margin: 0 0 0.9rem;
+  padding-right: 2.4rem;
   color: #fffdf8;
   font-size: clamp(1.7rem, 2.75vw, 2.2rem);
 }
 
 .pricing :global(.tier__price) {
-  margin: 0 0 1.55rem;
-  padding-bottom: 1.35rem;
-  border-bottom: 1px solid rgba(226, 197, 138, 0.28);
+  margin: 0 0 1rem;
   color: rgba(255, 253, 248, 0.72);
   font-size: 0.64rem;
 }
@@ -148,10 +147,20 @@
   font-weight: 700;
 }
 
-.pricing :global(.tier__includes) {
-  margin-bottom: 1.8rem;
-  color: rgba(255, 253, 248, 0.84);
+.pricing :global(.tier__description) {
+  margin: 0 0 1.35rem;
+  padding: 0 0 1.35rem;
+  border-bottom: 1px solid rgba(226, 197, 138, 0.28);
+  color: rgba(255, 253, 248, 0.9);
   font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.pricing :global(.tier__includes) {
+  margin: 0 0 1.8rem;
+  color: rgba(255, 253, 248, 0.84);
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 .pricing :global(.tier__includes li) {
@@ -233,7 +242,7 @@
   }
 
   .card {
-    min-height: 24rem;
+    min-height: 27rem;
   }
 
   .brandLine {
