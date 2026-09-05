@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { hashIntakeToken, INTAKE_COOKIE_NAME } from "../../../lib/intakeSession";
+import {
+  createIntakeToken,
+  hashIntakeToken,
+  INTAKE_COOKIE_MAX_AGE,
+  INTAKE_COOKIE_NAME,
+} from "../../../lib/intakeSession";
 import {
   getAnsweredFields,
   getProgress,
@@ -99,6 +104,62 @@ async function findIntakeByToken(token: string) {
   );
 
   return rows[0] ?? null;
+}
+
+async function createIntakeSession() {
+  const token = createIntakeToken();
+  const tokenHash = hashIntakeToken(token);
+  const rows = await supabaseAdminRequest<IntakeRecord[]>("intakes", {
+    method: "POST",
+    returnRepresentation: true,
+    body: JSON.stringify({
+      client_token_hash: tokenHash,
+      status: "started",
+      completion_percent: 0,
+      current_step: "business",
+      source: "ai_intake",
+    }),
+  });
+
+  const intake = rows[0];
+  if (!intake) throw new Error("Supabase did not return the created intake.");
+  return { intake, token };
+}
+
+async function resolveIntake(request: NextRequest) {
+  const existingToken = request.cookies.get(INTAKE_COOKIE_NAME)?.value ?? null;
+
+  if (existingToken) {
+    const existing = await findIntakeByToken(existingToken);
+    if (existing) return { intake: existing, tokenToSet: null as string | null };
+  }
+
+  const created = await createIntakeSession();
+  return { intake: created.intake, tokenToSet: created.token };
+}
+
+function setSessionCookie(response: NextResponse, token: string | null) {
+  if (!token) return response;
+
+  response.cookies.set({
+    name: INTAKE_COOKIE_NAME,
+    value: token,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: INTAKE_COOKIE_MAX_AGE,
+  });
+
+  return response;
+}
+
+function jsonWithSession(
+  body: unknown,
+  init: { status: number; headers?: HeadersInit },
+  token: string | null,
+) {
+  return setSessionCookie(NextResponse.json(body, init), token);
 }
 
 async function insertMessage(
@@ -223,30 +284,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  let sessionTokenToSet: string | null = null;
+
   try {
-    const token = getSessionToken(request);
-    if (!token) {
-      return NextResponse.json(
-        { error: "Start an intake before sending a message.", code: "start_session" },
-        { status: 401 },
-      );
-    }
-
-    const intake = await findIntakeByToken(token);
-    if (!intake) {
-      return NextResponse.json(
-        { error: "Your intake session could not be found.", code: "start_session" },
-        { status: 401 },
-      );
-    }
-
-    if (intake.status === "completed" || intake.status === "archived") {
-      return NextResponse.json(
-        { error: "This intake is already closed." },
-        { status: 409 },
-      );
-    }
-
     const body = (await request.json()) as { message?: unknown };
     if (typeof body.message !== "string") {
       return NextResponse.json(
@@ -267,6 +307,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: `Messages must be ${MAX_MESSAGE_LENGTH} characters or fewer.` },
         { status: 413 },
+      );
+    }
+
+    // A valid first message can create its own intake session. This avoids a
+    // fragile extra startup request and also recovers automatically if an old
+    // browser cookie points at an intake that no longer exists.
+    const resolved = await resolveIntake(request);
+    const intake = resolved.intake;
+    sessionTokenToSet = resolved.tokenToSet;
+
+    if (intake.status === "completed" || intake.status === "archived") {
+      return jsonWithSession(
+        { error: "This intake is already closed." },
+        { status: 409 },
+        sessionTokenToSet,
       );
     }
 
@@ -299,7 +354,7 @@ export async function POST(request: NextRequest) {
         CREDENTIAL_REFUSAL_MESSAGE,
       );
 
-      return NextResponse.json(
+      return jsonWithSession(
         {
           accepted: true,
           sensitiveInputBlocked: true,
@@ -315,6 +370,7 @@ export async function POST(request: NextRequest) {
           status: 200,
           headers: { "Cache-Control": "no-store" },
         },
+        sessionTokenToSet,
       );
     }
 
@@ -333,7 +389,7 @@ export async function POST(request: NextRequest) {
       const detail = error instanceof Error ? error.message.slice(0, 240) : "unknown error";
       console.error("OpenAI intake turn failed", detail);
 
-      return NextResponse.json(
+      return jsonWithSession(
         {
           accepted: true,
           saved: true,
@@ -342,6 +398,7 @@ export async function POST(request: NextRequest) {
           error: "I saved that answer, but I could not continue the conversation just now. Please try again.",
         },
         { status: 502, headers: { "Cache-Control": "no-store" } },
+        sessionTokenToSet,
       );
     }
 
@@ -388,7 +445,7 @@ export async function POST(request: NextRequest) {
       { redacted: safeAssistant.redacted, kinds: safeAssistant.kinds },
     );
 
-    return NextResponse.json(
+    return jsonWithSession(
       {
         accepted: true,
         sensitiveInputBlocked: false,
@@ -404,13 +461,15 @@ export async function POST(request: NextRequest) {
         status: 201,
         headers: { "Cache-Control": "no-store" },
       },
+      sessionTokenToSet,
     );
   } catch (error) {
     // Do not include request content in this log.
     console.error("Intake message processing failed", error);
-    return NextResponse.json(
+    return jsonWithSession(
       { error: "Your message could not be saved right now." },
       { status: 503 },
+      sessionTokenToSet,
     );
   }
 }
