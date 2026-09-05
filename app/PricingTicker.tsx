@@ -1,9 +1,9 @@
 import styles from "./PricingTicker.module.css";
 
 const tickerItems = [
-  "One page from $500",
-  "Small site from $800",
-  "Larger site from $1,200",
+  "Focused Site from $1,125",
+  "Custom Business Site from $2,050",
+  "Advanced Build from $3,750",
   "Custom builds",
   "Mobile ready",
   "Up to three revision rounds",
