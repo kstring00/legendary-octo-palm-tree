@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import {
-  createIntakeToken,
   hashIntakeToken,
-  INTAKE_COOKIE_MAX_AGE,
   INTAKE_COOKIE_NAME,
 } from "../../../lib/intakeSession";
 import { supabaseAdminRequest } from "../../../lib/supabaseAdmin";
@@ -17,37 +15,6 @@ type IntakeSession = {
   updated_at: string;
   last_activity_at: string;
 };
-
-type RateEntry = {
-  count: number;
-  resetAt: number;
-};
-
-const RATE_WINDOW_MS = 10 * 60 * 1000;
-const RATE_LIMIT = 12;
-const rateStore = new Map<string, RateEntry>();
-
-function getClientIp(request: NextRequest) {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
-  return request.headers.get("x-real-ip") || "unknown";
-}
-
-function isRateLimited(ip: string) {
-  const now = Date.now();
-  const current = rateStore.get(ip);
-
-  if (!current || current.resetAt <= now) {
-    rateStore.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return false;
-  }
-
-  if (current.count >= RATE_LIMIT) return true;
-
-  current.count += 1;
-  rateStore.set(ip, current);
-  return false;
-}
 
 async function findIntakeByToken(token: string) {
   const tokenHash = hashIntakeToken(token);
@@ -68,95 +35,64 @@ async function findIntakeByToken(token: string) {
   return rows[0] ?? null;
 }
 
-function setSessionCookie(response: NextResponse, token: string) {
-  response.cookies.set({
-    name: INTAKE_COOKIE_NAME,
-    value: token,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
-    maxAge: INTAKE_COOKIE_MAX_AGE,
-  });
-}
-
 export async function GET(request: NextRequest) {
   try {
     const token = request.cookies.get(INTAKE_COOKIE_NAME)?.value;
 
     if (!token) {
-      return NextResponse.json({ intake: null }, { status: 200 });
+      return NextResponse.json(
+        { intake: null },
+        { status: 200, headers: { "Cache-Control": "no-store" } },
+      );
     }
 
     const intake = await findIntakeByToken(token);
 
     if (!intake) {
-      const response = NextResponse.json({ intake: null }, { status: 200 });
+      const response = NextResponse.json(
+        { intake: null },
+        { status: 200, headers: { "Cache-Control": "no-store" } },
+      );
       response.cookies.delete(INTAKE_COOKIE_NAME);
       return response;
     }
 
-    return NextResponse.json({ intake }, { status: 200 });
+    return NextResponse.json(
+      { intake },
+      { status: 200, headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     console.error("Intake session lookup failed", error);
     return NextResponse.json(
-      { error: "The intake session could not be loaded." },
-      { status: 503 },
+      { intake: null },
+      { status: 200, headers: { "Cache-Control": "no-store" } },
     );
   }
 }
 
 export async function POST(request: NextRequest) {
-  const ip = getClientIp(request);
-
-  if (isRateLimited(ip)) {
-    return NextResponse.json(
-      { error: "Too many intake attempts. Please wait a few minutes and try again." },
-      { status: 429 },
-    );
-  }
-
+  // Session creation is intentionally deferred to the first valid message.
+  // The message endpoint owns the atomic create + save flow, which removes a
+  // fragile extra startup request and prevents a visitor from being blocked
+  // before they can send their first answer.
   try {
-    const existingToken = request.cookies.get(INTAKE_COOKIE_NAME)?.value;
+    const token = request.cookies.get(INTAKE_COOKIE_NAME)?.value;
 
-    if (existingToken) {
-      const existing = await findIntakeByToken(existingToken);
+    if (token) {
+      const existing = await findIntakeByToken(token);
       if (existing) {
-        return NextResponse.json({ intake: existing, resumed: true }, { status: 200 });
+        return NextResponse.json(
+          { intake: existing, resumed: true, deferred: false },
+          { status: 200, headers: { "Cache-Control": "no-store" } },
+        );
       }
     }
-
-    const token = createIntakeToken();
-    const tokenHash = hashIntakeToken(token);
-
-    const created = await supabaseAdminRequest<IntakeSession[]>("intakes", {
-      method: "POST",
-      returnRepresentation: true,
-      body: JSON.stringify({
-        client_token_hash: tokenHash,
-        status: "started",
-        completion_percent: 0,
-        current_step: "business",
-        source: "ai_intake",
-      }),
-    });
-
-    const intake = created[0];
-    if (!intake) {
-      throw new Error("Supabase did not return the created intake.");
-    }
-
-    const response = NextResponse.json(
-      { intake, resumed: false },
-      { status: 201 },
-    );
-    setSessionCookie(response, token);
-    return response;
   } catch (error) {
-    console.error("Intake session creation failed", error);
-    return NextResponse.json(
-      { error: "The intake could not be started right now." },
-      { status: 503 },
-    );
+    console.error("Intake session preflight failed; deferring creation", error);
   }
+
+  return NextResponse.json(
+    { intake: null, resumed: false, deferred: true },
+    { status: 200, headers: { "Cache-Control": "no-store" } },
+  );
 }
