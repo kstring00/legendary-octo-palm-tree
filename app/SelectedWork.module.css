@@ -1,7 +1,7 @@
 .section {
   background: var(--cream);
   color: var(--navy);
-  padding: 6rem var(--gutter);
+  padding: 4.5rem var(--gutter) 6rem;
   scroll-margin-top: 6.5rem;
 }
 
@@ -376,7 +376,7 @@
 
 @media (max-width: 52rem) {
   .section {
-    padding-top: 4.5rem;
+    padding-top: 4.25rem;
     padding-bottom: 4.5rem;
   }
 
