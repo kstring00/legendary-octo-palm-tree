@@ -75,6 +75,10 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               </div>
             </dl>
 
+            {project.note ? (
+              <p className={detailStyles.projectNote}>{project.note}</p>
+            ) : null}
+
             {project.liveUrl ? (
               <a
                 className={detailStyles.visitButton}
@@ -90,7 +94,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
           <article className={detailStyles.projectContent}>
             <figure className={detailStyles.heroFigure}>
               <img
-                src={heroScreenshot.src}
+                src={heroScreenshot.src || project.heroImage}
                 alt={heroScreenshot.alt}
                 loading="eager"
                 decoding="async"
@@ -124,9 +128,19 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
             {remainingScreenshots.length > 0 ? (
               <div className={detailStyles.screenshotStack} aria-label={`${project.title} screenshots`}>
-                {remainingScreenshots.map((image) => (
-                  <figure className={detailStyles.screenshotFigure} key={image.src}>
-                    <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+                {remainingScreenshots.map((image, index) => (
+                  <figure className={detailStyles.screenshotFigure} key={`${image.caption}-${index}`}>
+                    {image.src ? (
+                      <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />
+                    ) : (
+                      <div
+                        className={detailStyles.screenshotPlaceholder}
+                        role="img"
+                        aria-label={image.alt}
+                      >
+                        <span>Screenshot coming soon</span>
+                      </div>
+                    )}
                     <figcaption>{image.caption}</figcaption>
                   </figure>
                 ))}
