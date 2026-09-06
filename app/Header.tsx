@@ -74,7 +74,9 @@ export default function Header() {
 
     if (!targets.length) return;
 
-    const hrefByElement = new Map(targets.map(({ element, href }) => [element, href]));
+    const hrefByElement = new Map<Element, string>(
+      targets.map(({ element, href }) => [element, href]),
+    );
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
