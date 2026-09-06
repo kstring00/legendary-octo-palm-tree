@@ -22,6 +22,7 @@ export type Project = {
   approach: string;
   year: string;
   clientType: string;
+  note?: string;
 };
 
 export const projects: Project[] = [
@@ -124,6 +125,55 @@ export const projects: Project[] = [
     approach: "I led with the storage-type decision and paired straightforward guidance with strong facility imagery so the site answers the practical question first. From there, the experience narrows toward size, availability, and the action the customer is ready to take.",
     year: "2025",
     clientType: "Self storage",
+  },
+  {
+    slug: "with-little",
+    title: "With Little",
+    summary: "A local-first journaling and life-planning app with optional cloud sync, built around faithfulness in small things.",
+    description: "A local-first journaling and life-planning app with optional cloud sync, built around faithfulness in small things.",
+    status: "LIVE",
+    tech: ["Vanilla JS", "Supabase", "Local-first", "Auth"],
+    heroImage: "/work/with-little/dashboard.webp",
+    heroImageAlt: "With Little daily ledger dashboard showing planning, habits, must-dos, a thought journal, and scripture",
+    screenshots: [
+      {
+        src: "/work/with-little/dashboard.webp",
+        alt: "With Little daily ledger dashboard showing planning, habits, must-dos, a thought journal, and scripture",
+        caption: "Daily Ledger dashboard and morning planning view.",
+      },
+      {
+        src: "",
+        alt: "With Little journal entry view with prompts and gratitude",
+        caption: "Journal entry view with prompts and gratitude — screenshot coming soon.",
+      },
+      {
+        src: "",
+        alt: "With Little prayer log",
+        caption: "Prayer log — screenshot coming soon.",
+      },
+      {
+        src: "",
+        alt: "With Little privacy page explaining what lives on the device",
+        caption: "Privacy and local-data explanation — screenshot coming soon.",
+      },
+    ],
+    liveUrl: "https://withlittle.app",
+    problem: [
+      "Most journaling and habit apps assume you want your life on someone else's server, and most of them are built to keep you opening the app rather than to help you actually reflect.",
+      "I wanted something quiet — a place to write honestly, track rhythms, and keep a prayer log, where the default was that nothing left my device unless I chose otherwise.",
+    ],
+    features: [
+      "Passwordless authentication — sign-in by emailed magic link, no password ever stored",
+      "Row-level security in Supabase, so each user can only read or write their own rows even with the public connection key",
+      "Local-first storage — the app works fully offline, writing to localStorage as you type",
+      "Optional cloud sync that merges local data on sign-in and resolves conflicts by newer timestamp",
+      "Modular front end with no framework or build step — each module owns a slice of the UI over one shared storage layer",
+      "A written privacy page explaining exactly what syncs, what stays local, and how to delete either",
+    ],
+    approach: "Local-first was the architectural decision everything else followed from. If the data lives on the device by default, sync becomes an optional layer rather than a dependency, the app keeps working with no connection, and privacy is the default state rather than a policy promise. Cloud sync was built on top of that as something a user opts into, not something they have to accept to use the app.",
+    year: "2026",
+    clientType: "Personal project",
+    note: "A personal project, built and maintained on my own time.",
   },
 ];
 
