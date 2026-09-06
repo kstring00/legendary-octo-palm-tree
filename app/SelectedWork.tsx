@@ -1,7 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  MouseEvent as ReactMouseEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import styles from "./SelectedWork.module.css";
 
@@ -56,24 +62,34 @@ const rows: LedgerRow[] = [
   },
 ];
 
-function RowText({ row, gold = false }: { row: LedgerRow; gold?: boolean }) {
+function Status({ text }: { text: string }) {
   return (
-    <div className={`${styles.rowText} ${gold ? styles.goldEcho : ""}`} aria-hidden={gold || undefined}>
-      <span className={styles.number}>{row.number}</span>
-      <span className={styles.projectName}>{row.name}</span>
+    <span className={styles.status}>
+      <i aria-hidden="true" />
+      {text}
+    </span>
+  );
+}
+
+function Metadata({ row, gold = false }: { row: LedgerRow; gold?: boolean }) {
+  return (
+    <div
+      className={`${styles.metaTrack} ${gold ? styles.goldMetaTrack : ""}`}
+      aria-hidden={gold || undefined}
+    >
       <span className={styles.category}>{row.category}</span>
       <span className={styles.year}>{row.year}</span>
-      <span className={styles.status}>
-        <i aria-hidden="true" />
-        {row.status}
-      </span>
+      <Status text={row.status} />
     </div>
   );
 }
 
 export default function SelectedWork() {
+  const router = useRouter();
   const [activeRow, setActiveRow] = useState<number | null>(null);
   const [loadedRows, setLoadedRows] = useState<Set<number>>(() => new Set());
+  const [navigatingRow, setNavigatingRow] = useState<number | null>(null);
+  const navigationTimer = useRef<number | null>(null);
 
   const ensureImage = (index: number) => {
     if (!rows[index]?.image) return;
@@ -87,21 +103,59 @@ export default function SelectedWork() {
   };
 
   useEffect(() => {
-    const touchQuery = window.matchMedia("(hover: none), (pointer: coarse)");
-
-    const loadTouchImages = () => {
-      if (!touchQuery.matches) return;
-      setLoadedRows(new Set(rows.flatMap((row, index) => (row.image ? [index] : []))));
+    return () => {
+      if (navigationTimer.current !== null) {
+        window.clearTimeout(navigationTimer.current);
+      }
     };
-
-    loadTouchImages();
-    touchQuery.addEventListener?.("change", loadTouchImages);
-
-    return () => touchQuery.removeEventListener?.("change", loadTouchImages);
   }, []);
 
+  const handleNavigate = (
+    event: ReactMouseEvent<HTMLAnchorElement>,
+    row: LedgerRow,
+    index: number,
+  ) => {
+    if (
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      event.button !== 0
+    ) {
+      return;
+    }
+
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const touchLike = window.matchMedia(
+      "(hover: none), (pointer: coarse)",
+    ).matches;
+
+    // Only project rows with an available preview use the short expand transition.
+    if (reducedMotion || touchLike || row.pending || !row.image) return;
+
+    event.preventDefault();
+    ensureImage(index);
+    setActiveRow(index);
+    setNavigatingRow(index);
+
+    if (navigationTimer.current !== null) {
+      window.clearTimeout(navigationTimer.current);
+    }
+
+    navigationTimer.current = window.setTimeout(() => {
+      router.push(row.href);
+      navigationTimer.current = null;
+    }, 300);
+  };
+
   return (
-    <section className={styles.section} id="featured-work" aria-labelledby="selected-work-heading">
+    <section
+      className={styles.section}
+      id="featured-work"
+      aria-labelledby="selected-work-heading"
+    >
       <div className={styles.inner}>
         <div className={styles.headingRow}>
           <p className={styles.eyebrow}>Selected work</p>
@@ -111,39 +165,72 @@ export default function SelectedWork() {
         <div className={styles.ledger}>
           {rows.map((row, index) => {
             const active = activeRow === index;
-            const shouldRenderImage = Boolean(row.image && loadedRows.has(index));
+            const navigating = navigatingRow === index;
+            const shouldRenderImage = Boolean(
+              row.image && loadedRows.has(index),
+            );
 
             return (
               <Link
-                className={`${styles.ledgerRow} ${active ? styles.active : ""} ${row.pending ? styles.pending : ""}`}
+                className={`${styles.ledgerRow} ${
+                  active ? styles.active : ""
+                } ${row.pending ? styles.pending : ""} ${
+                  navigating ? styles.navigating : ""
+                }`}
                 href={row.href}
                 key={row.number}
+                onClick={(event) => handleNavigate(event, row, index)}
                 onMouseEnter={() => {
                   ensureImage(index);
                   setActiveRow(index);
                 }}
-                onMouseLeave={() => setActiveRow((current) => (current === index ? null : current))}
+                onMouseLeave={() => {
+                  if (navigating) return;
+                  setActiveRow((current) =>
+                    current === index ? null : current,
+                  );
+                }}
                 onFocus={() => {
                   ensureImage(index);
                   setActiveRow(index);
                 }}
-                onBlur={() => setActiveRow((current) => (current === index ? null : current))}
+                onBlur={() => {
+                  if (navigating) return;
+                  setActiveRow((current) =>
+                    current === index ? null : current,
+                  );
+                }}
               >
                 {shouldRenderImage ? (
-                  <img
-                    className={styles.rowImage}
-                    src={row.image as string}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                  />
+                  <span className={styles.previewSlot} aria-hidden="true">
+                    <img
+                      className={styles.rowImage}
+                      src={row.image as string}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span className={styles.previewCream} />
+                  </span>
                 ) : null}
 
-                <span className={styles.imageWash} aria-hidden="true" />
+                {row.pending ? (
+                  <span className={styles.pendingPreview} aria-hidden="true">
+                    <span>A place for what&apos;s next</span>
+                  </span>
+                ) : null}
+
                 <span className={styles.filament} aria-hidden="true" />
 
-                <RowText row={row} />
-                <RowText row={row} gold />
+                <div className={styles.rowText}>
+                  <span className={styles.number}>{row.number}</span>
+                  <span className={styles.projectName}>{row.name}</span>
+
+                  <span className={styles.metaViewport}>
+                    <Metadata row={row} />
+                    <Metadata row={row} gold />
+                  </span>
+                </div>
               </Link>
             );
           })}
