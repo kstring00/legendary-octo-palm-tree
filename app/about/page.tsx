@@ -51,8 +51,9 @@ export default function AboutPage() {
 
             <p>
               I taught myself. Budgeting apps, personal systems, a journaling app built
-              around faith called With Little. I learned by building things that were broken
-              and then fixing them, which is still mostly how I work.
+              around faith called <a href="/work/with-little">With Little</a>. I learned by
+              building things that were broken and then fixing them, which is still mostly
+              how I work.
             </p>
           </div>
 
