@@ -60,7 +60,6 @@ export async function adminRest<T>(
     cache: "no-store",
     headers: {
       apikey: secretKey,
-      Authorization: `Bearer ${secretKey}`,
       "Content-Type": "application/json",
       ...(returnRepresentation ? { Prefer: "return=representation" } : {}),
       ...headers,
@@ -115,7 +114,6 @@ async function authFetch<T>(path: string, options: RequestInit = {}): Promise<T>
     cache: "no-store",
     headers: {
       apikey: secretKey,
-      Authorization: `Bearer ${secretKey}`,
       "Content-Type": "application/json",
       ...options.headers,
     },
@@ -123,6 +121,7 @@ async function authFetch<T>(path: string, options: RequestInit = {}): Promise<T>
 
   if (!response.ok) {
     const detail = await response.text().catch(() => "");
+    console.error("Portal auth admin request failed", response.status, detail.slice(0, 500));
     throw new Error(detail || `Auth request failed with status ${response.status}.`);
   }
 
@@ -295,7 +294,6 @@ export async function sendPortalMagicLink(email: string, redirectTo: string) {
     cache: "no-store",
     headers: {
       apikey: secretKey,
-      Authorization: `Bearer ${secretKey}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({

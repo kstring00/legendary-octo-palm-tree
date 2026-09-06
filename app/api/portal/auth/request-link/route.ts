@@ -18,13 +18,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
   }
 
-  await bootstrapAdminIfNeeded(email).catch((error) => {
+  try {
+    await bootstrapAdminIfNeeded(email);
+  } catch (error) {
     console.error("Admin bootstrap failed", error);
-  });
+    return NextResponse.json(
+      { error: "I couldn't prepare this portal account. Please try again." },
+      { status: 500 },
+    );
+  }
 
-  const profile = await adminRest<{ id: string }[]>(
-    `users?email=eq.${encodeURIComponent(email)}&select=id&limit=1`,
-  ).catch(() => []);
+  let profile: { id: string }[];
+  try {
+    profile = await adminRest<{ id: string }[]>(
+      `users?email=eq.${encodeURIComponent(email)}&select=id&limit=1`,
+    );
+  } catch (error) {
+    console.error("Portal account lookup failed", error);
+    return NextResponse.json(
+      { error: "I couldn't check this portal account. Please try again." },
+      { status: 500 },
+    );
+  }
 
   // Deliberately return the same response for unknown addresses.
   if (!profile[0]) {
