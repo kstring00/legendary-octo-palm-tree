@@ -11,7 +11,7 @@
 }
 
 .headingRow {
-  margin-bottom: clamp(2.4rem, 4vw, 3.4rem);
+  margin-bottom: clamp(2rem, 3vw, 2.8rem);
 }
 
 .eyebrow {
@@ -37,7 +37,7 @@
 .ledgerRow {
   position: relative;
   display: block;
-  min-height: 8.4rem;
+  min-height: 5.75rem;
   overflow: hidden;
   border-bottom: 1px solid rgba(201, 162, 39, 0.42);
   isolation: isolate;
@@ -45,42 +45,78 @@
 
 .rowText {
   position: relative;
-  z-index: 3;
+  z-index: 4;
   display: grid;
-  grid-template-columns: 4.25rem minmax(17rem, 1.55fr) minmax(12rem, 0.9fr) 5rem minmax(8.5rem, auto);
+  grid-template-columns: 4.25rem minmax(17rem, 1.45fr) minmax(21rem, 1fr);
   align-items: center;
-  gap: clamp(1rem, 2.2vw, 2rem);
-  min-height: 8.4rem;
-  padding: 2.45rem 0;
+  gap: clamp(1rem, 2vw, 1.8rem);
+  min-height: 5.75rem;
+  padding: 1rem 0;
 }
 
 .number {
+  position: relative;
+  z-index: 3;
   color: #a9833d;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.14em;
 }
 
 .projectName {
+  position: relative;
+  z-index: 3;
   color: #17344d;
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(2rem, 3vw, 3.35rem);
+  font-size: clamp(1.75rem, 2.55vw, 2.8rem);
   font-weight: 400;
   letter-spacing: -0.035em;
-  line-height: 0.92;
+  line-height: 0.94;
   text-transform: uppercase;
+}
+
+.metaViewport {
+  position: relative;
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.metaTrack {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(11rem, 1fr) 4.5rem minmax(8.5rem, auto);
+  align-items: center;
+  gap: clamp(0.8rem, 1.6vw, 1.5rem);
+  width: 100%;
+  transform: translateX(0);
+}
+
+.goldMetaTrack {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .category,
 .year,
 .status {
   color: #6f7c86;
-  font-size: 0.64rem;
+  font-size: 0.61rem;
   font-weight: 700;
   letter-spacing: 0.13em;
   line-height: 1.3;
   text-transform: uppercase;
+}
+
+.goldMetaTrack .category,
+.goldMetaTrack .year,
+.goldMetaTrack .status {
+  color: #c9a227;
 }
 
 .year {
@@ -91,42 +127,64 @@
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.55rem;
+  gap: 0.5rem;
   white-space: nowrap;
 }
 
 .status i {
-  width: 0.38rem;
-  height: 0.38rem;
+  width: 0.34rem;
+  height: 0.34rem;
   border-radius: 50%;
   background: currentColor;
   opacity: 0.72;
 }
 
-.goldEcho {
+.previewSlot,
+.pendingPreview {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateX(102%);
+  opacity: 0;
+  transform-origin: right center;
+}
+
+.rowImage {
   position: absolute;
   inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 400ms ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
 }
 
-.goldEcho .number,
-.goldEcho .projectName,
-.goldEcho .category,
-.goldEcho .year,
-.goldEcho .status {
-  color: #b58c46;
+.previewCream {
+  position: absolute;
+  inset: 0;
+  background: rgba(245, 240, 232, 0.75);
 }
 
-.goldEcho .projectName {
-  color: #a9833d;
+.pendingPreview {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(201, 162, 39, 0.62);
+  background: rgba(245, 240, 232, 0.34);
+  color: rgba(169, 131, 61, 0.9);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .filament {
   position: absolute;
-  z-index: 5;
+  z-index: 6;
   top: -1px;
   left: 0;
   width: 100%;
@@ -135,47 +193,28 @@
   opacity: 0;
   transform: scaleX(0);
   transform-origin: left center;
-}
-
-.rowImage {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-  opacity: 0;
-  transform: scale(1.012);
-  transition: opacity 400ms ease, transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.imageWash {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: rgba(245, 240, 232, 0.18);
-  opacity: 0;
-  transition: opacity 400ms ease;
   pointer-events: none;
 }
 
 .pending {
-  opacity: 0.62;
+  opacity: 0.82;
 }
 
-.pending .projectName,
+.pending .projectName {
+  color: rgba(23, 52, 77, 0.72);
+}
+
 .pending .category,
 .pending .year,
 .pending .status {
-  color: #7b817f;
+  color: rgba(111, 124, 134, 0.78);
 }
 
 .viewAll {
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
-  margin-top: 2rem;
+  margin-top: 1.6rem;
   padding-bottom: 0.25rem;
   color: var(--slate);
   font-size: 0.82rem;
@@ -190,45 +229,72 @@
 
 .ledgerRow:focus-visible {
   outline: 2px solid #a9833d;
-  outline-offset: 5px;
+  outline-offset: 4px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .ledgerRow.active:not(.pending) .filament,
-  .ledgerRow:hover:not(.pending) .filament,
-  .ledgerRow:focus-visible:not(.pending) .filament {
-    animation: filamentTrace 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  .metaTrack {
+    transition: transform 350ms cubic-bezier(0.65, 0, 0.35, 1);
   }
 
-  .ledgerRow.active:not(.pending) .goldEcho,
-  .ledgerRow:hover:not(.pending) .goldEcho,
-  .ledgerRow:focus-visible:not(.pending) .goldEcho {
-    animation: filamentWarm 600ms steps(1, end) forwards;
+  .previewSlot,
+  .pendingPreview {
+    transition:
+      transform 350ms cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 350ms ease;
   }
 
-  .ledgerRow.active:not(.pending) .rowImage,
-  .ledgerRow:hover:not(.pending) .rowImage,
-  .ledgerRow:focus-visible:not(.pending) .rowImage {
-    opacity: 0.18;
-    transform: scale(1);
+  .active .metaTrack,
+  .ledgerRow:hover .metaTrack,
+  .ledgerRow:focus-visible .metaTrack {
+    transform: translateX(-105%);
+    transition-duration: 450ms;
   }
 
-  .ledgerRow.active:not(.pending) .imageWash,
-  .ledgerRow:hover:not(.pending) .imageWash,
-  .ledgerRow:focus-visible:not(.pending) .imageWash {
+  .active .previewSlot,
+  .ledgerRow:hover .previewSlot,
+  .ledgerRow:focus-visible .previewSlot {
+    transform: translateX(0);
+    opacity: 0.14;
+    transition-duration: 450ms;
+    transition-delay: 120ms;
+  }
+
+  .active .pendingPreview,
+  .ledgerRow:hover.pending .pendingPreview,
+  .ledgerRow:focus-visible.pending .pendingPreview {
+    transform: translateX(0);
     opacity: 1;
+    transition-duration: 450ms;
+    transition-delay: 120ms;
   }
 
-  .ledgerRow.active.pending .filament,
-  .ledgerRow.pending:hover .filament,
-  .ledgerRow.pending:focus-visible .filament {
-    animation: pendingTrace 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  .active .number,
+  .ledgerRow:hover .number,
+  .ledgerRow:focus-visible .number {
+    color: #c9a227;
   }
 
-  .ledgerRow.active.pending .goldEcho,
-  .ledgerRow.pending:hover .goldEcho,
-  .ledgerRow.pending:focus-visible .goldEcho {
-    animation: pendingWarm 600ms steps(1, end) forwards;
+  .active .filament,
+  .ledgerRow:hover .filament,
+  .ledgerRow:focus-visible .filament {
+    animation: filamentTrace 600ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+
+  .active .goldMetaTrack,
+  .ledgerRow:hover .goldMetaTrack,
+  .ledgerRow:focus-visible .goldMetaTrack {
+    animation: filamentWarm 450ms steps(1, end) forwards;
+  }
+
+  .navigating .previewSlot {
+    z-index: 5;
+    transform: scaleX(2);
+    opacity: 0.14;
+    transition:
+      transform 300ms cubic-bezier(0.65, 0, 0.35, 1),
+      opacity 300ms ease;
+    transition-delay: 0ms;
   }
 }
 
@@ -237,7 +303,7 @@
     opacity: 0;
     transform: scaleX(0);
   }
-  12% {
+  10% {
     opacity: 1;
   }
   100% {
@@ -248,134 +314,138 @@
 
 @keyframes filamentWarm {
   0% { opacity: 0; }
-  18% { opacity: 0.34; }
-  28% { opacity: 0.08; }
-  39% { opacity: 0.62; }
-  50% { opacity: 0.2; }
-  66% { opacity: 0.82; }
-  76% { opacity: 0.45; }
+  18% { opacity: 0.88; }
+  28% { opacity: 0.18; }
+  42% { opacity: 0.96; }
+  55% { opacity: 0.32; }
+  72% { opacity: 1; }
   100% { opacity: 1; }
 }
 
-@keyframes pendingTrace {
-  0% {
-    opacity: 0;
-    transform: scaleX(0);
-  }
-  100% {
-    opacity: 0.48;
-    transform: scaleX(0.82);
-  }
-}
-
-@keyframes pendingWarm {
-  0% { opacity: 0; }
-  35% { opacity: 0.28; }
-  55% { opacity: 0.12; }
-  100% { opacity: 0.42; }
-}
-
 @media (hover: none), (pointer: coarse) {
-  .ledgerRow:not(.pending) .rowImage {
-    opacity: 0.13;
-    transform: scale(1);
-  }
-
-  .ledgerRow:not(.pending) .imageWash {
-    opacity: 1;
-  }
-
-  .goldEcho,
-  .filament {
+  .previewSlot,
+  .pendingPreview,
+  .filament,
+  .goldMetaTrack {
     display: none;
+  }
+
+  .metaTrack,
+  .active .metaTrack {
+    transform: none !important;
+  }
+
+  .ledgerRow {
+    min-height: 6.35rem;
+  }
+
+  .rowText {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    grid-template-areas:
+      "number name"
+      ". meta";
+    gap: 0.55rem 0.9rem;
+    min-height: 6.35rem;
+    padding: 1rem 0;
+  }
+
+  .number {
+    grid-area: number;
+  }
+
+  .projectName {
+    grid-area: name;
+  }
+
+  .metaViewport {
+    grid-area: meta;
+    overflow: visible;
+  }
+
+  .metaTrack {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.7rem;
   }
 }
 
 @media (max-width: 52rem) {
-  .rowText {
-    grid-template-columns: 3.2rem minmax(0, 1fr) auto auto;
-    grid-template-areas:
-      "number name name name"
-      ". category year status";
-    gap: 0.8rem 1rem;
-    min-height: 9rem;
-    padding: 2rem 0;
+  .section {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
   }
-
-  .number { grid-area: number; align-self: center; }
-  .projectName { grid-area: name; }
-  .category { grid-area: category; }
-  .year { grid-area: year; }
-  .status { grid-area: status; }
 
   .projectName {
-    font-size: clamp(1.85rem, 7vw, 2.8rem);
-  }
-}
-
-@media (max-width: 42rem) {
-  .section {
-    padding: 4.5rem 1.1rem;
-  }
-
-  .rowText {
-    grid-template-columns: 2.6rem minmax(0, 1fr) auto;
-    grid-template-areas:
-      "number name name"
-      ". category year"
-      ". status status";
-    row-gap: 0.65rem;
-    min-height: 10rem;
-  }
-
-  .status {
-    justify-content: flex-start;
+    font-size: clamp(1.65rem, 6.5vw, 2.5rem);
   }
 
   .category,
   .year,
   .status {
-    font-size: 0.57rem;
+    font-size: 0.56rem;
+  }
+}
+
+@media (max-width: 42rem) {
+  .section {
+    padding-inline: 1.1rem;
+  }
+
+  .ledgerRow,
+  .rowText {
+    min-height: 6.6rem;
+  }
+
+  .metaTrack {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "category year"
+      "status status";
+    row-gap: 0.38rem;
+  }
+
+  .category {
+    grid-area: category;
+  }
+
+  .year {
+    grid-area: year;
+  }
+
+  .status {
+    grid-area: status;
+    justify-content: flex-start;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .filament {
+  .filament,
+  .goldMetaTrack {
     display: none;
   }
 
-  .goldEcho {
-    display: grid;
-    transition: none;
+  .metaTrack {
+    transform: none !important;
   }
 
-  .ledgerRow:hover:not(.pending) .goldEcho,
-  .ledgerRow:focus-visible:not(.pending) .goldEcho,
-  .ledgerRow.active:not(.pending) .goldEcho {
+  .previewSlot,
+  .pendingPreview {
+    transform: translateX(0) !important;
+    transition: opacity 120ms linear !important;
+  }
+
+  .ledgerRow:hover .previewSlot,
+  .ledgerRow:focus-visible .previewSlot,
+  .active .previewSlot {
+    opacity: 0.14;
+  }
+
+  .ledgerRow:hover.pending .pendingPreview,
+  .ledgerRow:focus-visible.pending .pendingPreview,
+  .active.pending .pendingPreview {
     opacity: 1;
   }
 
-  .ledgerRow:hover.pending .goldEcho,
-  .ledgerRow:focus-visible.pending .goldEcho,
-  .ledgerRow.active.pending .goldEcho {
-    opacity: 0.42;
-  }
-
-  .ledgerRow:hover:not(.pending) .rowImage,
-  .ledgerRow:focus-visible:not(.pending) .rowImage,
-  .ledgerRow.active:not(.pending) .rowImage {
-    opacity: 0.18;
-    transform: none;
-  }
-
-  .ledgerRow:hover:not(.pending) .imageWash,
-  .ledgerRow:focus-visible:not(.pending) .imageWash,
-  .ledgerRow.active:not(.pending) .imageWash {
-    opacity: 1;
-  }
-
-  .rowImage,
-  .imageWash {
-    transition: none;
+  .navigating .previewSlot {
+    transform: none !important;
   }
 }
