@@ -21,6 +21,11 @@ const channels: Channel[] = [
     src: "/hero-crt/bcba-prep.png",
     alt: "BCBA Prep study library homepage showing the nine BCBA exam domains",
   },
+  {
+    label: "Lake City Self Storage",
+    src: "/work/lake-city-self-storage/home.webp",
+    alt: "Lake City Self Storage homepage showing storage options and the facility",
+  },
 ];
 
 function MonitorFrame() {
@@ -46,10 +51,6 @@ function MonitorFrame() {
 
         <path d="M56 374h414" opacity=".62" />
         <path d="M82 422v17h70l7-17M393 422l8 17h68v-17" opacity=".72" />
-
-        <circle cx="431" cy="391" r="12" />
-        <circle cx="467" cy="391" r="12" />
-        <path d="M431 374v8M467 374v8" opacity=".75" />
       </g>
     </svg>
   );
@@ -131,45 +132,42 @@ export default function RetroCRT() {
           </div>
 
           <MonitorFrame />
-        </div>
 
-        <div className={styles.controlDeck} aria-label="Project preview controls">
-          <div
-            className={styles.switches}
-            style={{ gridTemplateColumns: `repeat(${channels.length}, minmax(0, 1fr))` }}
-          >
-            {channels.map((item, index) => {
-              const active = index === activeChannel;
+          <div className={styles.controlDeck} aria-label="Project preview controls">
+            <div className={styles.switches}>
+              {channels.map((item, index) => {
+                const active = index === activeChannel;
 
-              return (
-                <button
-                  className={`${styles.channelSwitch} ${active ? styles.switchActive : ""}`}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => setActiveChannel(index)}
-                  key={item.label}
-                >
-                  <span className={styles.switchTravel} aria-hidden="true">
-                    <span />
-                  </span>
-                  <span className={styles.switchCopy}>
-                    <b>{String(index + 1).padStart(2, "0")}</b>
-                    <span>{item.label}</span>
-                  </span>
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    className={`${styles.channelSwitch} ${active ? styles.switchActive : ""}`}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setActiveChannel(index)}
+                    key={item.label}
+                  >
+                    <span className={styles.switchTravel} aria-hidden="true">
+                      <span />
+                    </span>
+                    <span className={styles.switchCopy}>
+                      <b>{String(index + 1).padStart(2, "0")}</b>
+                      <span>{item.label}</span>
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              className={styles.powerButton}
+              type="button"
+              onClick={runBoot}
+              aria-label="Restart CRT boot sequence"
+            >
+              <PowerGlyph />
+              <span>Power</span>
+            </button>
           </div>
-
-          <button
-            className={styles.powerButton}
-            type="button"
-            onClick={runBoot}
-            aria-label="Restart CRT boot sequence"
-          >
-            <PowerGlyph />
-            <span>Power</span>
-          </button>
         </div>
       </div>
 
