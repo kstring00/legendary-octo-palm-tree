@@ -26,6 +26,7 @@ const tiers = [
     price: 1250,
     kicker: "A strong start online",
     description: "A polished, conversion-ready site for a business that needs to look credible and start generating inquiries.",
+    recommended: false,
   },
   {
     id: "business" as TierId,
@@ -41,6 +42,7 @@ const tiers = [
     price: 3500,
     kicker: "Website + business systems",
     description: "For businesses that need custom functionality such as portals, databases, payments, automations or AI-assisted experiences.",
+    recommended: false,
   },
 ] as const;
 
