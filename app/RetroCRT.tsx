@@ -4,27 +4,47 @@ import { useEffect, useRef, useState } from "react";
 
 import styles from "./RetroCRT.module.css";
 
+type ChannelImage = {
+  src: string;
+  alt: string;
+};
+
 type Channel = {
   label: string;
-  src: string | null;
-  alt: string;
+  images: ChannelImage[];
 };
 
 const channels: Channel[] = [
   {
     label: "Common Ground",
-    src: "/hero-crt/common-ground.png",
-    alt: "Common Ground homepage showing autism support resources for Texas families",
+    images: [
+      {
+        src: "/hero-crt/common-ground.png",
+        alt: "Common Ground homepage showing autism support resources for Texas families",
+      },
+    ],
   },
   {
     label: "BCBA Prep",
-    src: "/hero-crt/bcba-prep.png",
-    alt: "BCBA Prep study library homepage showing the nine BCBA exam domains",
+    images: [
+      {
+        src: "/hero-crt/bcba-prep.png",
+        alt: "BCBA Prep study library homepage showing the nine BCBA exam domains",
+      },
+    ],
   },
   {
-    label: "Lake City Self Storage",
-    src: "/work/lake-city-self-storage/home.webp",
-    alt: "Lake City Self Storage homepage showing storage options and the facility",
+    label: "With Little",
+    images: [
+      {
+        src: "/hero-crt/with-little-daily.png",
+        alt: "With Little daily planning dashboard with habits, must-dos, journal, and scripture",
+      },
+      {
+        src: "/hero-crt/with-little-journal.png",
+        alt: "With Little journaling and reflection interface",
+      },
+    ],
   },
 ];
 
@@ -109,21 +129,18 @@ export default function RetroCRT() {
             aria-label={`${channel.label} website preview`}
           >
             <div className={styles.screenContent} key={channel.label}>
-              {channel.src ? (
-                <img
-                  className={styles.scrollImage}
-                  src={channel.src}
-                  alt={channel.alt}
-                  loading={activeChannel === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                />
-              ) : (
-                <div className={styles.pendingScreen} role="img" aria-label={channel.alt}>
-                  <span>{String(activeChannel + 1).padStart(2, "0")}</span>
-                  <strong>{channel.label}</strong>
-                  <small>Screenshot ready to drop in</small>
-                </div>
-              )}
+              <div className={styles.scrollImage}>
+                {channel.images.map((image, imageIndex) => (
+                  <img
+                    src={image.src}
+                    alt={image.alt}
+                    loading={activeChannel === 0 && imageIndex === 0 ? "eager" : "lazy"}
+                    decoding="async"
+                    key={image.src}
+                    style={{ display: "block", width: "100%", height: "auto" }}
+                  />
+                ))}
+              </div>
             </div>
 
             <span className={styles.bootLine} aria-hidden="true" />
@@ -172,15 +189,12 @@ export default function RetroCRT() {
       </div>
 
       <div className={styles.mobileStatic} aria-label={`${channels[0].label} website preview`}>
-        {channels[0].src ? (
-          <img src={channels[0].src} alt={channels[0].alt} loading="eager" decoding="async" />
-        ) : (
-          <div className={styles.mobilePending} role="img" aria-label={channels[0].alt}>
-            <span>01</span>
-            <strong>{channels[0].label}</strong>
-            <small>Screenshot ready to drop in</small>
-          </div>
-        )}
+        <img
+          src={channels[0].images[0].src}
+          alt={channels[0].images[0].alt}
+          loading="eager"
+          decoding="async"
+        />
       </div>
     </div>
   );
