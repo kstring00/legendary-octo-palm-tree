@@ -1,0 +1,61 @@
+.section {
+  background: #0d1b26;
+  color: var(--cream-light);
+  padding: clamp(4.75rem, 8vw, 7.5rem) var(--gutter);
+  scroll-margin-top: 6.5rem;
+}
+
+.inner {
+  width: min(100%, 82rem);
+  margin: 0 auto;
+}
+
+.headingRow {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+.eyebrow {
+  margin: 0 0 0.9rem;
+  color: var(--gold-on-dark);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.headingRow h2 {
+  color: var(--cream-light);
+  font-size: clamp(3rem, 5vw, 5rem);
+  line-height: 0.9;
+}
+
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border-bottom: 1px solid rgba(226, 197, 138, 0.55);
+  padding-bottom: 0.25rem;
+  color: rgba(245, 240, 232, 0.86);
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.viewAll span {
+  color: var(--gold-on-dark);
+}
+
+.section :global(.projectCard) {
+  background: #f8f4ec;
+}
+
+@media (max-width: 42rem) {
+  .headingRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
