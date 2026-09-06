@@ -240,8 +240,6 @@ export default function BottomCapture() {
 
           <p className={styles.alternate}>
             Prefer email? <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
-            <span aria-hidden="true"> · </span>
-            <a href="#contact">Start the full AI intake</a>
           </p>
         </div>
       </div>
