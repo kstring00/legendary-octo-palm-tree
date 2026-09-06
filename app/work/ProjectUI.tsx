@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import type { Project, ProjectImage, ProjectStatus } from "../data/projects";
+import type { Project, ProjectStatus } from "../data/projects";
 import styles from "./work.module.css";
 
 const statusClass: Record<ProjectStatus, string> = {
@@ -19,34 +19,41 @@ export function StatusBadge({ status }: { status: ProjectStatus }) {
 }
 
 export function ProjectMedia({
-  image,
+  src,
+  alt,
   title,
+  caption,
   className = "",
-  showCaption = false,
+  loading = "lazy",
 }: {
-  image: ProjectImage;
+  src: string;
+  alt: string;
   title: string;
+  caption?: string;
   className?: string;
-  showCaption?: boolean;
+  loading?: "lazy" | "eager";
 }) {
   return (
     <figure className={`${styles.mediaFigure} ${className}`}>
-      {image.src ? (
-        <img className={styles.mediaImage} src={image.src} alt={image.alt} />
+      {src ? (
+        <img
+          className={styles.mediaImage}
+          src={src}
+          alt={alt}
+          loading={loading}
+          decoding="async"
+        />
       ) : (
         <div
           className={styles.mediaPlaceholder}
           role="img"
-          aria-label={image.alt}
+          aria-label={alt}
         >
-          <span>Screenshot placeholder</span>
+          <span>Preview coming soon</span>
           <strong>{title}</strong>
-          <small>Replace the image path in app/data/projects.ts</small>
         </div>
       )}
-      {showCaption && image.caption ? (
-        <figcaption>{image.caption}</figcaption>
-      ) : null}
+      {caption ? <figcaption>{caption}</figcaption> : null}
     </figure>
   );
 }
@@ -66,27 +73,48 @@ export function ProjectCard({
       href={`/work/${project.slug}`}
       aria-label={`View case study for ${project.title}`}
     >
-      <div className={styles.cardTopline}>
+      <div className={styles.cardMedia}>
+        {project.heroImage ? (
+          <img
+            className={styles.cardImage}
+            src={project.heroImage}
+            alt={project.heroImageAlt}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div
+            className={styles.cardMediaPlaceholder}
+            role="img"
+            aria-label={project.heroImageAlt}
+          />
+        )}
+
+        <span className={styles.cardMediaScrim} aria-hidden="true" />
         <span className={styles.cardIndex}>{number}</span>
-        <StatusBadge status={project.status} />
+        <span className={styles.cardStatus}>
+          <StatusBadge status={project.status} />
+        </span>
       </div>
 
-      <div className={styles.cardBody}>
-        <h3>{project.title}</h3>
-        <p className={styles.cardDescription}>{project.description}</p>
+      <div className={styles.cardContent}>
+        <div className={styles.cardBody}>
+          <h3>{project.title}</h3>
+          <p className={styles.cardDescription}>{project.description}</p>
 
-        <div className={styles.techList} aria-label="Technology used">
-          {project.tech.map((item, techIndex) => (
-            <span className={styles.techPill} key={`${item}-${techIndex}`}>
-              {item}
-            </span>
-          ))}
+          <div className={styles.techList} aria-label="Technology used">
+            {project.tech.map((item, techIndex) => (
+              <span className={styles.techPill} key={`${item}-${techIndex}`}>
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <span className={styles.cardLink} aria-hidden="true">
-        View case study <span>→</span>
-      </span>
+        <span className={styles.cardLink} aria-hidden="true">
+          View case study <span>→</span>
+        </span>
+      </div>
     </Link>
   );
 }
