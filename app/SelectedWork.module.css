@@ -154,7 +154,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: rgba(245, 240, 232, 0.76);
+  background: rgba(245, 240, 232, 0.18);
   opacity: 0;
   transition: opacity 400ms ease;
   pointer-events: none;
@@ -340,9 +340,25 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .goldEcho,
   .filament {
     display: none;
+  }
+
+  .goldEcho {
+    display: grid;
+    transition: none;
+  }
+
+  .ledgerRow:hover:not(.pending) .goldEcho,
+  .ledgerRow:focus-visible:not(.pending) .goldEcho,
+  .ledgerRow.active:not(.pending) .goldEcho {
+    opacity: 1;
+  }
+
+  .ledgerRow:hover.pending .goldEcho,
+  .ledgerRow:focus-visible.pending .goldEcho,
+  .ledgerRow.active.pending .goldEcho {
+    opacity: 0.42;
   }
 
   .ledgerRow:hover:not(.pending) .rowImage,
