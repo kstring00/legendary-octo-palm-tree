@@ -1,3 +1,4 @@
+import RetroCRT from "./RetroCRT";
 import styles from "./HeroShowcase.module.css";
 
 function Arrow() {
@@ -18,33 +19,39 @@ export default function HeroShowcase() {
   return (
     <section className={styles.hero} id="top">
       <div className={styles.inner}>
-        <div className={styles.copy}>
-          <p className={styles.eyebrow}>
-            Websites for storage, ABA, and small business
-          </p>
+        <div className={styles.heroMain}>
+          <div className={styles.copy}>
+            <p className={styles.eyebrow}>
+              Websites for storage, ABA, and small business
+            </p>
 
-          <h1>
-            Websites built
-            <br />
-            around <em>your business.</em>
-          </h1>
+            <h1>
+              Websites built
+              <br />
+              around <em>your business.</em>
+            </h1>
 
-          <p className={styles.lede}>
-            I design and build custom websites for storage facilities, ABA and
-            counseling practices, course creators, and other small businesses —
-            built around how your business actually works, not a template with
-            the name swapped out.
-          </p>
+            <p className={styles.lede}>
+              I design and build custom websites for storage facilities, ABA and
+              counseling practices, course creators, and other small businesses —
+              built around how your business actually works, not a template with
+              the name swapped out.
+            </p>
 
-          <span className={styles.goldRule} aria-hidden="true" />
+            <span className={styles.goldRule} aria-hidden="true" />
 
-          <div className={styles.actions}>
-            <a className={styles.primary} href="/work">
-              See the work <Arrow />
-            </a>
-            <a className={styles.secondary} href="#quick-contact">
-              Start a project
-            </a>
+            <div className={styles.actions}>
+              <a className={styles.primary} href="/work">
+                See the work <Arrow />
+              </a>
+              <a className={styles.secondary} href="#quick-contact">
+                Start a project
+              </a>
+            </div>
+          </div>
+
+          <div className={styles.crtVisual}>
+            <RetroCRT />
           </div>
         </div>
 
