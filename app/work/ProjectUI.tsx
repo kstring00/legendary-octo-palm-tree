@@ -75,13 +75,16 @@ export function ProjectCard({
     >
       <div className={styles.cardMedia}>
         {project.heroImage ? (
-          <img
-            className={styles.cardImage}
-            src={project.heroImage}
-            alt={project.heroImageAlt}
-            loading="lazy"
-            decoding="async"
-          />
+          <>
+            <img
+              className={styles.cardImage}
+              src={project.heroImage}
+              alt={project.heroImageAlt}
+              loading="lazy"
+              decoding="async"
+            />
+            <span className={styles.cardMediaScrim} aria-hidden="true" />
+          </>
         ) : (
           <div
             className={styles.cardMediaPlaceholder}
@@ -90,7 +93,6 @@ export function ProjectCard({
           />
         )}
 
-        <span className={styles.cardMediaScrim} aria-hidden="true" />
         <span className={styles.cardIndex}>{number}</span>
         <span className={styles.cardStatus}>
           <StatusBadge status={project.status} />
