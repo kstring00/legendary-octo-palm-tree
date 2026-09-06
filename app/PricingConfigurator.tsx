@@ -2,6 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import styles from "./PricingConfigurator.module.css";
+import compact from "./PricingConfiguratorCompact.module.css";
 
 type TierId = "focused" | "business" | "advanced";
 type AddOnId =
@@ -112,6 +113,8 @@ export default function PricingConfigurator() {
   const [tierId, setTierId] = useState<TierId>("business");
   const [selectedAddOns, setSelectedAddOns] = useState<AddOnId[]>([]);
   const [careId, setCareId] = useState<CareId>("none");
+  const [showFeatures, setShowFeatures] = useState(false);
+  const [expandedAddOn, setExpandedAddOn] = useState<AddOnId | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
@@ -166,9 +169,9 @@ export default function PricingConfigurator() {
   }
 
   return (
-    <section className={styles.pricing} id="pricing">
+    <section className={`${styles.pricing} ${compact.pricing}`} id="pricing">
       <div className={styles.shell}>
-        <div className={styles.header}>
+        <div className={`${styles.header} ${compact.header}`}>
           <div>
             <span className={styles.eyebrow}>Pricing</span>
             <h2>Build your website.</h2>
@@ -179,17 +182,13 @@ export default function PricingConfigurator() {
           </div>
         </div>
 
-        <div className={styles.comparisonWrap}>
-          <div className={styles.comparisonHeader}>
-            <div className={styles.compareIntro}>
-              <span>Compare builds</span>
-              <p>Every level keeps what came before it. You can also add individual features without jumping tiers.</p>
-            </div>
+        <div className={`${styles.comparisonWrap} ${compact.comparisonWrap}`}>
+          <div className={`${styles.comparisonHeader} ${compact.comparisonHeader}`}>
             {tiers.map((item) => (
               <button
                 type="button"
                 key={item.id}
-                className={`${styles.tierHead} ${tierId === item.id ? styles.tierHeadSelected : ""} ${item.recommended ? styles.tierHeadRecommended : ""}`}
+                className={`${styles.tierHead} ${compact.tierHead} ${tierId === item.id ? styles.tierHeadSelected : ""} ${item.recommended ? styles.tierHeadRecommended : ""}`}
                 onClick={() => setTierId(item.id)}
                 aria-pressed={tierId === item.id}
               >
@@ -203,30 +202,45 @@ export default function PricingConfigurator() {
             ))}
           </div>
 
-          <div className={styles.featureTable}>
-            {featureGroups.map((group) => (
-              <div className={styles.featureGroup} key={group.label}>
-                <div className={styles.groupLabel}>
-                  <span>{group.label}</span>
-                  <small>{group.note}</small>
-                </div>
-                {group.rows.map(([label, focused, business, advanced]) => (
-                  <div className={styles.featureRow} key={label}>
-                    <span className={styles.featureName}>{label}</span>
-                    {[focused, business, advanced].map((included, index) => (
-                      <span className={styles.featureCell} key={`${label}-${index}`} aria-label={included ? "Included" : "Not included"}>
-                        {included ? <b>✓</b> : <i>—</i>}
-                      </span>
+          <button
+            type="button"
+            className={compact.compareToggle}
+            onClick={() => setShowFeatures((current) => !current)}
+            aria-expanded={showFeatures}
+            aria-controls="pricing-feature-table"
+          >
+            <span>{showFeatures ? "Hide feature comparison" : "Compare all features"}</span>
+            <span className={showFeatures ? compact.toggleArrowOpen : compact.toggleArrow} aria-hidden="true">→</span>
+          </button>
+
+          {showFeatures && (
+            <div className={compact.featureScroller} id="pricing-feature-table">
+              <div className={styles.featureTable}>
+                {featureGroups.map((group) => (
+                  <div className={styles.featureGroup} key={group.label}>
+                    <div className={styles.groupLabel}>
+                      <span>{group.label}</span>
+                      <small>{group.note}</small>
+                    </div>
+                    {group.rows.map(([label, focused, business, advanced]) => (
+                      <div className={styles.featureRow} key={label}>
+                        <span className={styles.featureName}>{label}</span>
+                        {[focused, business, advanced].map((included, index) => (
+                          <span className={styles.featureCell} key={`${label}-${index}`} aria-label={included ? "Included" : "Not included"}>
+                            {included ? <b>✓</b> : <i>—</i>}
+                          </span>
+                        ))}
+                      </div>
                     ))}
                   </div>
                 ))}
               </div>
-            ))}
-          </div>
-          <p className={styles.scopeNote}>Advanced features are scoped to the actual build. The $3,500 figure is an entry floor, not a promise that every advanced system above is included at that price.</p>
+              <p className={styles.scopeNote}>Advanced features are scoped to the actual build. The $3,500 figure is an entry floor, not a promise that every advanced system above is included at that price.</p>
+            </div>
+          )}
         </div>
 
-        <div className={styles.configureHeader}>
+        <div className={`${styles.configureHeader} ${compact.configureHeader}`}>
           <div>
             <span className={styles.eyebrow}>Configure your build</span>
             <h3>Make it yours.</h3>
@@ -234,53 +248,67 @@ export default function PricingConfigurator() {
           <p>Think of these like options on a vehicle. Add only what solves a real problem. You do not have to move into a larger package just to request one specific capability.</p>
         </div>
 
-        <div className={styles.builderGrid}>
-          <div className={styles.optionsColumn}>
-            <div className={styles.optionSection}>
-              <div className={styles.optionTitleRow}>
+        <div className={`${styles.builderGrid} ${compact.builderGrid}`}>
+          <div className={`${styles.optionsColumn} ${compact.optionsColumn}`}>
+            <div className={`${styles.optionSection} ${compact.optionSection}`}>
+              <div className={`${styles.optionTitleRow} ${compact.optionTitleRow}`}>
                 <div>
                   <span>01</span>
                   <h4>Add-ons</h4>
                 </div>
                 <p>Starting prices. Final scope is confirmed before work begins.</p>
               </div>
-              <div className={styles.addOnGrid}>
+
+              <div className={compact.addOnGrid}>
                 {addOns.map((item) => {
                   const checked = selectedAddOns.includes(item.id);
+                  const expanded = expandedAddOn === item.id;
                   return (
-                    <button
-                      type="button"
-                      className={`${styles.addOn} ${checked ? styles.addOnSelected : ""}`}
-                      key={item.id}
-                      onClick={() => toggleAddOn(item.id)}
-                      aria-pressed={checked}
-                    >
-                      <span className={styles.addOnCheck}>{checked ? "✓" : "+"}</span>
-                      <span className={styles.addOnBody}>
+                    <div className={`${compact.addOnRow} ${checked ? compact.addOnRowSelected : ""}`} key={item.id}>
+                      <button
+                        type="button"
+                        className={compact.addOnSelect}
+                        onClick={() => toggleAddOn(item.id)}
+                        aria-pressed={checked}
+                        title={item.note}
+                      >
                         <strong>{item.name}</strong>
-                        <small>{item.note}</small>
-                      </span>
-                      <span className={styles.addOnPrice}>from {money(item.price)}</span>
-                    </button>
+                        <span className={compact.addOnPrice}>from {money(item.price)}</span>
+                        <span className={compact.addOnCheck}>{checked ? "✓" : "+"}</span>
+                      </button>
+                      <button
+                        type="button"
+                        className={compact.addOnDetails}
+                        onClick={() => setExpandedAddOn(expanded ? null : item.id)}
+                        aria-expanded={expanded}
+                        aria-controls={`addon-note-${item.id}`}
+                        aria-label={`${expanded ? "Hide" : "Show"} details for ${item.name}`}
+                      >
+                        i
+                      </button>
+                      {expanded && (
+                        <p className={compact.addOnNote} id={`addon-note-${item.id}`}>{item.note}</p>
+                      )}
+                    </div>
                   );
                 })}
               </div>
             </div>
 
-            <div className={styles.optionSection}>
-              <div className={styles.optionTitleRow}>
+            <div className={`${styles.optionSection} ${compact.optionSection}`}>
+              <div className={`${styles.optionTitleRow} ${compact.optionTitleRow}`}>
                 <div>
                   <span>02</span>
                   <h4>Care plan</h4>
                 </div>
                 <p>Optional ongoing support after launch.</p>
               </div>
-              <div className={styles.careGrid}>
+              <div className={`${styles.careGrid} ${compact.careGrid}`}>
                 {carePlans.map((item) => (
                   <button
                     type="button"
                     key={item.id}
-                    className={`${styles.careCard} ${careId === item.id ? styles.careCardSelected : ""}`}
+                    className={`${styles.careCard} ${compact.careCard} ${careId === item.id ? styles.careCardSelected : ""}`}
                     onClick={() => setCareId(item.id)}
                     aria-pressed={careId === item.id}
                   >
@@ -294,7 +322,7 @@ export default function PricingConfigurator() {
             </div>
           </div>
 
-          <aside className={styles.cart} aria-label="Configured quote summary">
+          <aside className={`${styles.cart} ${compact.cart}`} aria-label="Configured quote summary">
             <div className={styles.cartTopline}>
               <span>Your build</span>
               <span>{1 + chosenAddOns.length + (care.monthly ? 1 : 0)} item{1 + chosenAddOns.length + (care.monthly ? 1 : 0) === 1 ? "" : "s"}</span>
