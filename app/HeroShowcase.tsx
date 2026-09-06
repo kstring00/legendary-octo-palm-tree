@@ -39,10 +39,10 @@ export default function HeroShowcase() {
           </p>
 
           <div className={styles.actions}>
-            <a className={styles.primary} href="#featured-work">
+            <a className={styles.primary} href="/work">
               See the work <Arrow />
             </a>
-            <a className={styles.secondary} href="#contact">
+            <a className={styles.secondary} href="#quick-contact">
               Start a project
             </a>
           </div>
@@ -59,7 +59,6 @@ export default function HeroShowcase() {
 
         <div
           className={styles.visual}
-          id="featured-work"
           aria-label="Selected website build concepts"
         >
           <div className={`${styles.browserMockup} ${styles.commonGround}`}>
