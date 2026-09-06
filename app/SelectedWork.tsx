@@ -132,7 +132,6 @@ export default function SelectedWork() {
       "(hover: none), (pointer: coarse)",
     ).matches;
 
-    // Only project rows with an available preview use the short expand transition.
     if (reducedMotion || touchLike || row.pending || !row.image) return;
 
     event.preventDefault();
@@ -166,9 +165,7 @@ export default function SelectedWork() {
           {rows.map((row, index) => {
             const active = activeRow === index;
             const navigating = navigatingRow === index;
-            const shouldRenderImage = Boolean(
-              row.image && loadedRows.has(index),
-            );
+            const imageLoaded = loadedRows.has(index);
 
             return (
               <Link
@@ -201,15 +198,17 @@ export default function SelectedWork() {
                   );
                 }}
               >
-                {shouldRenderImage ? (
+                {row.image ? (
                   <span className={styles.previewSlot} aria-hidden="true">
-                    <img
-                      className={styles.rowImage}
-                      src={row.image as string}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
+                    {imageLoaded ? (
+                      <img
+                        className={styles.rowImage}
+                        src={row.image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : null}
                     <span className={styles.previewCream} />
                   </span>
                 ) : null}
