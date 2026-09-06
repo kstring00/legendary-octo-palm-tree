@@ -2,6 +2,7 @@
 
 import {
   KeyboardEvent as ReactKeyboardEvent,
+  MouseEvent as ReactMouseEvent,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -48,12 +49,14 @@ const consultationSteps = [
     title: "Send the basics",
     body:
       "About 2 minutes. Name, email, and what your business does. Enough for me to know whether I'm the right fit before either of us spends real time.",
+    emphasized: false,
   },
   {
     number: "01b",
     title: "The intake conversation",
     body:
       "About 10 minutes, whenever suits you. The AI consultant asks one question at a time, follows your answers, and organizes everything into a clear project brief.",
+    emphasized: false,
   },
   {
     number: "01c",
@@ -367,7 +370,7 @@ export default function TimelineShowcase() {
     tabRefs.current[nextIndex]?.focus();
   };
 
-  const startProject = (event: React.MouseEvent<HTMLAnchorElement>) => {
+  const startProject = (event: ReactMouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     selectStep(0);
 
