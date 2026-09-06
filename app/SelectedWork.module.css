@@ -1,7 +1,7 @@
 .section {
-  background: #0d1b26;
-  color: var(--cream-light);
-  padding: clamp(4.75rem, 8vw, 7.5rem) var(--gutter);
+  background: var(--cream);
+  color: var(--navy);
+  padding: 6rem var(--gutter);
   scroll-margin-top: 6.5rem;
 }
 
@@ -20,7 +20,7 @@
 
 .eyebrow {
   margin: 0 0 0.9rem;
-  color: var(--gold-on-dark);
+  color: var(--gold);
   font-size: 0.68rem;
   font-weight: 750;
   letter-spacing: 0.2em;
@@ -28,7 +28,7 @@
 }
 
 .headingRow h2 {
-  color: var(--cream-light);
+  color: var(--navy);
   font-size: clamp(3rem, 5vw, 5rem);
   line-height: 0.9;
 }
@@ -37,16 +37,16 @@
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
-  border-bottom: 1px solid rgba(226, 197, 138, 0.55);
+  border-bottom: 1px solid rgba(160, 131, 72, 0.5);
   padding-bottom: 0.25rem;
-  color: rgba(245, 240, 232, 0.86);
+  color: var(--slate);
   font-size: 0.82rem;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .viewAll span {
-  color: var(--gold-on-dark);
+  color: var(--gold);
 }
 
 .section :global(.projectCard) {
@@ -54,6 +54,11 @@
 }
 
 @media (max-width: 42rem) {
+  .section {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+
   .headingRow {
     align-items: flex-start;
     flex-direction: column;
