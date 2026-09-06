@@ -1,4 +1,3 @@
-import AIIntakeSection from "./AIIntakeSection";
 import BottomCapture from "./BottomCapture";
 import Header from "./Header";
 import HeroShowcase from "./HeroShowcase";
@@ -19,7 +18,6 @@ export default function Home() {
         <TimelineShowcase />
         <PricingTicker />
         <PricingConfigurator />
-        <AIIntakeSection />
         <BottomCapture />
       </main>
 
