@@ -80,9 +80,11 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
         <div className={styles.heroMediaWrap}>
           <ProjectMedia
-            image={project.heroImage}
+            src={project.heroImage}
+            alt={project.heroImageAlt}
             title={project.title}
             className={styles.heroMedia}
+            loading="eager"
           />
         </div>
 
@@ -119,12 +121,14 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
               <h2 id="screenshots-heading">Screenshots</h2>
             </div>
             <div className={styles.screenshotGrid}>
-              {project.screenshots.slice(0, 4).map((image, index) => (
+              {project.screenshots.map((image, index) => (
                 <ProjectMedia
-                  image={image}
+                  src={image.src}
+                  alt={image.alt}
+                  caption={image.caption}
                   title={`${project.title} — ${index + 1}`}
-                  showCaption
-                  key={index}
+                  loading="lazy"
+                  key={`${image.src}-${index}`}
                 />
               ))}
             </div>
