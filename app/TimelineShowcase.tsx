@@ -17,8 +17,7 @@ const steps = [
     nav: "Consultation",
     name: "Consultation",
     closesOn: "Agreed scope",
-    copy:
-      "You don't need to have every detail figured out. The AI consultant asks one question at a time, follows your answers, and turns the conversation into a clear project brief.",
+    copy: null,
   },
   {
     nav: "Plan & quote",
@@ -40,6 +39,28 @@ const steps = [
     closesOn: "Handoff",
     copy:
       "The site goes live and it's yours. Repo access, domain, analytics — all transferred. No hostage situations.",
+  },
+] as const;
+
+const consultationSteps = [
+  {
+    number: "01a",
+    title: "Send the basics",
+    body:
+      "About 2 minutes. Name, email, and what your business does. Enough for me to know whether I'm the right fit before either of us spends real time.",
+  },
+  {
+    number: "01b",
+    title: "The intake conversation",
+    body:
+      "About 10 minutes, whenever suits you. The AI consultant asks one question at a time, follows your answers, and organizes everything into a clear project brief.",
+  },
+  {
+    number: "01c",
+    title: "Consultation call",
+    body:
+      "30 to 60 minutes, with me. We go through your brief together, I ask what a form can't, and we look at your current site and materials. You leave knowing what I'd build and roughly what it costs. No obligation on either side.",
+    emphasized: true,
   },
 ] as const;
 
@@ -110,10 +131,14 @@ function ProposalArtifact() {
           {proposalExcluded.map((item, index) => (
             <div
               className={styles.proposalLine}
-              style={{ transitionDelay: `${(index + proposalIncluded.length) * 80}ms` }}
+              style={{
+                transitionDelay: `${(index + proposalIncluded.length) * 80}ms`,
+              }}
               key={item}
             >
-              <span className={styles.excludedMark} aria-hidden="true">—</span>
+              <span className={styles.excludedMark} aria-hidden="true">
+                —
+              </span>
               <span>{item}</span>
             </div>
           ))}
@@ -121,17 +146,11 @@ function ProposalArtifact() {
       </section>
 
       <footer className={styles.proposalFooter}>
-        <div
-          className={styles.proposalLine}
-          style={{ transitionDelay: "400ms" }}
-        >
+        <div className={styles.proposalLine} style={{ transitionDelay: "400ms" }}>
           <span>Fixed project price</span>
           <strong>$X,XXX</strong>
         </div>
-        <div
-          className={styles.proposalLine}
-          style={{ transitionDelay: "480ms" }}
-        >
+        <div className={styles.proposalLine} style={{ transitionDelay: "480ms" }}>
           <span>Revision rounds included</span>
           <strong>2 rounds</strong>
         </div>
@@ -167,38 +186,135 @@ function HandoffArtifact() {
   );
 }
 
+function ConsultationSequence() {
+  return (
+    <div className={styles.consultationSteps}>
+      {consultationSteps.map((item) => (
+        <div
+          className={`${styles.consultationStep} ${
+            item.emphasized ? styles.consultationCall : ""
+          }`}
+          key={item.number}
+        >
+          <span className={styles.consultationNumber}>{item.number}</span>
+          <div>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function TimelineShowcase() {
   const [activeStep, setActiveStep] = useState(0);
-  const [previousStep, setPreviousStep] = useState<number | null>(null);
+  const [outgoingStep, setOutgoingStep] = useState<number | null>(null);
   const [transitioning, setTransitioning] = useState(false);
+  const [incomingReady, setIncomingReady] = useState(true);
   const [panelHeight, setPanelHeight] = useState<number | null>(null);
+  const [entered, setEntered] = useState(false);
+  const [entryDraw, setEntryDraw] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  const sectionRef = useRef<HTMLElement | null>(null);
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const tabShellRef = useRef<HTMLDivElement | null>(null);
   const transitionTimer = useRef<number | null>(null);
+  const entryTimer = useRef<number | null>(null);
+  const frameOne = useRef<number | null>(null);
+  const frameTwo = useRef<number | null>(null);
+
+  const clearTransitionWork = () => {
+    if (transitionTimer.current !== null) {
+      window.clearTimeout(transitionTimer.current);
+      transitionTimer.current = null;
+    }
+    if (frameOne.current !== null) {
+      window.cancelAnimationFrame(frameOne.current);
+      frameOne.current = null;
+    }
+    if (frameTwo.current !== null) {
+      window.cancelAnimationFrame(frameTwo.current);
+      frameTwo.current = null;
+    }
+  };
 
   const selectStep = (nextStep: number) => {
     if (nextStep === activeStep) return;
 
-    if (transitionTimer.current !== null) {
-      window.clearTimeout(transitionTimer.current);
-    }
-
-    setPreviousStep(activeStep);
+    clearTransitionWork();
+    setEntered(true);
+    setOutgoingStep(activeStep);
     setActiveStep(nextStep);
     setTransitioning(true);
 
+    if (reducedMotion) {
+      setIncomingReady(true);
+      transitionTimer.current = window.setTimeout(() => {
+        setTransitioning(false);
+        setOutgoingStep(null);
+        transitionTimer.current = null;
+      }, 0);
+      return;
+    }
+
+    setIncomingReady(false);
+    frameOne.current = window.requestAnimationFrame(() => {
+      frameTwo.current = window.requestAnimationFrame(() => {
+        setIncomingReady(true);
+        frameOne.current = null;
+        frameTwo.current = null;
+      });
+    });
+
     transitionTimer.current = window.setTimeout(() => {
       setTransitioning(false);
-      setPreviousStep(null);
+      setOutgoingStep(null);
       transitionTimer.current = null;
-    }, 430);
+    }, 620);
   };
 
   useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setReducedMotion(query.matches);
+
+    updatePreference();
+    query.addEventListener?.("change", updatePreference);
+
+    return () => query.removeEventListener?.("change", updatePreference);
+  }, []);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node || entered) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry?.isIntersecting || entry.intersectionRatio < 0.4) return;
+
+        setEntryDraw(true);
+        setEntered(true);
+        observer.disconnect();
+
+        entryTimer.current = window.setTimeout(() => {
+          setEntryDraw(false);
+          entryTimer.current = null;
+        }, 950);
+      },
+      { threshold: [0.4] },
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [entered]);
+
+  useEffect(() => {
     return () => {
-      if (transitionTimer.current !== null) {
-        window.clearTimeout(transitionTimer.current);
-      }
+      clearTransitionWork();
+      if (entryTimer.current !== null) window.clearTimeout(entryTimer.current);
     };
   }, []);
 
@@ -217,6 +333,15 @@ export default function TimelineShowcase() {
     observer.observe(panel);
 
     return () => observer.disconnect();
+  }, [activeStep, incomingReady]);
+
+  useEffect(() => {
+    const shell = tabShellRef.current;
+    const tab = tabRefs.current[activeStep];
+    if (!shell || !tab || window.innerWidth >= 768) return;
+
+    const left = tab.offsetLeft - shell.clientWidth / 2 + tab.offsetWidth / 2;
+    shell.scrollTo({ left, behavior: "auto" });
   }, [activeStep]);
 
   const handleTabKeyDown = (
@@ -242,13 +367,32 @@ export default function TimelineShowcase() {
     tabRefs.current[nextIndex]?.focus();
   };
 
+  const startProject = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    selectStep(0);
+
+    window.setTimeout(
+      () => document.getElementById("ai-intake-chat")?.scrollIntoView({ block: "center" }),
+      reducedMotion ? 0 : 650,
+    );
+  };
+
+  const progress = entered ? (activeStep + 1) / steps.length : 0;
+
   return (
-    <section className={styles.timeline} id="timeline">
+    <section
+      className={`${styles.timeline} ${entered ? styles.entered : ""} ${
+        entryDraw ? styles.entryDraw : ""
+      }`}
+      id="timeline"
+      ref={sectionRef}
+    >
       <div className={styles.stepperInner}>
-        <div className={styles.tabShell}>
+        <div className={styles.tabShell} ref={tabShellRef}>
           <div className={styles.tabList} role="tablist" aria-label="Project process">
             {steps.map((step, index) => {
               const isActive = activeStep === index;
+              const isOutgoing = transitioning && outgoingStep === index;
 
               return (
                 <button
@@ -266,16 +410,25 @@ export default function TimelineShowcase() {
                   onClick={() => selectStep(index)}
                   onKeyDown={(event) => handleTabKeyDown(event, index)}
                 >
-                  <span className={styles.tabNumber}>{String(index + 1).padStart(2, "0")}</span>
+                  <span
+                    className={`${styles.tabNumberClip} ${
+                      isActive && transitioning ? styles.numberIncoming : ""
+                    } ${isOutgoing ? styles.numberOutgoing : ""}`}
+                  >
+                    <span className={styles.tabNumber}>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                  </span>
                   <span>{step.nav}</span>
                 </button>
               );
             })}
+          </div>
 
+          <div className={styles.progressTrack} aria-hidden="true">
             <span
-              className={styles.activeIndicator}
-              style={{ transform: `translateX(${activeStep * 100}%)` }}
-              aria-hidden="true"
+              className={styles.progressFill}
+              style={{ transform: `scaleX(${progress})` }}
             />
           </div>
         </div>
@@ -286,16 +439,20 @@ export default function TimelineShowcase() {
         >
           {steps.map((step, index) => {
             const isActive = activeStep === index;
-            const isExiting = transitioning && previousStep === index;
-            const panelClass = isActive
-              ? styles.panelActive
-              : isExiting
-                ? styles.panelExiting
-                : styles.panelIdle;
+            const isExiting = transitioning && outgoingStep === index;
+
+            let panelState = styles.panelIdle;
+            if (isActive) {
+              panelState = `${styles.panelActive} ${
+                incomingReady ? styles.panelArrived : styles.panelEntering
+              }`;
+            } else if (isExiting) {
+              panelState = styles.panelExiting;
+            }
 
             return (
               <div
-                className={`${styles.panel} ${panelClass}`}
+                className={`${styles.panel} ${panelState}`}
                 id={`process-panel-${index + 1}`}
                 key={step.name}
                 role="tabpanel"
@@ -308,19 +465,39 @@ export default function TimelineShowcase() {
               >
                 <div className={styles.panelCopy}>
                   <div className={styles.panelCopyInner}>
-                    <span className={styles.panelStepNumber}>
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <h2>{step.name}</h2>
-                    <p className={styles.closeCondition}>
+                    <div className={`${styles.settleItem} ${styles.settleHeading}`}>
+                      <span
+                        className={`${styles.panelNumberClip} ${
+                          isActive && transitioning ? styles.numberIncoming : ""
+                        } ${isExiting ? styles.numberOutgoing : ""}`}
+                      >
+                        <span className={styles.panelStepNumber}>
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                      </span>
+                      <h2>{step.name}</h2>
+                    </div>
+
+                    <p
+                      className={`${styles.closeCondition} ${styles.settleItem} ${styles.settleClose}`}
+                    >
                       Closes on: <strong>{step.closesOn}</strong>
                     </p>
-                    <p className={styles.bodyCopy}>{step.copy}</p>
+
+                    <div className={`${styles.settleItem} ${styles.settleBody}`}>
+                      {index === 0 ? (
+                        <ConsultationSequence />
+                      ) : (
+                        <p className={styles.bodyCopy}>{step.copy}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
 
                 <div className={styles.artifactPanel}>
-                  <div className={styles.artifactInner}>
+                  <div
+                    className={`${styles.artifactInner} ${styles.settleItem} ${styles.settleArtifact}`}
+                  >
                     {index === 0 && (
                       <div className={styles.intakeEmbed}>
                         <AIIntakeSection />
@@ -330,6 +507,20 @@ export default function TimelineShowcase() {
                     {index === 2 && (isActive || isExiting) && <ProcessTimesheet />}
                     {index === 3 && <HandoffArtifact />}
                   </div>
+                </div>
+
+                <div
+                  className={`${styles.advanceControl} ${styles.settleItem} ${styles.settleAdvance}`}
+                >
+                  {index < steps.length - 1 ? (
+                    <button type="button" onClick={() => selectStep(index + 1)}>
+                      Next step <span aria-hidden="true">→</span>
+                    </button>
+                  ) : (
+                    <a href="#ai-intake-chat" onClick={startProject}>
+                      Start a project <span aria-hidden="true">→</span>
+                    </a>
+                  )}
                 </div>
               </div>
             );
