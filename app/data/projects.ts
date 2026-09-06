@@ -40,7 +40,7 @@ export const projects: Project[] = [
         caption: "Common Ground homepage and primary support pathways.",
       },
     ],
-    liveUrl: null,
+    liveUrl: "https://texasabacenterscg.com/",
     problem: [
       "Case-study copy is being finalized.",
       "The project centers on making support resources and next steps easier for families to navigate.",
@@ -99,9 +99,15 @@ export const projects: Project[] = [
     description: "A storage-facility web experience structured around clear unit discovery and customer decision-making.",
     status: "CASE STUDY",
     tech: ["Web design", "Responsive UI", "Conversion UX"],
-    heroImage: "",
-    heroImageAlt: "Lake City Self Storage website preview not available yet",
-    screenshots: [],
+    heroImage: "/work/lake-city-self-storage/home.webp",
+    heroImageAlt: "Lake City Self Storage homepage showing unit selection messaging and an aerial view of the storage facility",
+    screenshots: [
+      {
+        src: "/work/lake-city-self-storage/home.webp",
+        alt: "Lake City Self Storage homepage showing unit selection messaging and an aerial view of the storage facility",
+        caption: "Lake City Self Storage homepage and storage-type selection experience.",
+      },
+    ],
     liveUrl: null,
     problem: [
       "Case-study copy is being finalized.",
@@ -114,29 +120,6 @@ export const projects: Project[] = [
     ],
     year: "2025",
     clientType: "Self storage",
-  },
-  {
-    slug: "project-04",
-    title: "[PLACEHOLDER] Project 04",
-    summary: "[PLACEHOLDER] Replace with a one-line summary of the project outcome.",
-    description: "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
-    status: "CASE STUDY",
-    tech: ["[TECH]", "[TECH]", "[TECH]"],
-    heroImage: "",
-    heroImageAlt: "Project 04 website preview not available yet",
-    screenshots: [],
-    liveUrl: null,
-    problem: [
-      "[PLACEHOLDER] Replace with a short paragraph describing the client or business problem.",
-      "[PLACEHOLDER] Replace with a short paragraph describing the constraint, friction, or opportunity the build needed to address.",
-    ],
-    features: [
-      "[PLACEHOLDER] Replace with feature or capability.",
-      "[PLACEHOLDER] Replace with feature or capability.",
-      "[PLACEHOLDER] Replace with feature or capability.",
-    ],
-    year: "[YEAR]",
-    clientType: "[PLACEHOLDER] Replace with client type",
   },
 ];
 
