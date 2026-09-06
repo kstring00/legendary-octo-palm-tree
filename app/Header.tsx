@@ -7,6 +7,7 @@ import styles from "./Header.module.css";
 const NAV = [
   { label: "Home", href: "/" },
   { label: "Work", href: "/work" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/#quick-contact" },
 ] as const;
 
@@ -24,7 +25,13 @@ export default function Header() {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const lastY = useRef(0);
-  const active = pathname.startsWith("/work") ? "/work" : pathname === "/" ? "/" : "";
+  const active = pathname.startsWith("/work")
+    ? "/work"
+    : pathname === "/about"
+      ? "/about"
+      : pathname === "/"
+        ? "/"
+        : "";
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
