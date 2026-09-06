@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Header from "../Header";
 import SiteMotion from "../SiteMotion";
 import { projects } from "../data/projects";
-import { ProjectCard } from "./ProjectUI";
+import { PendingProjectCard, ProjectCard } from "./ProjectUI";
 import styles from "./work.module.css";
 
 export const metadata: Metadata = {
@@ -37,6 +37,7 @@ export default function WorkPage() {
               {projects.map((project, index) => (
                 <ProjectCard project={project} index={index} key={project.slug} />
               ))}
+              <PendingProjectCard index={projects.length} />
             </div>
           </div>
         </section>
