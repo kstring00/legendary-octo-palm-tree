@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 import type { Project, ProjectStatus } from "../data/projects";
 import fixStyles from "./WorkFixes.module.css";
@@ -34,15 +37,18 @@ export function ProjectMedia({
   className?: string;
   loading?: "lazy" | "eager";
 }) {
+  const [imageFailed, setImageFailed] = useState(false);
+
   return (
     <figure className={`${styles.mediaFigure} ${className}`}>
-      {src ? (
+      {src && !imageFailed ? (
         <img
           className={styles.mediaImage}
           src={src}
           alt={alt}
           loading={loading}
           decoding="async"
+          onError={() => setImageFailed(true)}
         />
       ) : (
         <div
@@ -66,8 +72,10 @@ export function ProjectCard({
   project: Project;
   index: number;
 }) {
+  const [imageFailed, setImageFailed] = useState(false);
   const number = String(index + 1).padStart(2, "0");
   const caseStudyHref = `/work/${project.slug}`;
+  const showImage = Boolean(project.heroImage) && !imageFailed;
 
   return (
     <article className={styles.projectCard}>
@@ -77,7 +85,7 @@ export function ProjectCard({
         aria-label={`View case study for ${project.title}`}
       >
         <div className={styles.cardMedia}>
-          {project.heroImage ? (
+          {showImage ? (
             <>
               <img
                 className={`${styles.cardImage} ${project.slug === "bcba-prep" ? fixStyles.bcbaImage : ""}`}
@@ -85,6 +93,7 @@ export function ProjectCard({
                 alt={project.heroImageAlt}
                 loading="lazy"
                 decoding="async"
+                onError={() => setImageFailed(true)}
               />
               <span className={styles.cardMediaScrim} aria-hidden="true" />
             </>
