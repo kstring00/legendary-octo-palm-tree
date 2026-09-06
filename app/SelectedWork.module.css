@@ -11,11 +11,7 @@
 }
 
 .headingRow {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: clamp(2rem, 4vw, 3rem);
+  margin-bottom: clamp(2.4rem, 4vw, 3.4rem);
 }
 
 .eyebrow {
@@ -28,39 +24,342 @@
 }
 
 .headingRow h2 {
+  margin: 0;
   color: var(--navy);
   font-size: clamp(3rem, 5vw, 5rem);
   line-height: 0.9;
+}
+
+.ledger {
+  border-top: 1px solid rgba(201, 162, 39, 0.42);
+}
+
+.ledgerRow {
+  position: relative;
+  display: block;
+  min-height: 8.4rem;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(201, 162, 39, 0.42);
+  isolation: isolate;
+}
+
+.rowText {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 4.25rem minmax(17rem, 1.55fr) minmax(12rem, 0.9fr) 5rem minmax(8.5rem, auto);
+  align-items: center;
+  gap: clamp(1rem, 2.2vw, 2rem);
+  min-height: 8.4rem;
+  padding: 2.45rem 0;
+}
+
+.number {
+  color: #a9833d;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.projectName {
+  color: #17344d;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(2rem, 3vw, 3.35rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+
+.category,
+.year,
+.status {
+  color: #6f7c86;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.year {
+  text-align: right;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  white-space: nowrap;
+}
+
+.status i {
+  width: 0.38rem;
+  height: 0.38rem;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.72;
+}
+
+.goldEcho {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.goldEcho .number,
+.goldEcho .projectName,
+.goldEcho .category,
+.goldEcho .year,
+.goldEcho .status {
+  color: #b58c46;
+}
+
+.goldEcho .projectName {
+  color: #a9833d;
+}
+
+.filament {
+  position: absolute;
+  z-index: 5;
+  top: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #c9a227;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.rowImage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  opacity: 0;
+  transform: scale(1.012);
+  transition: opacity 400ms ease, transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.imageWash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(245, 240, 232, 0.76);
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+
+.pending {
+  opacity: 0.62;
+}
+
+.pending .projectName,
+.pending .category,
+.pending .year,
+.pending .status {
+  color: #7b817f;
 }
 
 .viewAll {
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
-  border-bottom: 1px solid rgba(160, 131, 72, 0.5);
+  margin-top: 2rem;
   padding-bottom: 0.25rem;
   color: var(--slate);
   font-size: 0.82rem;
   font-weight: 700;
   white-space: nowrap;
+  border-bottom: 1px solid rgba(160, 131, 72, 0.5);
 }
 
 .viewAll span {
   color: var(--gold);
 }
 
-.section :global(.projectCard) {
-  background: #f8f4ec;
+.ledgerRow:focus-visible {
+  outline: 2px solid #a9833d;
+  outline-offset: 5px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ledgerRow.active:not(.pending) .filament,
+  .ledgerRow:hover:not(.pending) .filament,
+  .ledgerRow:focus-visible:not(.pending) .filament {
+    animation: filamentTrace 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .ledgerRow.active:not(.pending) .goldEcho,
+  .ledgerRow:hover:not(.pending) .goldEcho,
+  .ledgerRow:focus-visible:not(.pending) .goldEcho {
+    animation: filamentWarm 600ms steps(1, end) forwards;
+  }
+
+  .ledgerRow.active:not(.pending) .rowImage,
+  .ledgerRow:hover:not(.pending) .rowImage,
+  .ledgerRow:focus-visible:not(.pending) .rowImage {
+    opacity: 0.18;
+    transform: scale(1);
+  }
+
+  .ledgerRow.active:not(.pending) .imageWash,
+  .ledgerRow:hover:not(.pending) .imageWash,
+  .ledgerRow:focus-visible:not(.pending) .imageWash {
+    opacity: 1;
+  }
+
+  .ledgerRow.active.pending .filament,
+  .ledgerRow.pending:hover .filament,
+  .ledgerRow.pending:focus-visible .filament {
+    animation: pendingTrace 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .ledgerRow.active.pending .goldEcho,
+  .ledgerRow.pending:hover .goldEcho,
+  .ledgerRow.pending:focus-visible .goldEcho {
+    animation: pendingWarm 600ms steps(1, end) forwards;
+  }
+}
+
+@keyframes filamentTrace {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes filamentWarm {
+  0% { opacity: 0; }
+  18% { opacity: 0.34; }
+  28% { opacity: 0.08; }
+  39% { opacity: 0.62; }
+  50% { opacity: 0.2; }
+  66% { opacity: 0.82; }
+  76% { opacity: 0.45; }
+  100% { opacity: 1; }
+}
+
+@keyframes pendingTrace {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  100% {
+    opacity: 0.48;
+    transform: scaleX(0.82);
+  }
+}
+
+@keyframes pendingWarm {
+  0% { opacity: 0; }
+  35% { opacity: 0.28; }
+  55% { opacity: 0.12; }
+  100% { opacity: 0.42; }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .ledgerRow:not(.pending) .rowImage {
+    opacity: 0.13;
+    transform: scale(1);
+  }
+
+  .ledgerRow:not(.pending) .imageWash {
+    opacity: 1;
+  }
+
+  .goldEcho,
+  .filament {
+    display: none;
+  }
+}
+
+@media (max-width: 52rem) {
+  .rowText {
+    grid-template-columns: 3.2rem minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "number name name name"
+      ". category year status";
+    gap: 0.8rem 1rem;
+    min-height: 9rem;
+    padding: 2rem 0;
+  }
+
+  .number { grid-area: number; align-self: center; }
+  .projectName { grid-area: name; }
+  .category { grid-area: category; }
+  .year { grid-area: year; }
+  .status { grid-area: status; }
+
+  .projectName {
+    font-size: clamp(1.85rem, 7vw, 2.8rem);
+  }
 }
 
 @media (max-width: 42rem) {
   .section {
-    padding-top: 4.5rem;
-    padding-bottom: 4.5rem;
+    padding: 4.5rem 1.1rem;
   }
 
-  .headingRow {
-    align-items: flex-start;
-    flex-direction: column;
+  .rowText {
+    grid-template-columns: 2.6rem minmax(0, 1fr) auto;
+    grid-template-areas:
+      "number name name"
+      ". category year"
+      ". status status";
+    row-gap: 0.65rem;
+    min-height: 10rem;
+  }
+
+  .status {
+    justify-content: flex-start;
+  }
+
+  .category,
+  .year,
+  .status {
+    font-size: 0.57rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .goldEcho,
+  .filament {
+    display: none;
+  }
+
+  .ledgerRow:hover:not(.pending) .rowImage,
+  .ledgerRow:focus-visible:not(.pending) .rowImage,
+  .ledgerRow.active:not(.pending) .rowImage {
+    opacity: 0.18;
+    transform: none;
+  }
+
+  .ledgerRow:hover:not(.pending) .imageWash,
+  .ledgerRow:focus-visible:not(.pending) .imageWash,
+  .ledgerRow.active:not(.pending) .imageWash {
+    opacity: 1;
+  }
+
+  .rowImage,
+  .imageWash {
+    transition: none;
   }
 }
