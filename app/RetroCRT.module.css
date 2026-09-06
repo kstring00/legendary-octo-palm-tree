@@ -8,8 +8,8 @@
 }
 
 .monitorRig {
-  width: min(100%, 39rem);
-  margin-left: auto;
+  width: min(100%, 48rem);
+  margin-left: 0;
 }
 
 .monitorStage {
@@ -427,7 +427,7 @@
 
 @media (max-width: 48rem) {
   .monitorRig {
-    width: min(100%, 32rem);
+    width: min(100%, 34rem);
     margin: 0 auto;
   }
 
