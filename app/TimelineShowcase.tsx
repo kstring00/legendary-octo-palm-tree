@@ -327,7 +327,7 @@ export default function TimelineShowcase() {
                       </div>
                     )}
                     {index === 1 && <ProposalArtifact />}
-                    {index === 2 && <ProcessTimesheet />}
+                    {index === 2 && (isActive || isExiting) && <ProcessTimesheet />}
                     {index === 3 && <HandoffArtifact />}
                   </div>
                 </div>
