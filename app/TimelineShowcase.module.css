@@ -1,6 +1,7 @@
 .timeline {
+  --mechanism-ease: cubic-bezier(0.65, 0, 0.35, 1);
   overflow: hidden;
-  background: #f5f1e9;
+  background: #f5f0e8;
   scroll-margin-top: 6.5rem;
 }
 
@@ -11,9 +12,9 @@
 .tabShell {
   position: relative;
   z-index: 10;
-  border-top: 1px solid rgba(23, 43, 61, 0.12);
-  border-bottom: 1px solid rgba(23, 43, 61, 0.14);
-  background: #f7f3eb;
+  overflow-x: visible;
+  border-top: 1px solid rgba(13, 27, 38, 0.12);
+  background: #f5f0e8;
 }
 
 .tabList {
@@ -34,12 +35,12 @@
   min-height: 5rem;
   padding: 1rem clamp(0.7rem, 2vw, 1.6rem);
   border: 0;
-  border-right: 1px solid rgba(23, 43, 61, 0.1);
+  border-right: 1px solid rgba(13, 27, 38, 0.1);
   background: transparent;
-  color: rgba(23, 43, 61, 0.56);
+  color: rgba(13, 27, 38, 0.5);
   font: inherit;
   font-size: clamp(0.68rem, 0.9vw, 0.82rem);
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: 0.13em;
   line-height: 1.2;
   text-align: center;
@@ -53,33 +54,58 @@
 
 .tab:hover,
 .tabActive {
-  color: #172b3d;
+  color: #0d1b26;
 }
 
 .tab:focus-visible {
   z-index: 2;
-  outline: 2px solid #a08348;
+  outline: 2px solid #c9a227;
   outline-offset: -4px;
 }
 
-.tabNumber {
-  color: #a08348;
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
+.tabNumberClip,
+.panelNumberClip {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  font-variant-numeric: tabular-nums;
 }
 
-.activeIndicator {
+.tabNumberClip {
+  width: 2.25ch;
+  height: 1.2em;
+  flex: none;
+}
+
+.tabNumber,
+.panelStepNumber {
+  display: block;
+  color: #c9a227;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.tabNumber {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.progressTrack {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(201, 162, 39, 0.26);
+}
+
+.progressFill {
   position: absolute;
-  z-index: 4;
-  bottom: -1px;
-  left: 0;
-  width: 25%;
-  height: 2px;
+  inset: 0;
   background: #c9a227;
+  transform: scaleX(0);
   transform-origin: left center;
-  pointer-events: none;
 }
 
 .panelViewport {
@@ -93,93 +119,165 @@
   position: absolute;
   inset: 0 auto auto 0;
   display: grid;
-  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   width: 100%;
   min-height: 39rem;
+  visibility: hidden;
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+.panelActive,
+.panelExiting {
+  visibility: visible;
 }
 
 .panelActive {
   z-index: 3;
-  visibility: visible;
-  opacity: 1;
   pointer-events: auto;
 }
 
-.panelIdle {
-  z-index: 1;
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
+.panelEntering {
+  transform: translateY(100%);
+}
+
+.panelArrived {
+  transform: translateY(0);
 }
 
 .panelExiting {
   z-index: 2;
-  visibility: visible;
-  opacity: 0;
-  pointer-events: none;
+  transform: translateY(-100%);
+}
+
+.panelIdle {
+  z-index: 1;
+  transform: translateY(100%);
 }
 
 .panelCopy {
   display: flex;
   align-items: center;
   min-width: 0;
-  background: linear-gradient(180deg, #fbf8f2 0%, #f3eee5 100%);
+  background: #f5f0e8;
 }
 
 .panelCopyInner {
-  width: min(100%, 44rem);
+  width: min(100%, 46rem);
   margin-left: auto;
-  padding: clamp(3.2rem, 6vw, 6rem) clamp(2rem, 5vw, 5rem);
+  padding: clamp(3rem, 5.5vw, 5.5rem) clamp(2rem, 5vw, 5rem) clamp(5rem, 7vw, 6.5rem);
+}
+
+.panelNumberClip {
+  width: 3ch;
+  height: 1.4em;
+  margin-bottom: 1rem;
 }
 
 .panelStepNumber {
-  display: inline-block;
-  margin-bottom: 1.1rem;
-  color: #a08348;
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(1.35rem, 2vw, 1.8rem);
-  line-height: 1;
+  font-size: clamp(1.2rem, 1.8vw, 1.55rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .panelCopy h2 {
   max-width: 10ch;
   margin: 0;
-  color: #172b3d;
+  color: #0d1b26;
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(3.6rem, 5.6vw, 6rem);
+  font-size: clamp(3.5rem, 5.3vw, 5.8rem);
   font-weight: 300;
   line-height: 0.9;
   letter-spacing: -0.045em;
 }
 
 .closeCondition {
-  margin: clamp(1.3rem, 2vw, 1.7rem) 0 0;
-  color: #8d7650;
-  font-size: 0.68rem;
-  font-weight: 600;
+  margin: clamp(1.25rem, 2vw, 1.65rem) 0 0;
+  color: rgba(13, 27, 38, 0.56);
+  font-size: 0.66rem;
+  font-weight: 650;
   letter-spacing: 0.2em;
   line-height: 1.5;
   text-transform: uppercase;
 }
 
 .closeCondition strong {
-  color: #9c7b3c;
-  font-weight: 700;
+  color: #c9a227;
+  font-weight: 750;
 }
 
 .bodyCopy {
   max-width: 34rem;
-  margin: 1.35rem 0 0;
-  color: #526777;
+  margin: 1.3rem 0 0;
+  color: rgba(13, 27, 38, 0.68);
   font-size: clamp(0.98rem, 1.2vw, 1.08rem);
   line-height: 1.75;
+}
+
+.consultationSteps {
+  max-width: 38rem;
+  margin-top: 1.45rem;
+  border-top: 1px solid rgba(13, 27, 38, 0.12);
+}
+
+.consultationStep {
+  display: grid;
+  grid-template-columns: 3.35rem minmax(0, 1fr);
+  gap: 0.8rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(13, 27, 38, 0.12);
+}
+
+.consultationNumber {
+  padding-top: 0.18rem;
+  color: #c9a227;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.consultationStep h3 {
+  margin: 0;
+  color: #0d1b26;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(1.18rem, 1.8vw, 1.55rem);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.consultationStep p {
+  margin: 0.42rem 0 0;
+  color: rgba(13, 27, 38, 0.64);
+  font-size: clamp(0.78rem, 0.9vw, 0.88rem);
+  line-height: 1.58;
+}
+
+.consultationCall {
+  position: relative;
+  padding-left: 1rem;
+}
+
+.consultationCall::before {
+  content: "";
+  position: absolute;
+  top: 0.85rem;
+  bottom: 0.85rem;
+  left: 0;
+  width: 2px;
+  background: #c9a227;
+}
+
+.consultationCall h3 {
+  font-weight: 650;
 }
 
 .artifactPanel {
   display: flex;
   align-items: center;
   min-width: 0;
-  padding: clamp(2rem, 4vw, 4rem);
+  padding: clamp(2rem, 4vw, 4rem) clamp(2rem, 4vw, 4rem) clamp(5.5rem, 7vw, 6.5rem);
   border-left: 1px solid rgba(245, 240, 232, 0.1);
   background: #0d1b26;
   color: #f5f0e8;
@@ -188,6 +286,42 @@
 .artifactInner {
   width: min(100%, 48rem);
   margin: 0 auto;
+}
+
+.advanceControl {
+  position: absolute;
+  right: clamp(1.5rem, 3vw, 3rem);
+  bottom: clamp(1.35rem, 2.4vw, 2.2rem);
+  z-index: 5;
+}
+
+.advanceControl button,
+.advanceControl a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: 0;
+  border-bottom: 1px solid rgba(201, 162, 39, 0.52);
+  padding: 0 0 0.3rem;
+  background: transparent;
+  color: #f5f0e8;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.advanceControl span {
+  color: #c9a227;
+}
+
+.advanceControl button:focus-visible,
+.advanceControl a:focus-visible {
+  outline: 2px solid #c9a227;
+  outline-offset: 5px;
 }
 
 /* Relocate the existing AI intake component without rebuilding its chat UI. */
@@ -232,9 +366,9 @@
 .handoff {
   width: min(100%, 38rem);
   margin: 0 auto;
-  border: 1px solid rgba(23, 43, 61, 0.13);
+  border: 1px solid rgba(13, 27, 38, 0.13);
   background: #f5f0e8;
-  color: #172b3d;
+  color: #0d1b26;
 }
 
 .proposal {
@@ -252,7 +386,7 @@
 .documentEyebrow {
   display: block;
   margin-bottom: 0.45rem;
-  color: #9c7b3c;
+  color: #c9a227;
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -262,7 +396,7 @@
 .proposalHeader h4,
 .handoffHeader h4 {
   margin: 0;
-  color: #172b3d;
+  color: #0d1b26;
   font-family: var(--font-cormorant), Georgia, serif;
   font-size: clamp(1.8rem, 3vw, 2.55rem);
   font-weight: 400;
@@ -272,7 +406,7 @@
 
 .proposalDate {
   flex: none;
-  color: #788490;
+  color: rgba(13, 27, 38, 0.5);
   font-size: 0.61rem;
   font-weight: 600;
   letter-spacing: 0.11em;
@@ -282,7 +416,7 @@
 .proposalRule {
   height: 1px;
   margin: 1.35rem 0 1.15rem;
-  background: rgba(23, 43, 61, 0.16);
+  background: rgba(13, 27, 38, 0.16);
 }
 
 .proposalSection + .proposalSection {
@@ -291,7 +425,7 @@
 
 .proposalSection h5 {
   margin: 0 0 0.55rem;
-  color: #8d7650;
+  color: rgba(13, 27, 38, 0.58);
   font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -299,7 +433,7 @@
 }
 
 .documentList {
-  border-top: 1px solid rgba(23, 43, 61, 0.1);
+  border-top: 1px solid rgba(13, 27, 38, 0.1);
 }
 
 .proposalLine {
@@ -307,8 +441,8 @@
   align-items: center;
   gap: 0.75rem;
   min-height: 2.55rem;
-  border-bottom: 1px solid rgba(23, 43, 61, 0.1);
-  color: #405566;
+  border-bottom: 1px solid rgba(13, 27, 38, 0.1);
+  color: rgba(13, 27, 38, 0.72);
   font-size: clamp(0.76rem, 1vw, 0.88rem);
   line-height: 1.4;
 }
@@ -318,7 +452,7 @@
   width: 1.1rem;
   height: 1.1rem;
   flex: none;
-  color: #a08348;
+  color: #c9a227;
 }
 
 .proposalCheck path,
@@ -331,7 +465,7 @@
 }
 
 .excludedList .proposalLine {
-  color: #8b949b;
+  color: rgba(13, 27, 38, 0.46);
 }
 
 .excludedMark {
@@ -339,12 +473,12 @@
   width: 1.1rem;
   flex: none;
   place-items: center;
-  color: #a6aaad;
+  color: rgba(13, 27, 38, 0.4);
 }
 
 .proposalFooter {
   margin-top: 1.35rem;
-  border-top: 1px solid rgba(160, 131, 72, 0.54);
+  border-top: 1px solid rgba(201, 162, 39, 0.54);
 }
 
 .proposalFooter .proposalLine {
@@ -353,7 +487,7 @@
 }
 
 .proposalFooter strong {
-  color: #172b3d;
+  color: #0d1b26;
   font-family: var(--font-cormorant), Georgia, serif;
   font-size: 1.1rem;
   font-weight: 500;
@@ -365,13 +499,13 @@
 
 .handoffHeader {
   padding: clamp(1.4rem, 3vw, 2.2rem);
-  border-bottom: 1px solid rgba(23, 43, 61, 0.12);
+  border-bottom: 1px solid rgba(13, 27, 38, 0.12);
 }
 
 .handoffStatus {
   flex: none;
   padding-top: 0.15rem;
-  color: #9c7b3c;
+  color: #c9a227;
   font-size: 0.55rem;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -387,8 +521,8 @@
   align-items: center;
   gap: 0.9rem;
   min-height: 4rem;
-  border-bottom: 1px solid rgba(23, 43, 61, 0.11);
-  color: #405566;
+  border-bottom: 1px solid rgba(13, 27, 38, 0.11);
+  color: rgba(13, 27, 38, 0.72);
   font-size: clamp(0.8rem, 1vw, 0.92rem);
   line-height: 1.4;
 }
@@ -398,30 +532,63 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .activeIndicator {
-    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  .progressFill {
+    transition: transform 700ms var(--mechanism-ease);
+  }
+
+  .entryDraw .progressFill {
+    transition-duration: 900ms;
   }
 
   .panelViewport {
-    transition: height 400ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: height 600ms var(--mechanism-ease);
   }
 
   .panel {
+    transition: transform 600ms var(--mechanism-ease);
+  }
+
+  .settleItem {
+    opacity: 0;
+    transform: translateY(8px);
     transition:
-      opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 260ms var(--mechanism-ease),
+      transform 260ms var(--mechanism-ease);
   }
 
-  .panelActive {
-    transform: translateX(0);
+  .entered .panelActive.panelArrived .settleItem {
+    opacity: 1;
+    transform: translateY(0);
   }
 
-  .panelIdle {
-    transform: translateX(12px);
+  .settleHeading {
+    transition-delay: 0ms;
   }
 
-  .panelExiting {
-    transform: translateX(-12px);
+  .settleClose {
+    transition-delay: 60ms;
+  }
+
+  .settleBody {
+    transition-delay: 120ms;
+  }
+
+  .settleArtifact {
+    transition-delay: 180ms;
+  }
+
+  .settleAdvance {
+    transition-delay: 240ms;
+  }
+
+  .numberIncoming .tabNumber,
+  .numberIncoming .panelStepNumber {
+    animation: odometerIn 450ms var(--mechanism-ease) both;
+  }
+
+  .numberOutgoing .tabNumber,
+  .numberOutgoing .panelStepNumber {
+    animation: odometerOut 450ms var(--mechanism-ease) both;
   }
 
   .proposalLine,
@@ -429,8 +596,8 @@
     opacity: 0;
     transform: translateY(8px);
     transition:
-      opacity 380ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 380ms var(--mechanism-ease),
+      transform 380ms var(--mechanism-ease);
   }
 
   .panelActive .proposalLine,
@@ -443,7 +610,7 @@
   .handoffCheck path {
     stroke-dasharray: 24;
     stroke-dashoffset: 24;
-    transition: stroke-dashoffset 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: stroke-dashoffset 520ms var(--mechanism-ease);
   }
 
   .panelActive .proposalCheck path,
@@ -475,9 +642,29 @@
   }
 }
 
+@keyframes odometerIn {
+  from {
+    transform: translateY(110%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes odometerOut {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-110%);
+  }
+}
+
 @media (max-width: 72rem) {
   .panel {
-    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
   }
 
   .panelCopyInner {
@@ -489,7 +676,7 @@
   }
 }
 
-@media (max-width: 52rem) {
+@media (max-width: 48rem) {
   .tabShell {
     overflow-x: auto;
     scrollbar-width: none;
@@ -500,11 +687,20 @@
   }
 
   .tabList {
-    min-width: 42rem;
+    width: max-content;
+    min-width: 44rem;
   }
 
   .tab {
-    min-height: 4.4rem;
+    width: 11rem;
+    min-height: 4.35rem;
+    flex: none;
+  }
+
+  .progressTrack {
+    position: sticky;
+    left: 0;
+    width: 100vw;
   }
 
   .panelViewport {
@@ -520,15 +716,19 @@
     width: 100%;
     max-width: 42rem;
     margin: 0 auto;
-    padding: 2.8rem 1.25rem 2.5rem;
+    padding: 2.65rem 1.25rem 2.5rem;
   }
 
   .panelCopy h2 {
     font-size: clamp(3rem, 13vw, 4.7rem);
   }
 
+  .consultationSteps {
+    margin-top: 1.3rem;
+  }
+
   .artifactPanel {
-    padding: 2rem 1rem 2.5rem;
+    padding: 2rem 1rem 5.25rem;
     border-top: 1px solid rgba(245, 240, 232, 0.1);
     border-left: 0;
   }
@@ -537,14 +737,30 @@
   .handoff {
     width: min(100%, 34rem);
   }
+
+  .advanceControl {
+    right: 1.15rem;
+    bottom: 1.35rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .panelViewport {
+      transition-duration: 400ms;
+    }
+
+    .panel {
+      transition-duration: 400ms;
+    }
+  }
 }
 
 @media (max-width: 34rem) {
   .tabList {
-    min-width: 34rem;
+    min-width: 38rem;
   }
 
   .tab {
+    width: 9.5rem;
     min-height: 4rem;
     padding-inline: 0.55rem;
     font-size: 0.6rem;
@@ -552,7 +768,11 @@
   }
 
   .tabNumber {
-    font-size: 0.88rem;
+    font-size: 0.74rem;
+  }
+
+  .consultationStep {
+    grid-template-columns: 2.8rem minmax(0, 1fr);
   }
 
   .proposalHeader,
@@ -568,16 +788,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .activeIndicator,
+  .progressFill,
   .panelViewport,
   .panel,
+  .settleItem,
+  .tabNumber,
+  .panelStepNumber,
   .proposalLine,
   .handoffRow,
   .proposalCheck path,
   .handoffCheck path {
     transition: none !important;
+    animation: none !important;
   }
 
+  .settleItem,
   .proposalLine,
   .handoffRow {
     opacity: 1;
