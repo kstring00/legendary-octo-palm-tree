@@ -155,7 +155,7 @@ function ProposalArtifact() {
         </div>
         <div className={styles.proposalLine} style={{ transitionDelay: "480ms" }}>
           <span>Revision rounds included</span>
-          <strong>2 rounds</strong>
+          <strong>3 rounds</strong>
         </div>
       </footer>
     </article>

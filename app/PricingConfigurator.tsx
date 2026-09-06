@@ -86,16 +86,16 @@ const featureGroups = [
 
 const addOns = [
   { id: "clarity" as AddOnId, name: "Microsoft Clarity setup", price: 150, note: "Session recordings, heatmaps and analytics configured correctly." },
-  { id: "extra-page" as AddOnId, name: "Additional page", price: 175, note: "A fully designed and responsive page added to your selected build." },
+  { id: "extra-page" as AddOnId, name: "Additional page", price: 250, note: "A fully designed and responsive page added to your selected build." },
   { id: "copy-polish" as AddOnId, name: "Copy & content polish", price: 350, note: "Tighten hierarchy, calls to action and key sales messaging." },
   { id: "booking-flow" as AddOnId, name: "Booking flow integration", price: 250, note: "Scheduling embedded into the experience instead of sending visitors away." },
-  { id: "intake-flow" as AddOnId, name: "Advanced intake flow", price: 350, note: "Conditional questions, qualification logic or structured onboarding." },
-  { id: "cms" as AddOnId, name: "Blog / CMS module", price: 450, note: "An editable content system for resources, articles or updates." },
-  { id: "crm" as AddOnId, name: "CRM / email integration", price: 350, note: "Route qualified leads into the system you already use." },
-  { id: "automation" as AddOnId, name: "Workflow automation", price: 500, note: "Remove repetitive handoffs with a focused automated workflow." },
-  { id: "payments" as AddOnId, name: "Payments / checkout", price: 650, note: "A scoped payment, deposit or subscription experience." },
-  { id: "ai" as AddOnId, name: "AI-assisted feature", price: 950, note: "A focused AI experience designed around a real business use case." },
-  { id: "portal" as AddOnId, name: "Client portal foundation", price: 1500, note: "Secure client login, dashboard foundation and gated resources/workflows." },
+  { id: "intake-flow" as AddOnId, name: "Advanced intake flow", price: 550, note: "Conditional questions, qualification logic or structured onboarding." },
+  { id: "cms" as AddOnId, name: "Blog / CMS module", price: 1200, note: "Content schema, templates, and an editing interface your team can actually use without me." },
+  { id: "crm" as AddOnId, name: "CRM / email integration", price: 450, note: "Route qualified leads into the system you already use." },
+  { id: "automation" as AddOnId, name: "Workflow automation", price: null, note: "Remove repetitive handoffs with a focused automated workflow." },
+  { id: "payments" as AddOnId, name: "Payments / checkout", price: 1200, note: "Stripe integration with webhooks, failed-payment handling, and access syncing — not just a checkout button." },
+  { id: "ai" as AddOnId, name: "AI-assisted feature", price: null, note: "A focused AI experience designed around a real business use case." },
+  { id: "portal" as AddOnId, name: "Client portal foundation", price: 2500, note: "Authentication, database, per-client data separation, and an admin area. This is a small application, scoped individually." },
   { id: "revision" as AddOnId, name: "Additional revision round", price: 250, note: "One additional consolidated revision cycle beyond the 3 included rounds." },
 ] as const;
 
@@ -123,8 +123,9 @@ export default function PricingConfigurator() {
   const tier = tiers.find((item) => item.id === tierId) ?? tiers[1];
   const care = carePlans.find((item) => item.id === careId) ?? carePlans[0];
   const chosenAddOns = addOns.filter((item) => selectedAddOns.includes(item.id));
+  const hasConsultationPricedItems = chosenAddOns.some((item) => item.price === null);
   const projectFloor = useMemo(
-    () => tier.price + chosenAddOns.reduce((sum, item) => sum + item.price, 0),
+    () => tier.price + chosenAddOns.reduce((sum, item) => sum + (item.price ?? 0), 0),
     [tier, chosenAddOns],
   );
 
@@ -273,7 +274,9 @@ export default function PricingConfigurator() {
                         title={item.note}
                       >
                         <strong>{item.name}</strong>
-                        <span className={compact.addOnPrice}>from {money(item.price)}</span>
+                        <span className={`${compact.addOnPrice} ${item.price === null ? compact.addOnPriceQuoted : ""}`}>
+                          {item.price === null ? "Quoted after consultation" : `from ${money(item.price)}`}
+                        </span>
                         <span className={compact.addOnCheck}>{checked ? "✓" : "+"}</span>
                       </button>
                       <button
@@ -342,9 +345,14 @@ export default function PricingConfigurator() {
                 {chosenAddOns.map((item) => (
                   <div className={styles.cartLine} key={item.id}>
                     <span>{item.name}</span>
-                    <strong>+{money(item.price)}</strong>
+                    <strong className={item.price === null ? compact.cartQuoted : undefined}>
+                      {item.price === null ? "Quoted after consultation" : `+${money(item.price)}`}
+                    </strong>
                   </div>
                 ))}
+                {hasConsultationPricedItems && (
+                  <p className={compact.consultationNote}>Includes items scoped after consultation.</p>
+                )}
               </div>
             )}
 
