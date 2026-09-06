@@ -19,6 +19,7 @@ export type Project = {
   liveUrl: string | null;
   problem: string[];
   features: string[];
+  approach: string;
   year: string;
   clientType: string;
 };
@@ -42,14 +43,15 @@ export const projects: Project[] = [
     ],
     liveUrl: "https://texasabacenterscg.com/",
     problem: [
-      "Case-study copy is being finalized.",
-      "The project centers on making support resources and next steps easier for families to navigate.",
+      "Families looking for autism support can end up piecing together providers, parent resources, and next steps across too many places.",
+      "The site needed to reduce that search burden and make the next useful action obvious without making the experience feel clinical or overwhelming.",
     ],
     features: [
       "Clear support pathways",
       "Family-focused resource navigation",
       "Responsive, accessible interface",
     ],
+    approach: "I organized the experience around the decisions a family is actually trying to make, not around internal service categories. The interface keeps guidance direct, local, and easy to scan so visitors can move forward without decoding the site first.",
     year: "2026",
     clientType: "ABA / autism support",
   },
@@ -81,14 +83,15 @@ export const projects: Project[] = [
     ],
     liveUrl: null,
     problem: [
-      "Case-study copy is being finalized.",
-      "The build organizes a large study-product catalog into a coherent purchase and member-library experience.",
+      "A large exam-prep catalog can quickly feel like a folder of disconnected PDFs instead of one coherent product.",
+      "The build needed to make nine domains understandable before purchase and just as clear once a member signs in to study.",
     ],
     features: [
       "Domain-based study library",
       "Member dashboard",
       "Purchase and access pathways",
     ],
+    approach: "I treated the nine domains as one visual library system with a consistent hierarchy from storefront to member access. The goal was to make the volume of material feel organized and premium without adding friction to finding the next thing to study.",
     year: "2026",
     clientType: "Exam prep · licensing",
   },
@@ -110,14 +113,15 @@ export const projects: Project[] = [
     ],
     liveUrl: null,
     problem: [
-      "Case-study copy is being finalized.",
-      "The experience is designed to make storage options easier to understand and compare.",
+      "Storage customers often arrive knowing what they need to store, but not which unit type or size matches it.",
+      "The site needed to turn that uncertainty into a simple decision path while keeping pricing, access, and facility information easy to reach.",
     ],
     features: [
       "Storage-focused information architecture",
       "Responsive customer journey",
       "Clear conversion pathways",
     ],
+    approach: "I led with the storage-type decision and paired straightforward guidance with strong facility imagery so the site answers the practical question first. From there, the experience narrows toward size, availability, and the action the customer is ready to take.",
     year: "2025",
     clientType: "Self storage",
   },
