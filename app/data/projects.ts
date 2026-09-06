@@ -23,24 +23,45 @@ export type Project = {
   clientType: string;
 };
 
-/**
- * PLACEHOLDER CONTENT ONLY.
- * Replace bracketed copy as case-study content is finalized.
- * Image fields can be populated independently; cards render a cream/gold
- * placeholder whenever heroImage is an empty string.
- */
 export const projects: Project[] = [
   {
-    slug: "project-01",
-    title: "[PLACEHOLDER] Project 01",
-    summary: "[PLACEHOLDER] Replace with a one-line summary of the project outcome.",
-    description:
-      "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
-    status: "LIVE",
-    tech: ["[TECH]", "[TECH]", "[TECH]"],
-    heroImage: "/work/bcba-prep/library.png",
-    heroImageAlt:
-      "BCBA Prep domain library page showing a stacked collection of study domains",
+    slug: "common-ground",
+    title: "Common Ground",
+    summary: "A family-facing autism support hub designed to make next steps clearer and easier to find.",
+    description: "A support and resource experience for Texas ABA families, built around practical guidance and clear pathways.",
+    status: "IN PILOT",
+    tech: ["Next.js", "TypeScript", "Responsive UI"],
+    heroImage: "/hero-crt/common-ground.png",
+    heroImageAlt: "Common Ground homepage showing autism support resources for Texas families",
+    screenshots: [
+      {
+        src: "/hero-crt/common-ground.png",
+        alt: "Common Ground homepage showing autism support resources for Texas families",
+        caption: "Common Ground homepage and primary support pathways.",
+      },
+    ],
+    liveUrl: null,
+    problem: [
+      "Case-study copy is being finalized.",
+      "The project centers on making support resources and next steps easier for families to navigate.",
+    ],
+    features: [
+      "Clear support pathways",
+      "Family-focused resource navigation",
+      "Responsive, accessible interface",
+    ],
+    year: "2026",
+    clientType: "ABA / autism support",
+  },
+  {
+    slug: "bcba-prep",
+    title: "BCBA Prep",
+    summary: "A study-library and member experience for BCBA exam preparation materials.",
+    description: "An exam-prep storefront and member library organized around the BCBA task-list domains.",
+    status: "LAUNCHING SOON",
+    tech: ["Next.js", "TypeScript", "Member experience"],
+    heroImage: "/hero-crt/bcba-prep.png",
+    heroImageAlt: "BCBA Prep domain library showing a stacked collection of exam study domains",
     screenshots: [
       {
         src: "/work/bcba-prep/library.png",
@@ -60,71 +81,45 @@ export const projects: Project[] = [
     ],
     liveUrl: null,
     problem: [
-      "[PLACEHOLDER] Replace with a short paragraph describing the client or business problem.",
-      "[PLACEHOLDER] Replace with a short paragraph describing the constraint, friction, or opportunity the build needed to address.",
+      "Case-study copy is being finalized.",
+      "The build organizes a large study-product catalog into a coherent purchase and member-library experience.",
     ],
     features: [
-      "[PLACEHOLDER] Replace with feature or capability.",
-      "[PLACEHOLDER] Replace with feature or capability.",
-      "[PLACEHOLDER] Replace with feature or capability.",
+      "Domain-based study library",
+      "Member dashboard",
+      "Purchase and access pathways",
     ],
-    year: "[YEAR]",
-    clientType: "[PLACEHOLDER] Replace with client type",
+    year: "2026",
+    clientType: "Exam prep · licensing",
   },
   {
-    slug: "project-02",
-    title: "[PLACEHOLDER] Project 02",
-    summary: "[PLACEHOLDER] Replace with a one-line summary of the project outcome.",
-    description:
-      "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
-    status: "IN PILOT",
-    tech: ["[TECH]", "[TECH]", "[TECH]"],
+    slug: "lake-city-self-storage",
+    title: "Lake City Self Storage",
+    summary: "A self-storage website focused on helping visitors understand options and move toward the right unit.",
+    description: "A storage-facility web experience structured around clear unit discovery and customer decision-making.",
+    status: "CASE STUDY",
+    tech: ["Web design", "Responsive UI", "Conversion UX"],
     heroImage: "",
-    heroImageAlt: "Project 02 website preview not available yet",
+    heroImageAlt: "Lake City Self Storage website preview not available yet",
     screenshots: [],
     liveUrl: null,
     problem: [
-      "[PLACEHOLDER] Replace with a short paragraph describing the client or business problem.",
-      "[PLACEHOLDER] Replace with a short paragraph describing the constraint, friction, or opportunity the build needed to address.",
+      "Case-study copy is being finalized.",
+      "The experience is designed to make storage options easier to understand and compare.",
     ],
     features: [
-      "[PLACEHOLDER] Replace with feature or capability.",
-      "[PLACEHOLDER] Replace with feature or capability.",
-      "[PLACEHOLDER] Replace with feature or capability.",
+      "Storage-focused information architecture",
+      "Responsive customer journey",
+      "Clear conversion pathways",
     ],
-    year: "[YEAR]",
-    clientType: "[PLACEHOLDER] Replace with client type",
-  },
-  {
-    slug: "project-03",
-    title: "[PLACEHOLDER] Project 03",
-    summary: "[PLACEHOLDER] Replace with a one-line summary of the project outcome.",
-    description:
-      "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
-    status: "LAUNCHING SOON",
-    tech: ["[TECH]", "[TECH]", "[TECH]"],
-    heroImage: "",
-    heroImageAlt: "Project 03 website preview not available yet",
-    screenshots: [],
-    liveUrl: null,
-    problem: [
-      "[PLACEHOLDER] Replace with a short paragraph describing the client or business problem.",
-      "[PLACEHOLDER] Replace with a short paragraph describing the constraint, friction, or opportunity the build needed to address.",
-    ],
-    features: [
-      "[PLACEHOLDER] Replace with feature or capability.",
-      "[PLACEHOLDER] Replace with feature or capability.",
-      "[PLACEHOLDER] Replace with feature or capability.",
-    ],
-    year: "[YEAR]",
-    clientType: "[PLACEHOLDER] Replace with client type",
+    year: "2025",
+    clientType: "Self storage",
   },
   {
     slug: "project-04",
     title: "[PLACEHOLDER] Project 04",
     summary: "[PLACEHOLDER] Replace with a one-line summary of the project outcome.",
-    description:
-      "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
+    description: "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
     status: "CASE STUDY",
     tech: ["[TECH]", "[TECH]", "[TECH]"],
     heroImage: "",
