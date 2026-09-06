@@ -324,7 +324,6 @@
   outline-offset: 5px;
 }
 
-/* Relocate the existing AI intake component without rebuilding its chat UI. */
 .intakeEmbed {
   width: 100%;
 }
@@ -742,15 +741,12 @@
     right: 1.15rem;
     bottom: 1.35rem;
   }
+}
 
-  @media (prefers-reduced-motion: no-preference) {
-    .panelViewport {
-      transition-duration: 400ms;
-    }
-
-    .panel {
-      transition-duration: 400ms;
-    }
+@media (max-width: 48rem) and (prefers-reduced-motion: no-preference) {
+  .panelViewport,
+  .panel {
+    transition-duration: 400ms;
   }
 }
 
