@@ -1,7 +1,5 @@
-import Image from "next/image";
-
+import ProcessTimesheet from "./ProcessTimesheet";
 import styles from "./TimelineShowcase.module.css";
-import timelineArtwork from "../ChatGPT Image Sep 4, 2026, 05_24_26 PM.png";
 
 const phases = [
   {
@@ -56,48 +54,17 @@ export default function TimelineShowcase() {
       </div>
 
       <div className={styles.visualPanel}>
-        <div className={styles.artworkStage} aria-hidden="true">
-          <Image
-            className={styles.timelineArtwork}
-            src={timelineArtwork}
-            alt=""
-            fill
-            sizes="(max-width: 72rem) 100vw, 50vw"
-            quality={95}
-          />
-
-          <div className={styles.phaseOverlay}>
-            {phases.map((phase, index) => (
-              <div
-                className={`${styles.phaseCard} ${styles[`phase${index + 1}`]}`}
-                key={phase.name}
-              >
-                <span className={styles.phaseName}>{phase.name}</span>
-                <strong>{phase.close}</strong>
-                <p>{phase.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className={styles.phaseTranscript}>
+        <div className={styles.phaseGrid} aria-label="Four project phases">
           {phases.map((phase) => (
-            <div key={phase.name}>
-              <strong>{phase.name}: {phase.close}.</strong>{" "}
-              <span>{phase.description}</span>
-            </div>
+            <article className={styles.phaseCard} key={phase.name}>
+              <span className={styles.phaseName}>{phase.name}</span>
+              <strong>{phase.close}</strong>
+              <p>{phase.description}</p>
+            </article>
           ))}
         </div>
 
-        <aside className={styles.checkInBand} aria-label="Timesheet check-in">
-          <h3>Every 10 hours, a check-in</h3>
-          <p>
-            You receive the timesheet — every entry dated, described, and
-            totalled. Progress since last check-in, what&apos;s next, and any
-            decisions I need from you. If something needs redirecting, we catch
-            it at hour 10, not hour 40.
-          </p>
-        </aside>
+        <ProcessTimesheet />
       </div>
     </section>
   );
