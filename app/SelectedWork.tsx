@@ -48,10 +48,19 @@ const rows: LedgerRow[] = [
     year: "2025",
     status: "CASE STUDY",
     href: "/work/lake-city-self-storage",
-    image: null,
+    image: "/work/lake-city-self-storage/home.webp",
   },
   {
     number: "04",
+    name: "With Little",
+    category: "Personal project",
+    year: "2026",
+    status: "LIVE",
+    href: "/work/with-little",
+    image: "/work/with-little/dashboard.webp",
+  },
+  {
+    number: "05",
     name: "Yours Here",
     category: "—",
     year: "—",
@@ -169,11 +178,7 @@ export default function SelectedWork() {
 
             return (
               <Link
-                className={`${styles.ledgerRow} ${
-                  active ? styles.active : ""
-                } ${row.pending ? styles.pending : ""} ${
-                  navigating ? styles.navigating : ""
-                }`}
+                className={`${styles.ledgerRow} ${active ? styles.active : ""} ${row.pending ? styles.pending : ""} ${navigating ? styles.navigating : ""}`}
                 href={row.href}
                 key={row.number}
                 onClick={(event) => handleNavigate(event, row, index)}
@@ -183,9 +188,7 @@ export default function SelectedWork() {
                 }}
                 onMouseLeave={() => {
                   if (navigating) return;
-                  setActiveRow((current) =>
-                    current === index ? null : current,
-                  );
+                  setActiveRow((current) => current === index ? null : current);
                 }}
                 onFocus={() => {
                   ensureImage(index);
@@ -193,21 +196,13 @@ export default function SelectedWork() {
                 }}
                 onBlur={() => {
                   if (navigating) return;
-                  setActiveRow((current) =>
-                    current === index ? null : current,
-                  );
+                  setActiveRow((current) => current === index ? null : current);
                 }}
               >
                 {row.image ? (
                   <span className={styles.previewSlot} aria-hidden="true">
                     {imageLoaded ? (
-                      <img
-                        className={styles.rowImage}
-                        src={row.image}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                      />
+                      <img className={styles.rowImage} src={row.image} alt="" loading="lazy" decoding="async" />
                     ) : null}
                     <span className={styles.previewCream} />
                   </span>
@@ -224,7 +219,6 @@ export default function SelectedWork() {
                 <div className={styles.rowText}>
                   <span className={styles.number}>{row.number}</span>
                   <span className={styles.projectName}>{row.name}</span>
-
                   <span className={styles.metaViewport}>
                     <Metadata row={row} />
                     <Metadata row={row} gold />
