@@ -26,9 +26,7 @@ export default function HeroShowcase() {
           <h1>
             Websites built
             <br />
-            around <em>your</em>
-            <br />
-            <em>business.</em>
+            around <em>your business.</em>
           </h1>
 
           <p className={styles.lede}>
@@ -38,6 +36,8 @@ export default function HeroShowcase() {
             the name swapped out.
           </p>
 
+          <span className={styles.goldRule} aria-hidden="true" />
+
           <div className={styles.actions}>
             <a className={styles.primary} href="/work">
               See the work <Arrow />
@@ -46,99 +46,15 @@ export default function HeroShowcase() {
               Start a project
             </a>
           </div>
-
-          <div className={styles.highlights}>
-            {highlights.map(([title, text]) => (
-              <div className={styles.highlight} key={title}>
-                <strong>{title}</strong>
-                <span>{text}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
-        <div
-          className={styles.visual}
-          aria-label="Selected website build concepts"
-        >
-          <div className={`${styles.browserMockup} ${styles.commonGround}`}>
-            <div className={styles.browserChrome} aria-hidden="true">
-              <i />
-              <i />
-              <i />
-              <span />
+        <div className={styles.highlights} aria-label="What you can expect">
+          {highlights.map(([title, text]) => (
+            <div className={styles.highlight} key={title}>
+              <strong>{title}</strong>
+              <span>{text}</span>
             </div>
-            <div className={styles.commonGroundBody}>
-              <div className={styles.cgTopLine} />
-              <p>
-                Real autism support
-                <br />
-                for real <em>Texas</em> families
-              </p>
-              <div className={styles.cgCopyLine} />
-              <div className={styles.cgPhotoBlock} />
-            </div>
-          </div>
-
-          <div className={`${styles.browserMockup} ${styles.bcbaPrep}`}>
-            <div className={styles.browserChrome} aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </div>
-            <div className={styles.bcbaBody}>
-              <p>
-                Nine domains. <em>One standard.</em>
-              </p>
-              <div className={styles.bcbaRule} />
-              <div className={styles.bcbaShelf} />
-            </div>
-          </div>
-
-          <div className={`${styles.browserMockup} ${styles.lakeCity}`}>
-            <div className={`${styles.browserChrome} ${styles.storageChrome}`} aria-hidden="true">
-              <i />
-              <i />
-              <i />
-              <span />
-            </div>
-            <div className={styles.storageBody}>
-              <div className={styles.storageLogoBlock} />
-              <div className={styles.storageNavLine} />
-              <div className={styles.storageGrid}>
-                <div className={styles.storageCopy}>
-                  <span />
-                  <strong>
-                    Find the Right Storage
-                    <br />
-                    Space for You
-                  </strong>
-                  <i />
-                  <i />
-                  <i />
-                </div>
-                <div className={styles.storageVisual}>
-                  <span />
-                  <i />
-                </div>
-              </div>
-              <div className={styles.storageCards}>
-                <i />
-                <i />
-              </div>
-            </div>
-          </div>
-
-          <p className={styles.buildCaption}>
-            <span aria-hidden="true" />
-            Recent builds
-            <b>·</b>
-            Lake City Self Storage
-            <b>·</b>
-            BCBA Prep
-            <b>·</b>
-            Common Ground (in pilot)
-          </p>
+          ))}
         </div>
       </div>
     </section>
