@@ -52,6 +52,11 @@ export const projects: Project[] = [
         alt: "BCBA Prep contact page with a two-column support form and project navigation",
         caption: "Contact and support experience.",
       },
+      {
+        src: "/work/bcba-prep/dashboard.webp",
+        alt: "BCBA Prep member dashboard showing purchased domains, quick actions, and study journey guidance",
+        caption: "Member dashboard and study-library access.",
+      },
     ],
     liveUrl: null,
     problem: [
