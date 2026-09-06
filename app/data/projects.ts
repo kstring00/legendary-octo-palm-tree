@@ -1,9 +1,9 @@
 export type ProjectStatus = "LIVE" | "IN PILOT" | "LAUNCHING SOON" | "CASE STUDY";
 
-export type ProjectImage = {
-  src: string | null;
+export type ProjectScreenshot = {
+  src: string;
   alt: string;
-  caption?: string;
+  caption: string;
 };
 
 export type Project = {
@@ -13,8 +13,9 @@ export type Project = {
   description: string;
   status: ProjectStatus;
   tech: string[];
-  heroImage: ProjectImage;
-  screenshots: ProjectImage[];
+  heroImage: string;
+  heroImageAlt: string;
+  screenshots: ProjectScreenshot[];
   liveUrl: string | null;
   problem: string[];
   features: string[];
@@ -24,9 +25,9 @@ export type Project = {
 
 /**
  * PLACEHOLDER CONTENT ONLY.
- * Replace every bracketed value below before publishing real case studies.
- * The four different statuses are intentionally represented so each badge state
- * can be reviewed visually. No live URLs are supplied until a real URL is known.
+ * Replace bracketed copy as case-study content is finalized.
+ * Image fields can be populated independently; cards render a cream/gold
+ * placeholder whenever heroImage is an empty string.
  */
 export const projects: Project[] = [
   {
@@ -37,20 +38,19 @@ export const projects: Project[] = [
       "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
     status: "LIVE",
     tech: ["[TECH]", "[TECH]", "[TECH]"],
-    heroImage: {
-      src: null,
-      alt: "Placeholder for the Project 01 hero screenshot",
-    },
+    heroImage: "/work/bcba-prep/library.png",
+    heroImageAlt:
+      "BCBA Prep domain library page showing a stacked collection of study domains",
     screenshots: [
       {
-        src: null,
-        alt: "Placeholder for Project 01 screenshot one",
-        caption: "[PLACEHOLDER] Replace with screenshot caption.",
+        src: "/work/bcba-prep/library.png",
+        alt: "BCBA Prep domain library with nine exam domains presented as stacked books",
+        caption: "Domain library overview.",
       },
       {
-        src: null,
-        alt: "Placeholder for Project 01 screenshot two",
-        caption: "[PLACEHOLDER] Replace with screenshot caption.",
+        src: "/work/bcba-prep/contact.png",
+        alt: "BCBA Prep contact page with a two-column support form and project navigation",
+        caption: "Contact and support experience.",
       },
     ],
     liveUrl: null,
@@ -74,22 +74,9 @@ export const projects: Project[] = [
       "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
     status: "IN PILOT",
     tech: ["[TECH]", "[TECH]", "[TECH]"],
-    heroImage: {
-      src: null,
-      alt: "Placeholder for the Project 02 hero screenshot",
-    },
-    screenshots: [
-      {
-        src: null,
-        alt: "Placeholder for Project 02 screenshot one",
-        caption: "[PLACEHOLDER] Replace with screenshot caption.",
-      },
-      {
-        src: null,
-        alt: "Placeholder for Project 02 screenshot two",
-        caption: "[PLACEHOLDER] Replace with screenshot caption.",
-      },
-    ],
+    heroImage: "",
+    heroImageAlt: "Project 02 website preview not available yet",
+    screenshots: [],
     liveUrl: null,
     problem: [
       "[PLACEHOLDER] Replace with a short paragraph describing the client or business problem.",
@@ -111,22 +98,9 @@ export const projects: Project[] = [
       "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
     status: "LAUNCHING SOON",
     tech: ["[TECH]", "[TECH]", "[TECH]"],
-    heroImage: {
-      src: null,
-      alt: "Placeholder for the Project 03 hero screenshot",
-    },
-    screenshots: [
-      {
-        src: null,
-        alt: "Placeholder for Project 03 screenshot one",
-        caption: "[PLACEHOLDER] Replace with screenshot caption.",
-      },
-      {
-        src: null,
-        alt: "Placeholder for Project 03 screenshot two",
-        caption: "[PLACEHOLDER] Replace with screenshot caption.",
-      },
-    ],
+    heroImage: "",
+    heroImageAlt: "Project 03 website preview not available yet",
+    screenshots: [],
     liveUrl: null,
     problem: [
       "[PLACEHOLDER] Replace with a short paragraph describing the client or business problem.",
@@ -148,22 +122,9 @@ export const projects: Project[] = [
       "[PLACEHOLDER] Replace with a concise two-line description of what was designed and built for this client.",
     status: "CASE STUDY",
     tech: ["[TECH]", "[TECH]", "[TECH]"],
-    heroImage: {
-      src: null,
-      alt: "Placeholder for the Project 04 hero screenshot",
-    },
-    screenshots: [
-      {
-        src: null,
-        alt: "Placeholder for Project 04 screenshot one",
-        caption: "[PLACEHOLDER] Replace with screenshot caption.",
-      },
-      {
-        src: null,
-        alt: "Placeholder for Project 04 screenshot two",
-        caption: "[PLACEHOLDER] Replace with screenshot caption.",
-      },
-    ],
+    heroImage: "",
+    heroImageAlt: "Project 04 website preview not available yet",
+    screenshots: [],
     liveUrl: null,
     problem: [
       "[PLACEHOLDER] Replace with a short paragraph describing the client or business problem.",
