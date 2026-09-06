@@ -5,11 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./Header.module.css";
 
 const NAV = [
-  { label: "Home", href: "/", targetId: "top" },
+  { label: "Home", href: "/" },
   { label: "Work", href: "/work" },
-  { label: "Process", href: "/#timeline", targetId: "timeline" },
-  { label: "Pricing", href: "/#pricing", targetId: "pricing" },
-  { label: "Contact", href: "/#quick-contact", targetId: "quick-contact" },
+  { label: "Contact", href: "/#quick-contact" },
 ] as const;
 
 const DELTA = 6;
@@ -25,8 +23,8 @@ function Arrow() {
 export default function Header() {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
-  const [active, setActive] = useState<string>(pathname.startsWith("/work") ? "/work" : "/");
   const lastY = useRef(0);
+  const active = pathname.startsWith("/work") ? "/work" : pathname === "/" ? "/" : "";
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -58,41 +56,6 @@ export default function Header() {
 
   const onFocusCapture = () => setHidden(false);
 
-  useEffect(() => {
-    if (pathname.startsWith("/work")) {
-      setActive("/work");
-      return;
-    }
-
-    setActive("/");
-
-    const targets = NAV.flatMap((item) => {
-      if (!("targetId" in item) || !item.targetId) return [];
-      const element = document.getElementById(item.targetId);
-      return element ? [{ element, href: item.href }] : [];
-    });
-
-    if (!targets.length) return;
-
-    const hrefByElement = new Map<Element, string>(
-      targets.map(({ element, href }) => [element, href]),
-    );
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const href = hrefByElement.get(entry.target);
-            if (href) setActive(href);
-          }
-        }
-      },
-      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
-    );
-
-    targets.forEach(({ element }) => observer.observe(element));
-    return () => observer.disconnect();
-  }, [pathname]);
-
   const onNavPointerMove = (event: React.PointerEvent<HTMLAnchorElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const x = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
@@ -118,13 +81,13 @@ export default function Header() {
 
         <nav className={styles.nav} aria-label="Primary navigation">
           {NAV.map((item) => {
-            const isActive = active === item.href;
+            const isActive = item.label !== "Contact" && active === item.href;
             return (
               <a
                 key={item.label}
                 href={item.href}
                 className={`${styles.navLink}${isActive ? ` ${styles.active}` : ""}`}
-                aria-current={isActive ? (item.href === "/work" ? "page" : "location") : undefined}
+                aria-current={isActive ? "page" : undefined}
                 onPointerMove={onNavPointerMove}
               >
                 <span className={styles.navTextWrap}>
