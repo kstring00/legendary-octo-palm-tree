@@ -1,200 +1,592 @@
 .timeline {
-  display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
-  min-height: 42rem;
   overflow: hidden;
   background: #f5f1e9;
   scroll-margin-top: 6.5rem;
 }
 
-.copyPanel {
+.stepperInner {
+  width: 100%;
+}
+
+.tabShell {
   position: relative;
-  z-index: 2;
+  z-index: 10;
+  border-top: 1px solid rgba(23, 43, 61, 0.12);
+  border-bottom: 1px solid rgba(23, 43, 61, 0.14);
+  background: #f7f3eb;
+}
+
+.tabList {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(100%, 96rem);
+  margin: 0 auto;
+}
+
+.tab {
+  position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: clamp(0.45rem, 1vw, 0.85rem);
+  min-width: 0;
+  min-height: 5rem;
+  padding: 1rem clamp(0.7rem, 2vw, 1.6rem);
+  border: 0;
+  border-right: 1px solid rgba(23, 43, 61, 0.1);
+  background: transparent;
+  color: rgba(23, 43, 61, 0.56);
+  font: inherit;
+  font-size: clamp(0.68rem, 0.9vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tab:last-of-type {
+  border-right: 0;
+}
+
+.tab:hover,
+.tabActive {
+  color: #172b3d;
+}
+
+.tab:focus-visible {
+  z-index: 2;
+  outline: 2px solid #a08348;
+  outline-offset: -4px;
+}
+
+.tabNumber {
+  color: #a08348;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.activeIndicator {
+  position: absolute;
+  z-index: 4;
+  bottom: -1px;
+  left: 0;
+  width: 25%;
+  height: 2px;
+  background: #c9a227;
+  transform-origin: left center;
+  pointer-events: none;
+}
+
+.panelViewport {
+  position: relative;
+  min-height: 39rem;
+  overflow: hidden;
+  background: #0d1b26;
+}
+
+.panel {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  width: 100%;
+  min-height: 39rem;
+}
+
+.panelActive {
+  z-index: 3;
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.panelIdle {
+  z-index: 1;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.panelExiting {
+  z-index: 2;
+  visibility: visible;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.panelCopy {
+  display: flex;
+  align-items: center;
+  min-width: 0;
   background: linear-gradient(180deg, #fbf8f2 0%, #f3eee5 100%);
 }
 
-.copyInner {
-  width: min(100%, 48rem);
+.panelCopyInner {
+  width: min(100%, 44rem);
   margin-left: auto;
-  padding: clamp(3rem, 5vw, 5rem) clamp(2rem, 5vw, 5rem);
+  padding: clamp(3.2rem, 6vw, 6rem) clamp(2rem, 5vw, 5rem);
 }
 
-.kickerRow {
-  display: flex;
-  align-items: center;
-  gap: 0.95rem;
-  margin-bottom: clamp(1.8rem, 3vw, 2.8rem);
-  color: #8f7443;
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.24em;
+.panelStepNumber {
+  display: inline-block;
+  margin-bottom: 1.1rem;
+  color: #a08348;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
   line-height: 1;
-  text-transform: uppercase;
 }
 
-.kickerRule {
-  width: 3.2rem;
-  height: 1px;
-  background: rgba(24, 42, 58, 0.34);
-}
-
-.timeline h2 {
-  margin: 0;
+.panelCopy h2 {
   max-width: 10ch;
+  margin: 0;
   color: #172b3d;
   font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(3.6rem, 5.8vw, 6.35rem);
+  font-size: clamp(3.6rem, 5.6vw, 6rem);
   font-weight: 300;
-  line-height: 0.88;
-  letter-spacing: -0.04em;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
 }
 
-.timeline h2 em {
-  color: #a08348;
-  font-weight: 300;
-}
-
-.subhead {
-  margin: clamp(1.4rem, 2.6vw, 1.9rem) 0 0;
-  color: #9c7b3c;
-  font-size: 0.72rem;
+.closeCondition {
+  margin: clamp(1.3rem, 2vw, 1.7rem) 0 0;
+  color: #8d7650;
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.27em;
+  letter-spacing: 0.2em;
+  line-height: 1.5;
   text-transform: uppercase;
+}
+
+.closeCondition strong {
+  color: #9c7b3c;
+  font-weight: 700;
 }
 
 .bodyCopy {
-  max-width: 39rem;
-  margin: clamp(1.5rem, 2.8vw, 2.1rem) 0 0;
+  max-width: 34rem;
+  margin: 1.35rem 0 0;
   color: #526777;
-  font-size: clamp(0.96rem, 1.18vw, 1.06rem);
-  line-height: 1.7;
+  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+  line-height: 1.75;
 }
 
-.visualPanel {
-  position: relative;
+.artifactPanel {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: clamp(1.4rem, 2.2vw, 2rem);
-  min-height: 42rem;
-  padding: clamp(2rem, 3.2vw, 3rem) clamp(1.5rem, 3.2vw, 3rem);
-  overflow: hidden;
+  align-items: center;
+  min-width: 0;
+  padding: clamp(2rem, 4vw, 4rem);
+  border-left: 1px solid rgba(245, 240, 232, 0.1);
   background: #0d1b26;
   color: #f5f0e8;
 }
 
-.phaseGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid rgba(245, 240, 232, 0.16);
-  border-bottom: 1px solid rgba(245, 240, 232, 0.16);
+.artifactInner {
+  width: min(100%, 48rem);
+  margin: 0 auto;
 }
 
-.phaseCard {
-  min-width: 0;
-  min-height: 7.2rem;
-  padding: clamp(0.95rem, 1.8vw, 1.35rem) clamp(0.85rem, 1.6vw, 1.2rem);
+/* Relocate the existing AI intake component without rebuilding its chat UI. */
+.intakeEmbed {
+  width: 100%;
 }
 
-.phaseCard:nth-child(odd) {
-  border-right: 1px solid rgba(245, 240, 232, 0.12);
+.intakeEmbed > section {
+  padding: 0 !important;
+  background: transparent !important;
+  scroll-margin-top: 0 !important;
 }
 
-.phaseCard:nth-child(-n + 2) {
-  border-bottom: 1px solid rgba(245, 240, 232, 0.12);
+.intakeEmbed > section > div {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.phaseName {
+.intakeEmbed > section > div > div:first-child {
+  display: none !important;
+}
+
+.intakeEmbed > section > div > div:nth-child(2) {
+  display: block !important;
+  width: 100% !important;
+  padding: 0 !important;
+}
+
+.intakeEmbed > section > div > div:nth-child(2) > p {
+  display: none !important;
+}
+
+.intakeEmbed :global(#ai-intake-chat) {
+  width: min(100%, 31rem) !important;
+  margin: 0 auto !important;
+}
+
+.proposal,
+.handoff {
+  width: min(100%, 38rem);
+  margin: 0 auto;
+  border: 1px solid rgba(23, 43, 61, 0.13);
+  background: #f5f0e8;
+  color: #172b3d;
+}
+
+.proposal {
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.proposalHeader,
+.handoffHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.documentEyebrow {
   display: block;
-  margin-bottom: 0.28rem;
-  color: #c9a227;
-  font-family: var(--font-cormorant), Georgia, serif;
-  font-size: clamp(0.92rem, 1.15vw, 1.08rem);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.phaseCard strong {
-  display: block;
-  color: #f2d79b;
-  font-size: clamp(0.54rem, 0.68vw, 0.66rem);
+  margin-bottom: 0.45rem;
+  color: #9c7b3c;
+  font-size: 0.58rem;
   font-weight: 700;
-  letter-spacing: 0.13em;
-  line-height: 1.35;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
-.phaseCard p {
-  max-width: 28ch;
-  margin: 0.48rem 0 0;
-  color: rgba(245, 240, 232, 0.72);
-  font-size: clamp(0.62rem, 0.76vw, 0.72rem);
-  line-height: 1.5;
+.proposalHeader h4,
+.handoffHeader h4 {
+  margin: 0;
+  color: #172b3d;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(1.8rem, 3vw, 2.55rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.proposalDate {
+  flex: none;
+  color: #788490;
+  font-size: 0.61rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.proposalRule {
+  height: 1px;
+  margin: 1.35rem 0 1.15rem;
+  background: rgba(23, 43, 61, 0.16);
+}
+
+.proposalSection + .proposalSection {
+  margin-top: 1.15rem;
+}
+
+.proposalSection h5 {
+  margin: 0 0 0.55rem;
+  color: #8d7650;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.documentList {
+  border-top: 1px solid rgba(23, 43, 61, 0.1);
+}
+
+.proposalLine {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.55rem;
+  border-bottom: 1px solid rgba(23, 43, 61, 0.1);
+  color: #405566;
+  font-size: clamp(0.76rem, 1vw, 0.88rem);
+  line-height: 1.4;
+}
+
+.proposalCheck,
+.handoffCheck {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: none;
+  color: #a08348;
+}
+
+.proposalCheck path,
+.handoffCheck path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.excludedList .proposalLine {
+  color: #8b949b;
+}
+
+.excludedMark {
+  display: inline-grid;
+  width: 1.1rem;
+  flex: none;
+  place-items: center;
+  color: #a6aaad;
+}
+
+.proposalFooter {
+  margin-top: 1.35rem;
+  border-top: 1px solid rgba(160, 131, 72, 0.54);
+}
+
+.proposalFooter .proposalLine {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.proposalFooter strong {
+  color: #172b3d;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.handoff {
+  overflow: hidden;
+}
+
+.handoffHeader {
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+  border-bottom: 1px solid rgba(23, 43, 61, 0.12);
+}
+
+.handoffStatus {
+  flex: none;
+  padding-top: 0.15rem;
+  color: #9c7b3c;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.handoffList {
+  padding: 0 clamp(1.4rem, 3vw, 2.2rem);
+}
+
+.handoffRow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 4rem;
+  border-bottom: 1px solid rgba(23, 43, 61, 0.11);
+  color: #405566;
+  font-size: clamp(0.8rem, 1vw, 0.92rem);
+  line-height: 1.4;
+}
+
+.handoffRow:last-child {
+  border-bottom: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .activeIndicator {
+    transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .panelViewport {
+    transition: height 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .panel {
+    transition:
+      opacity 400ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .panelActive {
+    transform: translateX(0);
+  }
+
+  .panelIdle {
+    transform: translateX(12px);
+  }
+
+  .panelExiting {
+    transform: translateX(-12px);
+  }
+
+  .proposalLine,
+  .handoffRow {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 380ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .panelActive .proposalLine,
+  .panelActive .handoffRow {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .proposalCheck path,
+  .handoffCheck path {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 24;
+    transition: stroke-dashoffset 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .panelActive .proposalCheck path,
+  .panelActive .handoffCheck path {
+    stroke-dashoffset: 0;
+  }
+
+  .proposalLine:nth-child(1) .proposalCheck path,
+  .handoffRow:nth-child(1) .handoffCheck path {
+    transition-delay: 0ms;
+  }
+
+  .proposalLine:nth-child(2) .proposalCheck path,
+  .handoffRow:nth-child(2) .handoffCheck path {
+    transition-delay: 80ms;
+  }
+
+  .proposalLine:nth-child(3) .proposalCheck path,
+  .handoffRow:nth-child(3) .handoffCheck path {
+    transition-delay: 160ms;
+  }
+
+  .handoffRow:nth-child(4) .handoffCheck path {
+    transition-delay: 240ms;
+  }
+
+  .handoffRow:nth-child(5) .handoffCheck path {
+    transition-delay: 320ms;
+  }
 }
 
 @media (max-width: 72rem) {
-  .timeline {
-    grid-template-columns: 1fr;
-    min-height: 0;
+  .panel {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
   }
 
-  .copyInner {
-    width: 100%;
-    max-width: 68rem;
-    margin: 0 auto;
+  .panelCopyInner {
+    padding-inline: clamp(1.5rem, 4vw, 3rem);
   }
 
-  .visualPanel {
-    min-height: 0;
-    padding: clamp(2rem, 5vw, 4rem) clamp(1.25rem, 5vw, 4rem);
+  .artifactPanel {
+    padding-inline: clamp(1.2rem, 3vw, 2.2rem);
   }
 }
 
-@media (max-width: 48rem) {
-  .copyInner {
+@media (max-width: 52rem) {
+  .tabShell {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tabShell::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabList {
+    min-width: 42rem;
+  }
+
+  .tab {
+    min-height: 4.4rem;
+  }
+
+  .panelViewport {
+    min-height: 0;
+  }
+
+  .panel {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .panelCopyInner {
+    width: 100%;
+    max-width: 42rem;
+    margin: 0 auto;
     padding: 2.8rem 1.25rem 2.5rem;
   }
 
-  .timeline h2 {
-    font-size: clamp(3rem, 13vw, 4.6rem);
+  .panelCopy h2 {
+    font-size: clamp(3rem, 13vw, 4.7rem);
   }
 
-  .visualPanel {
-    gap: 1.4rem;
-    padding: 1.6rem 1rem 1.9rem;
+  .artifactPanel {
+    padding: 2rem 1rem 2.5rem;
+    border-top: 1px solid rgba(245, 240, 232, 0.1);
+    border-left: 0;
   }
 
-  .phaseGrid {
-    grid-template-columns: 1fr;
+  .proposal,
+  .handoff {
+    width: min(100%, 34rem);
+  }
+}
+
+@media (max-width: 34rem) {
+  .tabList {
+    min-width: 34rem;
   }
 
-  .phaseCard {
-    min-height: 0;
-    padding: 0.9rem 0.2rem 0.95rem;
-    border-right: 0 !important;
-    border-bottom: 1px solid rgba(245, 240, 232, 0.12) !important;
+  .tab {
+    min-height: 4rem;
+    padding-inline: 0.55rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
   }
 
-  .phaseCard:last-child {
-    border-bottom: 0 !important;
+  .tabNumber {
+    font-size: 0.88rem;
   }
 
-  .phaseName {
-    font-size: 0.9rem;
+  .proposalHeader,
+  .handoffHeader {
+    flex-direction: column;
+    gap: 0.65rem;
   }
 
-  .phaseCard strong {
-    font-size: 0.55rem;
-    letter-spacing: 0.1em;
+  .proposalDate,
+  .handoffStatus {
+    align-self: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .activeIndicator,
+  .panelViewport,
+  .panel,
+  .proposalLine,
+  .handoffRow,
+  .proposalCheck path,
+  .handoffCheck path {
+    transition: none !important;
   }
 
-  .phaseCard p {
-    margin-top: 0.3rem;
-    font-size: 0.64rem;
+  .proposalLine,
+  .handoffRow {
+    opacity: 1;
+    transform: none;
+  }
+
+  .proposalCheck path,
+  .handoffCheck path {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
   }
 }
