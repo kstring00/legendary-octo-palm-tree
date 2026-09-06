@@ -4,6 +4,7 @@ import Header from "./Header";
 import HeroShowcase from "./HeroShowcase";
 import PricingConfigurator from "./PricingConfigurator";
 import PricingTicker from "./PricingTicker";
+import SelectedWork from "./SelectedWork";
 import SiteMotion from "./SiteMotion";
 import TimelineShowcase from "./TimelineShowcase";
 
@@ -12,11 +13,12 @@ export default function Home() {
     <>
       <Header />
       <HeroShowcase />
-      <PricingTicker />
 
       <main>
-        <PricingConfigurator />
+        <SelectedWork />
         <TimelineShowcase />
+        <PricingTicker />
+        <PricingConfigurator />
         <AIIntakeSection />
         <BottomCapture />
       </main>
