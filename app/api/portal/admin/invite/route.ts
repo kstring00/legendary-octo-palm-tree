@@ -8,6 +8,7 @@ import {
 } from "../../../../lib/portalSupabase";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PORTAL_URL = "https://www.stringhamwebdesign.com/portal";
 
 function slugify(value: string) {
   const base = value
@@ -101,8 +102,7 @@ export async function POST(request: NextRequest) {
       }),
     });
 
-    const redirectTo = new URL("/portal", request.nextUrl.origin).toString();
-    await sendPortalMagicLink(email, redirectTo);
+    await sendPortalMagicLink(email, PORTAL_URL);
 
     return NextResponse.json({
       ok: true,
