@@ -10,26 +10,16 @@ type Channel = {
   alt: string;
 };
 
-/*
- * Drop the final full-page screenshots into /public/hero-crt and replace the
- * null src values below. The monitor, switching, lazy-loading and scrolling
- * behavior are already wired for them.
- */
 const channels: Channel[] = [
   {
     label: "Common Ground",
-    src: null,
-    alt: "Common Ground autism family support website homepage",
+    src: "/hero-crt/common-ground.png",
+    alt: "Common Ground homepage showing autism support resources for Texas families",
   },
   {
     label: "BCBA Prep",
-    src: null,
-    alt: "BCBA Prep study library website homepage",
-  },
-  {
-    label: "Lake City Self Storage",
-    src: null,
-    alt: "Lake City Self Storage website homepage",
+    src: "/hero-crt/bcba-prep.png",
+    alt: "BCBA Prep study library homepage showing the nine BCBA exam domains",
   },
 ];
 
@@ -144,7 +134,10 @@ export default function RetroCRT() {
         </div>
 
         <div className={styles.controlDeck} aria-label="Project preview controls">
-          <div className={styles.switches}>
+          <div
+            className={styles.switches}
+            style={{ gridTemplateColumns: `repeat(${channels.length}, minmax(0, 1fr))` }}
+          >
             {channels.map((item, index) => {
               const active = index === activeChannel;
 
